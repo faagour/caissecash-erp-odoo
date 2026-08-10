@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_caissecash_equipment_tree" model="ir.ui.view">
+        <field name="name">caissecash.equipment.tree</field>
+        <field name="model">caissecash.equipment</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="product_id"/>
+                <field name="lot_id"/>
+                <field name="customer_id"/>
+                <field name="establishment_id"/>
+                <field name="install_date"/>
+                <field name="sav_status" widget="badge"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_caissecash_equipment_form" model="ir.ui.view">
+        <field name="name">caissecash.equipment.form</field>
+        <field name="model">caissecash.equipment</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="product_id"/>
+                            <field name="lot_id"/>
+                            <field name="vendor_id"/>
+                            <field name="purchase_date"/>
+                            <field name="currency_id" invisible="1"/>
+                            <!-- Coût d'achat masqué au rôle Technicien (protège la marge). -->
+                            <field name="cost"
+                                   groups="caissecash_erp.group_stock,caissecash_erp.group_direction,caissecash_erp.group_admin,caissecash_erp.group_comptabilite,caissecash_erp.group_commercial"/>
+                        </group>
+                        <group>
+                            <field name="customer_id"/>
+                            <field name="establishment_id"/>
+                            <field name="install_date"/>
+                            <field name="sav_status"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Garanties">
+                            <field name="warranty_ids">
+                                <list>
+                                    <field name="date_start"/>
+                                    <field name="date_end"/>
+                                    <field name="warranty_type"/>
+                                    <field name="state" widget="badge"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Tickets SAV">
+                            <field name="sav_ticket_ids">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="date_open"/>
+                                    <field name="priority"/>
+                                    <field name="state"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_caissecash_equipment_search" model="ir.ui.view">
+        <field name="name">caissecash.equipment.search</field>
+        <field name="model">caissecash.equipment</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="product_id"/>
+                <field name="lot_id"/>
+                <field name="customer_id"/>
+                <field name="establishment_id"/>
+                <filter name="installed" string="Installé chez un client" domain="[('customer_id', '!=', False)]"/>
+                <filter name="in_stock" string="En stock (non installé)" domain="[('customer_id', '=', False)]"/>
+                <group>
+                    <filter name="group_status" string="Statut SAV" context="{'group_by': 'sav_status'}"/>
+                    <filter name="group_establishment" string="Établissement" context="{'group_by': 'establishment_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_caissecash_equipment" model="ir.actions.act_window">
+        <field name="name">Équipements</field>
+        <field name="res_model">caissecash.equipment</field>
+        <field name="view_mode">list,form,pivot,graph</field>
+        <field name="search_view_id" ref="view_caissecash_equipment_search"/>
+        <field name="help" type="html"><p class="o_view_nocontent_smiling_face">Enregistrez le premier équipement suivi</p></field>
+    </record>
+
+</odoo>

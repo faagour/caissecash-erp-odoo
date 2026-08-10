@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_caissecash_onboarding_step_list" model="ir.ui.view">
+        <field name="name">caissecash.onboarding.step.list</field>
+        <field name="model">caissecash.onboarding.step</field>
+        <field name="arch" type="xml">
+            <list decoration-success="done" editable="bottom">
+                <field name="sequence" widget="handle"/>
+                <field name="done" widget="boolean_toggle"/>
+                <field name="name"/>
+                <field name="done_by" readonly="1"/>
+                <field name="done_date" readonly="1"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_caissecash_onboarding_step_form" model="ir.ui.view">
+        <field name="name">caissecash.onboarding.step.form</field>
+        <field name="model">caissecash.onboarding.step</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_toggle_done" type="object" class="oe_stat_button" icon="fa-check-square-o">
+                            <field name="done" widget="boolean_button"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1><field name="name"/></h1>
+                    </div>
+                    <field name="instructions"/>
+                    <group invisible="not done">
+                        <field name="done_by" readonly="1"/>
+                        <field name="done_date" readonly="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_caissecash_onboarding" model="ir.actions.act_window">
+        <field name="name">Checklist de mise en service</field>
+        <field name="res_model">caissecash.onboarding.step</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="menu_caissecash_onboarding" name="Checklist de mise en service" parent="menu_caissecash_root"
+              action="action_caissecash_onboarding" sequence="90"
+              groups="caissecash_erp.group_admin,caissecash_erp.group_direction"/>
+
+</odoo>

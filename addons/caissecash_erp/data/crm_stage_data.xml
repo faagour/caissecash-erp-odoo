@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Pipeline CRM CaisseCash (cahier des charges §5) :
+         Nouveau prospect -> Contacté -> Démonstration planifiée ->
+         Démonstration réalisée -> Devis envoyé -> Négociation -> Gagné.
+         "Perdu" n'est volontairement pas une colonne du pipeline : Odoo gère
+         les opportunités perdues via le bouton "Marquer perdu" (archivage +
+         motif), pas comme une étape visible en permanence dans le kanban —
+         c'est le comportement standard CRM, cf. docs/USER_GUIDE.md.
+
+         On renomme les 4 étapes par défaut du module crm (au lieu d'en créer
+         des doublons) et on ajoute les 3 étapes manquantes. -->
+
+    <record model="crm.stage" id="crm.stage_lead1">
+        <field name="name">Nouveau prospect</field>
+        <field name="sequence">1</field>
+    </record>
+
+    <record model="crm.stage" id="stage_contacted">
+        <field name="name">Contacté</field>
+        <field name="sequence">2</field>
+        <field name="color">4</field>
+    </record>
+
+    <record model="crm.stage" id="stage_demo_planned">
+        <field name="name">Démonstration planifiée</field>
+        <field name="sequence">3</field>
+        <field name="color">3</field>
+    </record>
+
+    <record model="crm.stage" id="stage_demo_done">
+        <field name="name">Démonstration réalisée</field>
+        <field name="sequence">4</field>
+        <field name="color">2</field>
+    </record>
+
+    <record model="crm.stage" id="crm.stage_lead2">
+        <field name="name">Devis envoyé</field>
+        <field name="sequence">5</field>
+    </record>
+
+    <record model="crm.stage" id="crm.stage_lead3">
+        <field name="name">Négociation</field>
+        <field name="sequence">6</field>
+    </record>
+
+    <record model="crm.stage" id="crm.stage_lead4">
+        <field name="name">Gagné</field>
+        <field name="sequence">7</field>
+    </record>
+
+</odoo>

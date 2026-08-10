@@ -1,0 +1,29 @@
+# Utilisation :
+#   docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
+#
+# La base Postgres reste NON exposee (pas de "ports:" ajoute ici).
+# Odoo est lie a 127.0.0.1 uniquement : un reverse proxy (Nginx/Traefik,
+# a deployer separement sur le VPS) doit faire le lien HTTPS -> 127.0.0.1:8069.
+
+services:
+  odoo:
+    restart: always
+    ports:
+      - "127.0.0.1:${ODOO_HOST_PORT}:8069"
+      - "127.0.0.1:${ODOO_LONGPOLLING_HOST_PORT}:8072"
+    deploy:
+      resources:
+        limits:
+          cpus: "2"
+          memory: 2G
+
+  db:
+    restart: always
+    deploy:
+      resources:
+        limits:
+          cpus: "2"
+          memory: 2G
+
+  backup:
+    restart: always

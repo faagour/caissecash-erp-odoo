@@ -1,0 +1,19 @@
+# Charge automatiquement par "docker compose up" (developpement local).
+# Ne PAS utiliser ce fichier en production : utiliser docker-compose.prod.yml
+# via "docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d"
+# (dans ce cas, ce fichier override est ignore).
+
+services:
+  odoo:
+    ports:
+      # Lie a 127.0.0.1 uniquement : pas d'exposition sur le reseau local.
+      - "127.0.0.1:${ODOO_HOST_PORT}:8069"
+      - "127.0.0.1:${ODOO_LONGPOLLING_HOST_PORT}:8072"
+    volumes:
+      # En dev, montage en lecture/ecriture pour iterer sans reconstruire l'image.
+      - ./addons:/mnt/extra-addons:rw
+
+  db:
+    ports:
+      # Acces local optionnel (psql/DBeaver) pour le developpement uniquement.
+      - "127.0.0.1:${POSTGRES_HOST_PORT}:5432"

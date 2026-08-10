@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_caissecash_founder_list" model="ir.ui.view">
+        <field name="name">caissecash.founder.list</field>
+        <field name="model">caissecash.founder</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="currency_id" column_invisible="1"/>
+                <field name="name"/>
+                <field name="role"/>
+                <field name="participation_percent" widget="percentage" string="%"/>
+                <field name="total_capital"/>
+                <field name="state" widget="badge"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Définie avant le formulaire Associé, qui la référence via %(...)d
+         (résolu au chargement des données, donc avant sa propre déclaration
+         plus bas dans ce fichier). -->
+    <record id="action_caissecash_founder_movement" model="ir.actions.act_window">
+        <field name="name">Mouvements associés</field>
+        <field name="res_model">caissecash.founder.movement</field>
+        <field name="view_mode">list,form,pivot,graph</field>
+        <field name="help" type="html"><p class="o_view_nocontent_smiling_face">Enregistrez le premier mouvement</p></field>
+    </record>
+
+    <record id="view_caissecash_founder_form" model="ir.ui.view">
+        <field name="name">caissecash.founder.form</field>
+        <field name="model">caissecash.founder</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="%(action_caissecash_founder_movement)d" type="action" class="oe_stat_button" icon="fa-exchange"
+                                context="{'search_default_founder_id': id, 'default_founder_id': id}">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Mouvements</span>
+                            </div>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="Nom complet"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="role"/>
+                            <field name="email"/>
+                            <field name="phone"/>
+                            <field name="whatsapp"/>
+                        </group>
+                        <group>
+                            <field name="date_start"/>
+                            <field name="participation_percent" widget="percentage"/>
+                        </group>
+                    </group>
+                    <field name="currency_id" invisible="1"/>
+                    <group string="Soldes indicatifs (hors comptabilité officielle)">
+                        <group>
+                            <field name="total_capital"/>
+                            <field name="total_advance"/>
+                            <field name="total_personal_expense"/>
+                        </group>
+                        <group>
+                            <field name="total_reimbursed"/>
+                            <field name="total_withdrawal"/>
+                        </group>
+                    </group>
+                    <field name="notes" placeholder="Notes..."/>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_caissecash_founder" model="ir.actions.act_window">
+        <field name="name">Associés</field>
+        <field name="res_model">caissecash.founder</field>
+        <field name="view_mode">list,form,pivot,graph</field>
+        <field name="help" type="html"><p class="o_view_nocontent_smiling_face">Ajoutez le premier associé</p></field>
+    </record>
+
+    <!-- Mouvements -->
+
+    <record id="view_caissecash_founder_movement_list" model="ir.ui.view">
+        <field name="name">caissecash.founder.movement.list</field>
+        <field name="model">caissecash.founder.movement</field>
+        <field name="arch" type="xml">
+            <list decoration-muted="state == 'cancelled'" decoration-success="state == 'validated'">
+                <field name="currency_id" column_invisible="1"/>
+                <field name="name"/>
+                <field name="founder_id"/>
+                <field name="date"/>
+                <field name="movement_type"/>
+                <field name="amount" sum="Total"/>
+                <field name="payment_mode"/>
+                <field name="state" widget="badge"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_caissecash_founder_movement_form" model="ir.ui.view">
+        <field name="name">caissecash.founder.movement.form</field>
+        <field name="model">caissecash.founder.movement</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_submit_for_verification" type="object" string="Soumettre à vérification"
+                            invisible="state != 'draft'"/>
+                    <button name="action_validate" type="object" string="Valider" class="oe_highlight"
+                            invisible="state not in ('draft', 'to_verify')"
+                            groups="caissecash_erp.group_comptabilite,caissecash_erp.group_direction,caissecash_erp.group_admin"/>
+                    <button name="action_cancel" type="object" string="Annuler"
+                            invisible="state in ('cancelled',)"
+                            groups="caissecash_erp.group_comptabilite,caissecash_erp.group_direction,caissecash_erp.group_admin"/>
+                    <button name="action_reset_to_draft" type="object" string="Remettre en brouillon"
+                            invisible="state not in ('to_verify', 'cancelled')"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,to_verify,validated"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="founder_id"/>
+                            <field name="date"/>
+                            <field name="movement_type"/>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="amount"/>
+                        </group>
+                        <group>
+                            <field name="payment_mode"/>
+                            <field name="account_reference"/>
+                            <field name="validated_by" readonly="1"/>
+                            <field name="validation_date" readonly="1"/>
+                        </group>
+                    </group>
+                    <field name="description" placeholder="Description..."/>
+                    <p class="text-muted">
+                        Pièce justificative : joindre le document via le panneau à droite (trombone).
+                    </p>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+</odoo>

@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+
+    <record id="onboarding_step_01" model="caissecash.onboarding.step">
+        <field name="sequence">10</field>
+        <field name="name">1. Informations légales de CaisseCash</field>
+        <field name="instructions"><![CDATA[
+            <ul>
+                <li><b>Où :</b> Réglages &gt; Utilisateurs et sociétés &gt; Sociétés &gt; votre société</li>
+                <li><b>À saisir :</b> raison sociale, forme juridique (dans le nom ou un champ notes), ICE, IF, RC, taxe professionnelle</li>
+                <li><b>Obligatoire :</b> raison sociale, ICE, IF, RC avant toute facture réelle</li>
+                <li><b>Vérifier :</b> ces infos apparaissent sur l'aperçu PDF d'un devis test</li>
+            </ul>
+        ]]></field>
+    </record>
+
+    <record id="onboarding_step_02" model="caissecash.onboarding.step">
+        <field name="sequence">20</field>
+        <field name="name">2. Logo et coordonnées</field>
+        <field name="instructions"><![CDATA[
+            <ul>
+                <li><b>Où :</b> même fiche société &gt; onglet général</li>
+                <li><b>À saisir :</b> logo, adresse, ville, pays, téléphone, WhatsApp, e-mail, site web</li>
+                <li><b>Vérifier :</b> le logo apparaît en haut des documents PDF générés</li>
+            </ul>
+        ]]></field>
+    </record>
+
+    <record id="onboarding_step_03" model="caissecash.onboarding.step">
+        <field name="sequence">30</field>
+        <field name="name">3. Utilisateurs et rôles</field>
+        <field name="instructions"><![CDATA[
+            <ul>
+                <li><b>Où :</b> Réglages &gt; Utilisateurs et sociétés &gt; Utilisateurs</li>
+                <li><b>À faire :</b> créer un compte par personne, cocher le rôle CaisseCash ERP correspondant (Commercial/Stock/Technicien/Finance/Direction/Stagiaire/Comptable externe/Admin)</li>
+                <li><b>Vérifier :</b> se connecter avec un compte test et confirmer qu'il ne voit que ce qui est prévu pour son rôle</li>
+            </ul>
+        ]]></field>
+    </record>
+
+    <record id="onboarding_step_04" model="caissecash.onboarding.step">
+        <field name="sequence">40</field>
+        <field name="name">4. Cofondateurs</field>
+        <field name="instructions"><![CDATA[
+            <ul>
+                <li><b>Où :</b> app Associés et financement &gt; Associés</li>
+                <li><b>À saisir :</b> nom, rôle, date d'entrée, % de participation pour chacun des 4 cofondateurs</li>
+                <li><b>Vérifier :</b> les 4 fiches sont créées, statut "Actif"</li>
+            </ul>
+        ]]></field>
+    </record>
+
+    <record id="onboarding_step_05" model="caissecash.onboarding.step">
+        <field name="sequence">50</field>
+        <field name="name">5. Comptes bancaires et caisses</field>
+        <field name="instructions"><![CDATA[
+            <ul>
+                <li><b>Où :</b> Facturation &gt; Configuration &gt; Comptes bancaires (pour les vrais comptes) ; le champ libre "Compte/caisse" sur les mouvements associés et dépenses en attendant</li>
+                <li><b>Vérifier :</b> avec votre comptable avant tout usage officiel</li>
+            </ul>
+        ]]></field>
+    </record>
+
+    <record id="onboarding_step_06" model="caissecash.onboarding.step">
+        <field name="sequence">60</field>
+        <field name="name">6. Catégories de dépenses</field>
+        <field name="instructions"><![CDATA[
+            <ul>
+                <li><b>Où :</b> Dépenses &gt; Catégories de dépenses</li>
+                <li><b>À faire :</b> les catégories de départ sont déjà créées (loyer, salaires, carburant...) ; ajoutez/renommez selon vos besoins réels</li>
+            </ul>
+        ]]></field>
+    </record>
+
+    <record id="onboarding_step_07" model="caissecash.onboarding.step">
+        <field name="sequence">70</field>
+        <field name="name">7. Fournisseurs</field>
+        <field name="instructions"><![CDATA[
+            <ul>
+                <li><b>Où :</b> Achats &gt; Commandes &gt; Fournisseurs, ou Contacts</li>
+                <li><b>À saisir :</b> raison sociale, contact, téléphone, WhatsApp, e-mail, adresse, ICE/IF/RC (onglet "Informations CaisseCash"), conditions de paiement</li>
+            </ul>
+        ]]></field>
+    </record>
+
+    <record id="onboarding_step_08" model="caissecash.onboarding.step">
+        <field name="sequence">80</field>
+        <field name="name">8. Produits et services</field>
+        <field name="instructions"><![CDATA[
+            <ul>
+                <li><b>Où :</b> Ventes ou Inventaire &gt; Produits</li>
+                <li><b>À faire :</b> la structure de départ existe déjà (caisses, imprimantes, scanners, tiroirs, bornes, services, abonnements) — renommez chaque produit placeholder avec votre vrai modèle/marque</li>
+                <li><b>Obligatoire :</b> catégorie, suivi par numéro de série activé pour le matériel important</li>
+            </ul>
+        ]]></field>
+    </record>
+
+    <record id="onboarding_step_09" model="caissecash.onboarding.step">
+        <field name="sequence">90</field>
+        <field name="name">9. Prix d'achat et de vente</field>
+        <field name="instructions"><![CDATA[
+            <ul>
+                <li><b>Où :</b> fiche produit &gt; onglet Achat / Ventes</li>
+                <li><b>À saisir :</b> coût d'achat, prix de vente, taux de TVA réels (tous à 0 actuellement)</li>
+            </ul>
+        ]]></field>
+    </record>
+
+    <record id="onboarding_step_10" model="caissecash.onboarding.step">
+        <field name="sequence">100</field>
+        <field name="name">10. Stock initial</field>
+        <field name="instructions"><![CDATA[
+            <ul>
+                <li><b>Où :</b> Inventaire &gt; Ajustements d'inventaire</li>
+                <li><b>À faire :</b> saisir les quantités réellement en stock, par emplacement (Showroom, Stock disponible, etc.)</li>
+            </ul>
+        ]]></field>
+    </record>
+
+    <record id="onboarding_step_11" model="caissecash.onboarding.step">
+        <field name="sequence">110</field>
+        <field name="name">11. Numéros de série</field>
+        <field name="instructions"><![CDATA[
+            <ul>
+                <li><b>Où :</b> Inventaire &gt; Traçabilité &gt; Numéros de série/lots, lors de la réception d'une commande d'achat</li>
+                <li><b>Vérifier :</b> chaque appareil important a bien un numéro de série unique enregistré</li>
+            </ul>
+        ]]></field>
+    </record>
+
+    <record id="onboarding_step_12" model="caissecash.onboarding.step">
+        <field name="sequence">120</field>
+        <field name="name">12. Clients</field>
+        <field name="instructions"><![CDATA[
+            <ul>
+                <li><b>Où :</b> Contacts, ou CRM une fois un prospect gagné</li>
+                <li><b>À saisir :</b> raison sociale, nom commercial, responsable, contact, ICE/IF/RC (onglet "Informations CaisseCash"), type de commerce</li>
+            </ul>
+        ]]></field>
+    </record>
+
+    <record id="onboarding_step_13" model="caissecash.onboarding.step">
+        <field name="sequence">130</field>
+        <field name="name">13. Établissements</field>
+        <field name="instructions"><![CDATA[
+            <ul>
+                <li><b>Où :</b> CaisseCash ERP &gt; Clients &gt; Établissements</li>
+                <li><b>À faire :</b> un établissement par point de vente réel du client</li>
+            </ul>
+        ]]></field>
+    </record>
+
+    <record id="onboarding_step_14" model="caissecash.onboarding.step">
+        <field name="sequence">140</field>
+        <field name="name">14. Apports historiques</field>
+        <field name="instructions"><![CDATA[
+            <ul>
+                <li><b>Où :</b> Associés et financement &gt; Mouvements &gt; type "Apport au capital"</li>
+                <li><b>À faire :</b> ressaisir l'historique réel des apports déjà effectués, puis valider chaque mouvement</li>
+            </ul>
+        ]]></field>
+    </record>
+
+    <record id="onboarding_step_15" model="caissecash.onboarding.step">
+        <field name="sequence">150</field>
+        <field name="name">15. Dépenses historiques</field>
+        <field name="instructions"><![CDATA[
+            <ul>
+                <li><b>Où :</b> Dépenses &gt; Dépenses</li>
+                <li><b>À faire :</b> ressaisir les dépenses déjà engagées, avec leur catégorie et justificatif si disponible</li>
+            </ul>
+        ]]></field>
+    </record>
+
+    <record id="onboarding_step_16" model="caissecash.onboarding.step">
+        <field name="sequence">160</field>
+        <field name="name">16. Factures en attente</field>
+        <field name="instructions"><![CDATA[
+            <ul>
+                <li><b>Où :</b> Facturation &gt; Clients / Fournisseurs</li>
+                <li><b>À faire :</b> saisir les factures déjà émises/reçues mais non soldées</li>
+            </ul>
+        ]]></field>
+    </record>
+
+    <record id="onboarding_step_17" model="caissecash.onboarding.step">
+        <field name="sequence">170</field>
+        <field name="name">17. Conditions commerciales</field>
+        <field name="instructions"><![CDATA[
+            <ul>
+                <li><b>Où :</b> Ventes &gt; Configuration &gt; Conditions générales</li>
+                <li><b>À saisir :</b> vos conditions générales de vente réelles</li>
+            </ul>
+        ]]></field>
+    </record>
+
+    <record id="onboarding_step_18" model="caissecash.onboarding.step">
+        <field name="sequence">180</field>
+        <field name="name">18. Durées de garantie</field>
+        <field name="instructions"><![CDATA[
+            <ul>
+                <li><b>Où :</b> à la création de chaque garantie (durée par défaut : 24 mois, modifiable ligne par ligne)</li>
+                <li><b>Vérifier :</b> les produits nécessitant une durée différente sont bien ajustés au cas par cas</li>
+            </ul>
+        ]]></field>
+    </record>
+
+    <record id="onboarding_step_19" model="caissecash.onboarding.step">
+        <field name="sequence">190</field>
+        <field name="name">19. Formules d'abonnement</field>
+        <field name="instructions"><![CDATA[
+            <ul>
+                <li><b>Où :</b> Abonnements &gt; Abonnements, produits "Abonnement de suivi — Mensuel/Annuel"</li>
+                <li><b>À saisir :</b> vrais montants et périodicités de vos formules</li>
+            </ul>
+        ]]></field>
+    </record>
+
+    <record id="onboarding_step_20" model="caissecash.onboarding.step">
+        <field name="sequence">200</field>
+        <field name="name">20. Vérification par le comptable</field>
+        <field name="instructions"><![CDATA[
+            <ul>
+                <li><b>À faire :</b> faire relire par le comptable marocain de CaisseCash le plan comptable (l10n_ma), les taux de TVA, et le traitement des mouvements associés avant toute utilisation officielle</li>
+                <li><b>Rappel :</b> le module Associés reste indicatif — aucune écriture comptable officielle n'est générée automatiquement</li>
+            </ul>
+        ]]></field>
+    </record>
+
+</odoo>

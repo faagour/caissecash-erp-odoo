@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+
+    <!-- Structure de catalogue de démarrage pour CaisseCash (cahier des charges §6).
+         Prix volontairement à 0 (placeholders) : à compléter par l'entreprise,
+         aucun prix commercial n'est inventé ici. noupdate="1" : modifiable/
+         supprimable librement sans être recréé lors d'une mise à jour du module. -->
+
+    <record id="product_category_materiel" model="product.category">
+        <field name="name">Matériel CaisseCash</field>
+        <field name="parent_id" ref="product.product_category_goods"/>
+    </record>
+    <record id="product_category_caisses" model="product.category">
+        <field name="name">Caisses tactiles</field>
+        <field name="parent_id" ref="product_category_materiel"/>
+    </record>
+    <record id="product_category_imprimantes" model="product.category">
+        <field name="name">Imprimantes thermiques</field>
+        <field name="parent_id" ref="product_category_materiel"/>
+    </record>
+    <record id="product_category_scanners" model="product.category">
+        <field name="name">Scanners codes-barres</field>
+        <field name="parent_id" ref="product_category_materiel"/>
+    </record>
+    <record id="product_category_tiroirs" model="product.category">
+        <field name="name">Tiroirs-caisses</field>
+        <field name="parent_id" ref="product_category_materiel"/>
+    </record>
+    <record id="product_category_bornes" model="product.category">
+        <field name="name">Bornes de commande</field>
+        <field name="parent_id" ref="product_category_materiel"/>
+    </record>
+    <record id="product_category_abonnements" model="product.category">
+        <field name="name">Abonnements CaisseCash</field>
+        <field name="parent_id" ref="product.product_category_services"/>
+    </record>
+
+    <!-- Matériel : suivi par numéro de série activé, prix à compléter -->
+    <record id="product_caisse_tactile" model="product.product">
+        <field name="name">Caisse tactile</field>
+        <field name="type">consu</field>
+        <field name="tracking">serial</field>
+        <field name="list_price">0.0</field>
+        <field name="categ_id" ref="product_category_caisses"/>
+    </record>
+    <record id="product_imprimante_thermique" model="product.product">
+        <field name="name">Imprimante thermique</field>
+        <field name="type">consu</field>
+        <field name="tracking">serial</field>
+        <field name="list_price">0.0</field>
+        <field name="categ_id" ref="product_category_imprimantes"/>
+    </record>
+    <record id="product_scanner_codes_barres" model="product.product">
+        <field name="name">Scanner codes-barres</field>
+        <field name="type">consu</field>
+        <field name="tracking">serial</field>
+        <field name="list_price">0.0</field>
+        <field name="categ_id" ref="product_category_scanners"/>
+    </record>
+    <record id="product_tiroir_caisse" model="product.product">
+        <field name="name">Tiroir-caisse</field>
+        <field name="type">consu</field>
+        <field name="tracking">serial</field>
+        <field name="list_price">0.0</field>
+        <field name="categ_id" ref="product_category_tiroirs"/>
+    </record>
+    <record id="product_borne_commande" model="product.product">
+        <field name="name">Borne de commande</field>
+        <field name="type">consu</field>
+        <field name="tracking">serial</field>
+        <field name="list_price">0.0</field>
+        <field name="categ_id" ref="product_category_bornes"/>
+    </record>
+
+    <!-- Services -->
+    <record id="product_installation" model="product.product">
+        <field name="name">Installation</field>
+        <field name="type">service</field>
+        <field name="list_price">0.0</field>
+        <field name="categ_id" ref="product.product_category_services"/>
+    </record>
+    <record id="product_formation" model="product.product">
+        <field name="name">Formation</field>
+        <field name="type">service</field>
+        <field name="list_price">0.0</field>
+        <field name="categ_id" ref="product.product_category_services"/>
+    </record>
+    <record id="product_support_premium" model="product.product">
+        <field name="name">Support premium</field>
+        <field name="type">service</field>
+        <field name="list_price">0.0</field>
+        <field name="categ_id" ref="product.product_category_services"/>
+    </record>
+
+    <!-- Abonnements : produits de facturation récurrente utilisés par caissecash.subscription -->
+    <record id="product_abonnement_mensuel" model="product.product">
+        <field name="name">Abonnement de suivi — Mensuel</field>
+        <field name="type">service</field>
+        <field name="list_price">0.0</field>
+        <field name="categ_id" ref="product_category_abonnements"/>
+    </record>
+    <record id="product_abonnement_annuel" model="product.product">
+        <field name="name">Abonnement de suivi — Annuel</field>
+        <field name="type">service</field>
+        <field name="list_price">0.0</field>
+        <field name="categ_id" ref="product_category_abonnements"/>
+    </record>
+
+</odoo>

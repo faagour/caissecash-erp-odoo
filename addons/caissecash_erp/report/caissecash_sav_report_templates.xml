@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="report_caissecash_sav_ticket_document">
+        <t t-call="web.external_layout">
+            <t t-foreach="docs" t-as="o">
+                <div class="page">
+                    <style>
+                        .cc-title { color: #0B1F3A; font-weight: bold; font-size: 20px; margin-bottom: 4px; }
+                        .cc-subtitle { color: #F28C28; font-weight: bold; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+                        .cc-band { background-color: #F8FAFC; border-left: 4px solid #F28C28; padding: 8px 12px; margin: 12px 0; }
+                        .cc-table th { background-color: #0B1F3A; color: #FFFFFF; padding: 6px 8px; text-align: left; }
+                        .cc-table td { padding: 6px 8px; border-bottom: 1px solid #E5E7EB; }
+                    </style>
+
+                    <div class="cc-subtitle">CaisseCash — Service Après-Vente</div>
+                    <div class="cc-title">Fiche d'intervention — <span t-field="o.name"/></div>
+
+                    <div class="cc-band row">
+                        <div class="col-6">
+                            <strong>Client :</strong> <span t-field="o.partner_id.name"/><br/>
+                            <strong>Établissement :</strong> <span t-field="o.establishment_id.name"/><br/>
+                            <strong>Contact :</strong> <span t-field="o.contact_name"/>
+                        </div>
+                        <div class="col-6">
+                            <strong>Date d'ouverture :</strong> <span t-field="o.date_open"/><br/>
+                            <strong>Priorité :</strong> <span t-field="o.priority"/><br/>
+                            <strong>Technicien :</strong> <span t-field="o.technician_id.name"/><br/>
+                            <strong>Sous garantie :</strong> <span t-esc="'Oui' if o.under_warranty else 'Non'"/>
+                        </div>
+                    </div>
+
+                    <h4>Équipement concerné</h4>
+                    <p>
+                        <span t-field="o.equipment_id.product_id.display_name"/> —
+                        N° série : <span t-field="o.lot_id.name"/>
+                    </p>
+
+                    <h4>Problème signalé</h4>
+                    <p t-field="o.description"/>
+
+                    <h4>Diagnostic</h4>
+                    <p t-field="o.diagnostic"/>
+
+                    <h4>Actions réalisées</h4>
+                    <p t-field="o.actions_taken"/>
+
+                    <h4 t-if="o.part_ids">Pièces utilisées</h4>
+                    <table t-if="o.part_ids" class="table cc-table">
+                        <thead><tr><th>Pièce</th><th>Quantité</th></tr></thead>
+                        <tbody>
+                            <tr t-foreach="o.part_ids" t-as="part">
+                                <td><span t-field="part.product_id.display_name"/></td>
+                                <td><span t-field="part.quantity"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h4>Solution</h4>
+                    <p t-field="o.resolution"/>
+
+                    <table class="table" style="margin-top: 16px;">
+                        <tr><td><strong>Temps passé</strong></td><td><span t-field="o.time_spent"/> h</td></tr>
+                        <tr><td><strong>Facturable</strong></td><td><span t-esc="'Oui' if o.billable else 'Non (sous garantie / geste commercial)'"/></td></tr>
+                        <tr><td><strong>Statut</strong></td><td><span t-field="o.state"/></td></tr>
+                    </table>
+                </div>
+            </t>
+        </t>
+    </template>
+
+</odoo>

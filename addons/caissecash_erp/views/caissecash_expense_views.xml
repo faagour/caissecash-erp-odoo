@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_caissecash_expense_list" model="ir.ui.view">
+        <field name="name">caissecash.expense.list</field>
+        <field name="model">caissecash.expense</field>
+        <field name="arch" type="xml">
+            <list decoration-muted="state == 'cancelled'" decoration-success="state == 'paid'">
+                <field name="currency_id" column_invisible="1"/>
+                <field name="name"/>
+                <field name="date"/>
+                <field name="category_id"/>
+                <field name="partner_id"/>
+                <field name="amount_total" sum="Total"/>
+                <field name="payment_mode"/>
+                <field name="state" widget="badge"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_caissecash_expense_form" model="ir.ui.view">
+        <field name="name">caissecash.expense.form</field>
+        <field name="model">caissecash.expense</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_submit" type="object" string="Soumettre" invisible="state != 'draft'"/>
+                    <button name="action_validate" type="object" string="Valider" class="oe_highlight"
+                            invisible="state != 'to_validate'"/>
+                    <button name="action_mark_paid" type="object" string="Marquer payée"
+                            invisible="state != 'validated'"/>
+                    <button name="action_cancel" type="object" string="Annuler" invisible="state == 'cancelled'"/>
+                    <button name="action_reset_to_draft" type="object" string="Remettre en brouillon"
+                            invisible="state in ('paid',)"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,to_validate,validated,paid"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="date"/>
+                            <field name="category_id"/>
+                            <field name="partner_id"/>
+                            <field name="partner_related_id"/>
+                        </group>
+                        <group>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="amount_untaxed"/>
+                            <field name="amount_tax"/>
+                            <field name="amount_total"/>
+                            <field name="payment_mode"/>
+                            <field name="account_reference"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group>
+                            <field name="paid_by_user_id"/>
+                            <field name="founder_id"/>
+                        </group>
+                        <group>
+                            <field name="is_recurring"/>
+                            <field name="recurring_periodicity" invisible="not is_recurring"/>
+                            <field name="next_reminder_date" invisible="not is_recurring"/>
+                        </group>
+                    </group>
+                    <field name="description" placeholder="Description..."/>
+                    <field name="notes" placeholder="Notes..."/>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_caissecash_expense" model="ir.actions.act_window">
+        <field name="name">Dépenses</field>
+        <field name="res_model">caissecash.expense</field>
+        <field name="view_mode">list,form,pivot,graph</field>
+        <field name="help" type="html"><p class="o_view_nocontent_smiling_face">Enregistrez la première dépense</p></field>
+    </record>
+
+    <record id="view_caissecash_expense_category_list" model="ir.ui.view">
+        <field name="name">caissecash.expense.category.list</field>
+        <field name="model">caissecash.expense.category</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="expense_group"/>
+                <field name="active" widget="boolean_toggle"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_caissecash_expense_category" model="ir.actions.act_window">
+        <field name="name">Catégories de dépenses</field>
+        <field name="res_model">caissecash.expense.category</field>
+        <field name="view_mode">list</field>
+    </record>
+
+</odoo>

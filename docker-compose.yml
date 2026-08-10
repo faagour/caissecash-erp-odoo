@@ -1,0 +1,100 @@
+name: caissecash-erp
+
+# Base commune dev/prod. Ne pas publier de port ici : les ports sont
+# ouverts explicitement par docker-compose.override.yml (dev) ou
+# docker-compose.prod.yml (prod), pour eviter toute exposition par defaut.
+
+x-common-env: &common-env
+  POSTGRES_DB: ${POSTGRES_DB}
+  POSTGRES_USER: ${POSTGRES_USER}
+  POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: caissecash-erp-db
+    restart: unless-stopped
+    environment:
+      <<: *common-env
+      PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+      - odoo-erp-db-data:/var/lib/postgresql/data
+    networks:
+      - caissecash-erp-net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    # Aucun "ports:" ici -> non exposee a l'hote par defaut (voir override.yml pour le dev).
+
+  odoo:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        ODOO_VERSION: ${ODOO_VERSION}
+    container_name: caissecash-erp-odoo
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      <<: *common-env
+      ODOO_ADMIN_PASSWORD: ${ODOO_ADMIN_PASSWORD}
+      ODOO_DB_FILTER: ${ODOO_DB_FILTER}
+      ODOO_LIST_DB: ${ODOO_LIST_DB}
+      ODOO_WORKERS: ${ODOO_WORKERS}
+      ODOO_LOG_LEVEL: ${ODOO_LOG_LEVEL}
+      TZ: ${TZ}
+    volumes:
+      - odoo-erp-filestore:/var/lib/odoo
+      - odoo-erp-logs:/var/log/odoo
+      # Seul l'addon caissecash_erp est monte : l'ancien addon extraaddons/caissecash_pos
+      # (skin du POS natif Odoo, hors perimetre) n'est volontairement pas charge ici.
+      - ./addons:/mnt/extra-addons:ro
+    networks:
+      - caissecash-erp-net
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8069/web/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+
+  backup:
+    image: prodrigestivill/postgres-backup-local:16-alpine
+    container_name: caissecash-erp-backup
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      POSTGRES_HOST: db
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      SCHEDULE: ${BACKUP_SCHEDULE}
+      BACKUP_KEEP_DAYS: ${BACKUP_KEEP_DAYS}
+      BACKUP_KEEP_WEEKS: ${BACKUP_KEEP_WEEKS}
+      BACKUP_KEEP_MONTHS: ${BACKUP_KEEP_MONTHS}
+      HEALTHCHECK_PORT: 8080
+    volumes:
+      - ./backups:/backups
+    networks:
+      - caissecash-erp-net
+
+networks:
+  caissecash-erp-net:
+    name: caissecash-erp-net
+    driver: bridge
+    # Reseau dedie, distinct de celui du monorepo caisse-cash existant :
+    # aucune connexion directe entre les deux stacks/bases de donnees.
+
+volumes:
+  odoo-erp-db-data:
+    name: caissecash-erp-db-data
+  odoo-erp-filestore:
+    name: caissecash-erp-filestore
+  odoo-erp-logs:
+    name: caissecash-erp-logs

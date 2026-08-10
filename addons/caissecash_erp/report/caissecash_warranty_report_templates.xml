@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="report_caissecash_warranty_document">
+        <t t-call="web.external_layout">
+            <t t-foreach="docs" t-as="o">
+                <div class="page">
+                    <style>
+                        .cc-title { color: #0B1F3A; font-weight: bold; font-size: 20px; margin-bottom: 4px; }
+                        .cc-subtitle { color: #F28C28; font-weight: bold; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+                        .cc-band { background-color: #F8FAFC; border-left: 4px solid #F28C28; padding: 8px 12px; margin: 12px 0; }
+                    </style>
+
+                    <div class="cc-subtitle">CaisseCash</div>
+                    <div class="cc-title">Fiche de garantie — <span t-field="o.name"/></div>
+
+                    <div class="cc-band row">
+                        <div class="col-6">
+                            <strong>Client :</strong> <span t-field="o.partner_id.name"/><br/>
+                            <strong>Établissement :</strong> <span t-field="o.establishment_id.name"/>
+                        </div>
+                        <div class="col-6">
+                            <strong>Produit :</strong> <span t-field="o.equipment_id.product_id.display_name"/><br/>
+                            <strong>Numéro de série :</strong> <span t-field="o.lot_id.name"/>
+                        </div>
+                    </div>
+
+                    <table class="table">
+                        <tr><td><strong>Type de garantie</strong></td><td><span t-field="o.warranty_type"/></td></tr>
+                        <tr><td><strong>Date de début</strong></td><td><span t-field="o.date_start"/></td></tr>
+                        <tr><td><strong>Durée</strong></td><td><span t-field="o.duration_months"/> mois</td></tr>
+                        <tr><td><strong>Date de fin</strong></td><td><span t-field="o.date_end"/></td></tr>
+                        <tr><td><strong>Statut</strong></td><td><span t-field="o.state"/></td></tr>
+                    </table>
+
+                    <h4>Conditions</h4>
+                    <p t-field="o.conditions">
+                        Conditions de garantie standard CaisseCash — à compléter dans les paramètres de l'entreprise.
+                    </p>
+
+                    <p class="text-muted" style="margin-top: 24px; font-size: 10px;">
+                        Cette garantie couvre les défauts matériels dans les conditions normales d'utilisation.
+                        Elle ne couvre pas les dommages liés à une mauvaise manipulation, une coupure électrique
+                        non protégée ou une intervention par un tiers non autorisé par CaisseCash.
+                    </p>
+                </div>
+            </t>
+        </t>
+    </template>
+
+</odoo>

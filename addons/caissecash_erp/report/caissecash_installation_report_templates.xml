@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="report_caissecash_installation_document">
+        <t t-call="web.external_layout">
+            <t t-foreach="docs" t-as="o">
+                <div class="page">
+                    <style>
+                        .cc-title { color: #0B1F3A; font-weight: bold; font-size: 20px; margin-bottom: 4px; }
+                        .cc-subtitle { color: #F28C28; font-weight: bold; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+                        .cc-band { background-color: #F8FAFC; border-left: 4px solid #F28C28; padding: 8px 12px; margin: 12px 0; }
+                        .cc-table th { background-color: #0B1F3A; color: #FFFFFF; padding: 6px 8px; text-align: left; }
+                        .cc-table td { padding: 6px 8px; border-bottom: 1px solid #E5E7EB; }
+                        .cc-sign-box { border: 1px solid #0B1F3A; min-height: 90px; padding: 8px; margin-top: 8px; }
+                    </style>
+
+                    <div class="cc-subtitle">CaisseCash</div>
+                    <div class="cc-title">Fiche d'installation — <span t-field="o.name"/></div>
+
+                    <div class="cc-band row">
+                        <div class="col-6">
+                            <strong>Client :</strong> <span t-field="o.partner_id.name"/><br/>
+                            <strong>Établissement :</strong> <span t-field="o.establishment_id.name"/><br/>
+                            <strong>Adresse :</strong> <span t-field="o.address"/>
+                        </div>
+                        <div class="col-6">
+                            <strong>Date prévue :</strong> <span t-field="o.date_planned"/><br/>
+                            <strong>Créneau :</strong> <span t-field="o.time_slot"/><br/>
+                            <strong>Technicien :</strong> <span t-field="o.technician_id.name"/><br/>
+                            <strong>Statut :</strong> <span t-field="o.state"/>
+                        </div>
+                    </div>
+
+                    <h4>Matériel installé</h4>
+                    <table class="table cc-table">
+                        <thead>
+                            <tr><th>Produit</th><th>Numéro de série</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="o.equipment_ids" t-as="equip">
+                                <td><span t-field="equip.product_id.display_name"/></td>
+                                <td><span t-field="equip.lot_id.name"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h4>Logiciels activés</h4>
+                    <p>
+                        <span t-esc="', '.join(o.software_module_ids.mapped('name')) or '—'"/>
+                    </p>
+
+                    <h4>Checklist</h4>
+                    <div t-field="o.checklist"/>
+
+                    <h4>Tests effectués</h4>
+                    <p t-field="o.tests_done"/>
+
+                    <h4>Formation réalisée</h4>
+                    <p>
+                        <span t-if="o.training_done">Oui — une formation à l'utilisation a été dispensée sur place.</span>
+                        <span t-if="not o.training_done">Non</span>
+                    </p>
+
+                    <h4>Remarques</h4>
+                    <p t-field="o.observations"/>
+
+                    <div class="row" style="margin-top: 24px;">
+                        <div class="col-6">
+                            <strong>Signature technicien</strong>
+                            <div class="cc-sign-box"/>
+                        </div>
+                        <div class="col-6">
+                            <strong>Validation client</strong>
+                            <div class="cc-sign-box">
+                                <span t-if="o.customer_validated">Installation validée par le client.</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <p class="text-muted" style="margin-top: 16px; font-size: 10px;">
+                        Conditions de garantie et conditions générales applicables : voir configuration de la société.
+                    </p>
+                </div>
+            </t>
+        </t>
+    </template>
+
+</odoo>

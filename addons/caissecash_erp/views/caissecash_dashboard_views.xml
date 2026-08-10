@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_caissecash_dashboard_form" model="ir.ui.view">
+        <field name="name">caissecash.dashboard.form</field>
+        <field name="model">caissecash.dashboard</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_refresh" type="object" string="Actualiser" class="oe_highlight"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_expense_graph" type="object" class="oe_stat_button" icon="fa-bar-chart">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Graphique Dépenses</span>
+                            </div>
+                        </button>
+                        <button name="action_view_invoice_graph" type="object" class="oe_stat_button" icon="fa-line-chart">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Graphique Facturation</span>
+                            </div>
+                        </button>
+                        <button name="action_view_value_graph" type="object" class="oe_stat_button" icon="fa-area-chart">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Valeur de l'entreprise</span>
+                            </div>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1>Tableau de bord — Résultat</h1>
+                        <p class="text-muted">
+                            Vue simplifiée, recalculée à chaque ouverture. Ne remplace pas un
+                            compte de résultat officiel établi par le comptable.
+                        </p>
+                    </div>
+                    <field name="currency_id" invisible="1"/>
+                    <group string="Facturation clients">
+                        <group>
+                            <field name="total_invoiced"/>
+                            <field name="total_paid"/>
+                        </group>
+                        <group>
+                            <field name="total_unpaid" class="text-danger"/>
+                            <field name="unpaid_invoice_count"/>
+                        </group>
+                    </group>
+                    <group string="Dépenses et achats">
+                        <group>
+                            <field name="total_expenses"/>
+                        </group>
+                        <group>
+                            <field name="total_purchases"/>
+                        </group>
+                    </group>
+                    <group string="Résultat">
+                        <field name="result" class="fw-bolder" style="font-size: 1.5em;"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_caissecash_dashboard" model="ir.actions.act_window">
+        <field name="name">Tableau de bord — Résultat</field>
+        <field name="res_model">caissecash.dashboard</field>
+        <field name="view_mode">form</field>
+        <field name="target">current</field>
+    </record>
+
+    <menuitem id="menu_caissecash_dashboard" name="Tableau de bord" parent="menu_caissecash_root"
+              action="action_caissecash_dashboard" sequence="1"
+              groups="caissecash_erp.group_comptabilite,caissecash_erp.group_direction,caissecash_erp.group_admin"/>
+
+</odoo>

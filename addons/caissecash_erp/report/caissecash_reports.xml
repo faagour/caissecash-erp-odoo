@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Devis, commande, facture, avoir, bon de livraison, reçu : utilisent déjà
+         les rapports QWeb natifs Odoo (Ventes/Facturation/Inventaire), qui
+         reprennent automatiquement le logo et les couleurs configurés dans
+         Réglages > Sociétés — aucun rapport custom nécessaire pour ceux-là. -->
+
+    <record id="action_report_caissecash_installation" model="ir.actions.report">
+        <field name="name">Fiche d'installation</field>
+        <field name="model">caissecash.installation</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">caissecash_erp.report_caissecash_installation_document</field>
+        <field name="report_file">caissecash_erp.report_caissecash_installation_document</field>
+        <field name="print_report_name">'Fiche installation - %s' % (object.name)</field>
+        <field name="binding_model_id" ref="model_caissecash_installation"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <record id="action_report_caissecash_warranty" model="ir.actions.report">
+        <field name="name">Fiche de garantie</field>
+        <field name="model">caissecash.warranty</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">caissecash_erp.report_caissecash_warranty_document</field>
+        <field name="report_file">caissecash_erp.report_caissecash_warranty_document</field>
+        <field name="print_report_name">'Garantie - %s' % (object.name)</field>
+        <field name="binding_model_id" ref="model_caissecash_warranty"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <record id="action_report_caissecash_sav_ticket" model="ir.actions.report">
+        <field name="name">Fiche d'intervention SAV</field>
+        <field name="model">caissecash.sav.ticket</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">caissecash_erp.report_caissecash_sav_ticket_document</field>
+        <field name="report_file">caissecash_erp.report_caissecash_sav_ticket_document</field>
+        <field name="print_report_name">'Fiche SAV - %s' % (object.name)</field>
+        <field name="binding_model_id" ref="model_caissecash_sav_ticket"/>
+        <field name="binding_type">report</field>
+    </record>
+
+</odoo>

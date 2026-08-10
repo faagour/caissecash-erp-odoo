@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_caissecash_establishment_tree" model="ir.ui.view">
+        <field name="name">caissecash.establishment.tree</field>
+        <field name="model">caissecash.establishment</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="city"/>
+                <field name="technician_id"/>
+                <field name="equipment_count"/>
+                <field name="state" widget="badge"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_caissecash_establishment_form" model="ir.ui.view">
+        <field name="name">caissecash.establishment.form</field>
+        <field name="model">caissecash.establishment</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,active"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="%(action_caissecash_equipment)d" type="action" class="oe_stat_button" icon="fa-cubes"
+                                context="{'search_default_establishment_id': id}">
+                            <field name="equipment_count" widget="statinfo" string="Équipements"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="Nom commercial de l'établissement"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="partner_id"/>
+                            <field name="street"/>
+                            <field name="city"/>
+                        </group>
+                        <group>
+                            <field name="contact_name"/>
+                            <field name="phone"/>
+                            <field name="technician_id"/>
+                            <field name="commissioning_date"/>
+                        </group>
+                    </group>
+                    <group string="Modules CaisseCash / horaires">
+                        <field name="software_module_ids" widget="many2many_tags"/>
+                        <field name="opening_hours"/>
+                    </group>
+                    <notebook>
+                        <page string="Matériel installé">
+                            <field name="equipment_ids">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="lot_id"/>
+                                    <field name="install_date"/>
+                                    <field name="sav_status"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_caissecash_establishment" model="ir.actions.act_window">
+        <field name="name">Établissements</field>
+        <field name="res_model">caissecash.establishment</field>
+        <field name="view_mode">list,form,pivot,graph</field>
+        <field name="help" type="html"><p class="o_view_nocontent_smiling_face">Créez le premier établissement client</p></field>
+    </record>
+
+</odoo>

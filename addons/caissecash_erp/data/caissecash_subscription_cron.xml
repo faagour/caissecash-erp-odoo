@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+
+    <!-- Interrupteur global : mettre a "False" pour desactiver la generation
+         automatique de factures d'abonnement sans desinstaller le cron
+         (cf. cahier des charges : "possibilité de désactivation"). -->
+    <record id="config_parameter_subscription_cron_active" model="ir.config_parameter">
+        <field name="key">caissecash_erp.subscription_cron_active</field>
+        <field name="value">True</field>
+    </record>
+
+    <record id="ir_cron_generate_subscription_invoices" model="ir.cron">
+        <field name="name">CaisseCash : préparation des factures d'abonnement récurrentes</field>
+        <field name="model_id" ref="model_caissecash_subscription"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_generate_subscription_invoices()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active" eval="True"/>
+    </record>
+
+</odoo>

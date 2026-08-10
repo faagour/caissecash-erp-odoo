@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+
+    <!-- Le catalogue des modules logiciels (module_pos, module_kds, ...) vit
+         maintenant dans data/caissecash_software_module_data.xml (donnée
+         permanente, pas de la démo). Ce fichier ne contient que le scénario
+         de démonstration fictif (client, établissement, équipement...). -->
+
+    <!-- Produits de démonstration (aucun prix commercial définitif : valeurs indicatives) -->
+    <record id="demo_product_pos_touch" model="product.product">
+        <field name="name">Caisse tactile CaisseCash</field>
+        <field name="type">consu</field>
+        <field name="tracking">serial</field>
+        <field name="list_price">0.0</field>
+        <field name="categ_id" ref="product.product_category_goods"/>
+    </record>
+    <record id="demo_product_printer" model="product.product">
+        <field name="name">Imprimante thermique</field>
+        <field name="type">consu</field>
+        <field name="tracking">serial</field>
+        <field name="list_price">0.0</field>
+        <field name="categ_id" ref="product.product_category_goods"/>
+    </record>
+    <record id="demo_product_pack_complet" model="product.product">
+        <field name="name">Abonnement — Pack complet</field>
+        <field name="type">service</field>
+        <field name="list_price">0.0</field>
+        <field name="categ_id" ref="product.product_category_services"/>
+    </record>
+
+    <!-- Client et établissement de démonstration -->
+    <record id="demo_partner_snack" model="res.partner">
+        <field name="name">Snack Al Baraka</field>
+        <field name="is_company">True</field>
+        <field name="city">Casablanca</field>
+        <field name="country_id" ref="base.ma"/>
+    </record>
+
+    <record id="demo_establishment_1" model="caissecash.establishment">
+        <field name="name">Snack Al Baraka — Maarif</field>
+        <field name="partner_id" ref="demo_partner_snack"/>
+        <field name="city">Casablanca</field>
+        <field name="contact_name">Youssef Amrani</field>
+        <field name="phone">+212 6 00 00 00 00</field>
+        <field name="commissioning_date" eval="datetime.now().strftime('%Y-%m-%d')"/>
+        <field name="state">active</field>
+        <field name="software_module_ids" eval="[(6, 0, [ref('module_pos'), ref('module_kds')])]"/>
+    </record>
+
+    <record id="demo_lot_pos_1" model="stock.lot">
+        <field name="name">CC-POS-0001</field>
+        <field name="product_id" ref="demo_product_pos_touch"/>
+    </record>
+
+    <record id="demo_equipment_1" model="caissecash.equipment">
+        <field name="product_id" ref="demo_product_pos_touch"/>
+        <field name="lot_id" ref="demo_lot_pos_1"/>
+        <field name="customer_id" ref="demo_partner_snack"/>
+        <field name="establishment_id" ref="demo_establishment_1"/>
+        <field name="install_date" eval="datetime.now().strftime('%Y-%m-%d')"/>
+        <field name="sav_status">en_service</field>
+    </record>
+
+    <record id="demo_warranty_1" model="caissecash.warranty">
+        <field name="equipment_id" ref="demo_equipment_1"/>
+        <field name="date_start" eval="datetime.now().strftime('%Y-%m-%d')"/>
+        <field name="duration_months">24</field>
+        <field name="warranty_type">standard</field>
+    </record>
+
+    <record id="demo_installation_1" model="caissecash.installation">
+        <field name="name">Installation — Snack Al Baraka Maarif</field>
+        <field name="partner_id" ref="demo_partner_snack"/>
+        <field name="establishment_id" ref="demo_establishment_1"/>
+        <field name="equipment_ids" eval="[(6, 0, [ref('demo_equipment_1')])]"/>
+        <field name="software_module_ids" eval="[(6, 0, [ref('module_pos'), ref('module_kds')])]"/>
+        <field name="date_planned" eval="datetime.now().strftime('%Y-%m-%d %H:%M:%S')"/>
+        <field name="state">terminee</field>
+        <field name="training_done">True</field>
+        <field name="customer_validated">True</field>
+    </record>
+
+    <record id="demo_sav_ticket_1" model="caissecash.sav.ticket">
+        <field name="partner_id" ref="demo_partner_snack"/>
+        <field name="establishment_id" ref="demo_establishment_1"/>
+        <field name="equipment_id" ref="demo_equipment_1"/>
+        <field name="category">materiel</field>
+        <field name="priority">1</field>
+        <field name="description">L'imprimante de cuisine ne répond plus après une coupure de courant.</field>
+        <field name="state">nouveau</field>
+    </record>
+
+    <record id="demo_subscription_1" model="caissecash.subscription">
+        <field name="partner_id" ref="demo_partner_snack"/>
+        <field name="establishment_id" ref="demo_establishment_1"/>
+        <field name="product_id" ref="demo_product_pack_complet"/>
+        <field name="software_module_ids" eval="[(6, 0, [ref('module_pos'), ref('module_kds'), ref('module_dashboard')])]"/>
+        <field name="periodicity">monthly</field>
+        <field name="amount">0.0</field>
+        <field name="date_start" eval="datetime.now().strftime('%Y-%m-%d')"/>
+        <field name="next_invoice_date" eval="datetime.now().strftime('%Y-%m-%d')"/>
+        <field name="state">actif</field>
+        <field name="payment_mode">virement</field>
+    </record>
+
+</odoo>

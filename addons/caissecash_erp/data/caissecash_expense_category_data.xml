@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+
+    <!-- Catégories de dépenses de départ (cahier des charges §12).
+         Librement renommables/désactivables/ajoutables par l'utilisateur. -->
+
+    <!-- Charges fixes -->
+    <record id="expense_cat_loyer" model="caissecash.expense.category"><field name="name">Loyer du local</field><field name="expense_group">fixe</field><field name="sequence">10</field></record>
+    <record id="expense_cat_eau" model="caissecash.expense.category"><field name="name">Eau</field><field name="expense_group">fixe</field><field name="sequence">20</field></record>
+    <record id="expense_cat_electricite" model="caissecash.expense.category"><field name="name">Électricité</field><field name="expense_group">fixe</field><field name="sequence">30</field></record>
+    <record id="expense_cat_internet" model="caissecash.expense.category"><field name="name">Internet</field><field name="expense_group">fixe</field><field name="sequence">40</field></record>
+    <record id="expense_cat_telephone" model="caissecash.expense.category"><field name="name">Téléphone</field><field name="expense_group">fixe</field><field name="sequence">50</field></record>
+    <record id="expense_cat_vps" model="caissecash.expense.category"><field name="name">VPS et hébergement</field><field name="expense_group">fixe</field><field name="sequence">60</field></record>
+    <record id="expense_cat_logiciels" model="caissecash.expense.category"><field name="name">Logiciels</field><field name="expense_group">fixe</field><field name="sequence">70</field></record>
+    <record id="expense_cat_comptabilite" model="caissecash.expense.category"><field name="name">Comptabilité</field><field name="expense_group">fixe</field><field name="sequence">80</field></record>
+    <record id="expense_cat_assurance" model="caissecash.expense.category"><field name="name">Assurance</field><field name="expense_group">fixe</field><field name="sequence">90</field></record>
+    <record id="expense_cat_frais_bancaires" model="caissecash.expense.category"><field name="name">Frais bancaires</field><field name="expense_group">fixe</field><field name="sequence">100</field></record>
+
+    <!-- Personnel -->
+    <record id="expense_cat_gratification" model="caissecash.expense.category"><field name="name">Gratification de stage</field><field name="expense_group">personnel</field><field name="sequence">10</field></record>
+    <record id="expense_cat_salaires" model="caissecash.expense.category"><field name="name">Salaires</field><field name="expense_group">personnel</field><field name="sequence">20</field></record>
+    <record id="expense_cat_charges_sociales" model="caissecash.expense.category"><field name="name">Charges sociales</field><field name="expense_group">personnel</field><field name="sequence">30</field></record>
+    <record id="expense_cat_deplacements_personnel" model="caissecash.expense.category"><field name="name">Déplacements</field><field name="expense_group">personnel</field><field name="sequence">40</field></record>
+    <record id="expense_cat_repas" model="caissecash.expense.category"><field name="name">Repas</field><field name="expense_group">personnel</field><field name="sequence">50</field></record>
+    <record id="expense_cat_materiel_travail" model="caissecash.expense.category"><field name="name">Matériel de travail</field><field name="expense_group">personnel</field><field name="sequence">60</field></record>
+
+    <!-- Charges variables -->
+    <record id="expense_cat_carburant" model="caissecash.expense.category"><field name="name">Carburant</field><field name="expense_group">variable</field><field name="sequence">10</field></record>
+    <record id="expense_cat_transport" model="caissecash.expense.category"><field name="name">Transport</field><field name="expense_group">variable</field><field name="sequence">20</field></record>
+    <record id="expense_cat_livraison" model="caissecash.expense.category"><field name="name">Livraison</field><field name="expense_group">variable</field><field name="sequence">30</field></record>
+    <record id="expense_cat_publicite" model="caissecash.expense.category"><field name="name">Publicité</field><field name="expense_group">variable</field><field name="sequence">40</field></record>
+    <record id="expense_cat_impression" model="caissecash.expense.category"><field name="name">Impression</field><field name="expense_group">variable</field><field name="sequence">50</field></record>
+    <record id="expense_cat_fournitures" model="caissecash.expense.category"><field name="name">Fournitures</field><field name="expense_group">variable</field><field name="sequence">60</field></record>
+    <record id="expense_cat_reparation" model="caissecash.expense.category"><field name="name">Réparation</field><field name="expense_group">variable</field><field name="sequence">70</field></record>
+    <record id="expense_cat_douane" model="caissecash.expense.category"><field name="name">Douane</field><field name="expense_group">variable</field><field name="sequence">80</field></record>
+    <record id="expense_cat_commissions" model="caissecash.expense.category"><field name="name">Commissions</field><field name="expense_group">variable</field><field name="sequence">90</field></record>
+    <record id="expense_cat_deplacement_client" model="caissecash.expense.category"><field name="name">Déplacement client</field><field name="expense_group">variable</field><field name="sequence">100</field></record>
+    <record id="expense_cat_divers" model="caissecash.expense.category"><field name="name">Frais divers</field><field name="expense_group">variable</field><field name="sequence">110</field></record>
+
+</odoo>

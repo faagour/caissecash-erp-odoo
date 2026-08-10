@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_caissecash_sav_ticket_tree" model="ir.ui.view">
+        <field name="name">caissecash.sav.ticket.tree</field>
+        <field name="model">caissecash.sav.ticket</field>
+        <field name="arch" type="xml">
+            <list decoration-danger="priority == '3'" decoration-warning="priority == '2'">
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="equipment_id"/>
+                <field name="technician_id"/>
+                <field name="priority" widget="priority"/>
+                <field name="date_open"/>
+                <field name="state" widget="badge"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_caissecash_sav_ticket_kanban" model="ir.ui.view">
+        <field name="name">caissecash.sav.ticket.kanban</field>
+        <field name="model">caissecash.sav.ticket</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="state">
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="priority"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_card oe_kanban_global_click">
+                            <strong><field name="name"/></strong>
+                            <div><field name="partner_id"/></div>
+                            <field name="priority" widget="priority"/>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="view_caissecash_sav_ticket_form" model="ir.ui.view">
+        <field name="name">caissecash.sav.ticket.form</field>
+        <field name="model">caissecash.sav.ticket</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="nouveau,diagnostic,planifie,en_cours,resolu,ferme"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="partner_id"/>
+                            <field name="contact_name"/>
+                            <field name="establishment_id" domain="[('partner_id', '=', partner_id)]"/>
+                            <field name="equipment_id"/>
+                            <field name="warranty_id"/>
+                            <field name="under_warranty"/>
+                            <field name="billable"/>
+                        </group>
+                        <group>
+                            <field name="category"/>
+                            <field name="priority" widget="priority"/>
+                            <field name="technician_id"/>
+                            <field name="date_open"/>
+                            <field name="time_spent"/>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="cost"/>
+                        </group>
+                    </group>
+                    <field name="description" placeholder="Description du problème..."/>
+                    <notebook>
+                        <page string="Diagnostic et actions">
+                            <field name="diagnostic" placeholder="Diagnostic..."/>
+                            <field name="actions_taken" placeholder="Actions réalisées..."/>
+                        </page>
+                        <page string="Pièces utilisées">
+                            <field name="part_ids">
+                                <list editable="bottom">
+                                    <field name="product_id"/>
+                                    <field name="quantity"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Solution">
+                            <field name="resolution"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_caissecash_sav_ticket" model="ir.actions.act_window">
+        <field name="name">Tickets SAV</field>
+        <field name="res_model">caissecash.sav.ticket</field>
+        <field name="view_mode">kanban,list,form,pivot,graph</field>
+        <field name="help" type="html"><p class="o_view_nocontent_smiling_face">Ouvrez le premier ticket SAV</p></field>
+    </record>
+
+</odoo>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_caissecash_financial_snapshot_graph" model="ir.ui.view">
+        <field name="name">caissecash.financial.snapshot.graph</field>
+        <field name="model">caissecash.financial.snapshot</field>
+        <field name="arch" type="xml">
+            <graph type="line" string="Valeur de l'entreprise dans le temps">
+                <field name="date" type="row" interval="day"/>
+                <field name="cumulative_result" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="view_caissecash_financial_snapshot_list" model="ir.ui.view">
+        <field name="name">caissecash.financial.snapshot.list</field>
+        <field name="model">caissecash.financial.snapshot</field>
+        <field name="arch" type="xml">
+            <list default_order="date">
+                <field name="date"/>
+                <field name="label"/>
+                <field name="day_amount"/>
+                <field name="cumulative_result"/>
+            </list>
+        </field>
+    </record>
+
+</odoo>

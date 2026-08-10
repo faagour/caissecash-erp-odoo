@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+
+    <!-- Catalogue des modules logiciels CaisseCash. Donnée de référence permanente
+         (pas de la démo) : doit exister dans tout déploiement, même sans démo. -->
+    <record id="module_pos" model="caissecash.software.module"><field name="name">POS</field><field name="code">pos</field><field name="sequence">10</field></record>
+    <record id="module_kds" model="caissecash.software.module"><field name="name">KDS</field><field name="code">kds</field><field name="sequence">20</field></record>
+    <record id="module_kiosk" model="caissecash.software.module"><field name="name">Kiosk</field><field name="code">kiosk</field><field name="sequence">30</field></record>
+    <record id="module_waiter" model="caissecash.software.module"><field name="name">Waiter App</field><field name="code">waiter</field><field name="sequence">40</field></record>
+    <record id="module_dashboard" model="caissecash.software.module"><field name="name">Dashboard</field><field name="code">dashboard</field><field name="sequence">50</field></record>
+    <record id="module_admin" model="caissecash.software.module"><field name="name">Admin Panel</field><field name="code">admin</field><field name="sequence">60</field></record>
+
+</odoo>

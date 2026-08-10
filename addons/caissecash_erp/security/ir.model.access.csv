@@ -1,0 +1,89 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+
+access_establishment_admin,caissecash.establishment admin,model_caissecash_establishment,group_admin,1,1,1,1
+access_establishment_direction,caissecash.establishment direction,model_caissecash_establishment,group_direction,1,1,1,0
+access_establishment_commercial,caissecash.establishment commercial,model_caissecash_establishment,group_commercial,1,1,1,0
+access_establishment_stock,caissecash.establishment stock,model_caissecash_establishment,group_stock,1,0,0,0
+access_establishment_technicien,caissecash.establishment technicien,model_caissecash_establishment,group_technicien,1,0,0,0
+access_establishment_comptabilite,caissecash.establishment comptabilite,model_caissecash_establishment,group_comptabilite,1,0,0,0
+
+access_equipment_admin,caissecash.equipment admin,model_caissecash_equipment,group_admin,1,1,1,1
+access_equipment_direction,caissecash.equipment direction,model_caissecash_equipment,group_direction,1,1,1,0
+access_equipment_commercial,caissecash.equipment commercial,model_caissecash_equipment,group_commercial,1,0,0,0
+access_equipment_stock,caissecash.equipment stock,model_caissecash_equipment,group_stock,1,1,1,0
+access_equipment_technicien,caissecash.equipment technicien,model_caissecash_equipment,group_technicien,1,0,0,0
+
+access_installation_admin,caissecash.installation admin,model_caissecash_installation,group_admin,1,1,1,1
+access_installation_direction,caissecash.installation direction,model_caissecash_installation,group_direction,1,1,1,0
+access_installation_commercial,caissecash.installation commercial,model_caissecash_installation,group_commercial,1,0,0,0
+access_installation_stock,caissecash.installation stock,model_caissecash_installation,group_stock,1,0,0,0
+access_installation_technicien,caissecash.installation technicien,model_caissecash_installation,group_technicien,1,1,0,0
+
+access_warranty_admin,caissecash.warranty admin,model_caissecash_warranty,group_admin,1,1,1,1
+access_warranty_direction,caissecash.warranty direction,model_caissecash_warranty,group_direction,1,1,1,0
+access_warranty_commercial,caissecash.warranty commercial,model_caissecash_warranty,group_commercial,1,0,0,0
+access_warranty_stock,caissecash.warranty stock,model_caissecash_warranty,group_stock,1,1,1,0
+access_warranty_technicien,caissecash.warranty technicien,model_caissecash_warranty,group_technicien,1,0,0,0
+
+access_sav_ticket_admin,caissecash.sav.ticket admin,model_caissecash_sav_ticket,group_admin,1,1,1,1
+access_sav_ticket_direction,caissecash.sav.ticket direction,model_caissecash_sav_ticket,group_direction,1,1,1,0
+access_sav_ticket_commercial,caissecash.sav.ticket commercial,model_caissecash_sav_ticket,group_commercial,1,0,0,0
+access_sav_ticket_stock,caissecash.sav.ticket stock,model_caissecash_sav_ticket,group_stock,1,0,0,0
+access_sav_ticket_technicien,caissecash.sav.ticket technicien,model_caissecash_sav_ticket,group_technicien,1,1,1,0
+
+access_sav_ticket_part_admin,caissecash.sav.ticket.part admin,model_caissecash_sav_ticket_part,group_admin,1,1,1,1
+access_sav_ticket_part_direction,caissecash.sav.ticket.part direction,model_caissecash_sav_ticket_part,group_direction,1,1,1,0
+access_sav_ticket_part_stock,caissecash.sav.ticket.part stock,model_caissecash_sav_ticket_part,group_stock,1,1,1,0
+access_sav_ticket_part_technicien,caissecash.sav.ticket.part technicien,model_caissecash_sav_ticket_part,group_technicien,1,1,1,0
+
+access_subscription_admin,caissecash.subscription admin,model_caissecash_subscription,group_admin,1,1,1,1
+access_subscription_direction,caissecash.subscription direction,model_caissecash_subscription,group_direction,1,1,1,0
+access_subscription_commercial,caissecash.subscription commercial,model_caissecash_subscription,group_commercial,1,1,1,0
+access_subscription_comptabilite,caissecash.subscription comptabilite,model_caissecash_subscription,group_comptabilite,1,1,0,0
+
+access_subscription_log_admin,caissecash.subscription.invoice.log admin,model_caissecash_subscription_invoice_log,group_admin,1,1,1,1
+access_subscription_log_direction,caissecash.subscription.invoice.log direction,model_caissecash_subscription_invoice_log,group_direction,1,0,0,0
+access_subscription_log_commercial,caissecash.subscription.invoice.log commercial,model_caissecash_subscription_invoice_log,group_commercial,1,0,0,0
+access_subscription_log_comptabilite,caissecash.subscription.invoice.log comptabilite,model_caissecash_subscription_invoice_log,group_comptabilite,1,0,0,0
+
+access_software_module_admin,caissecash.software.module admin,model_caissecash_software_module,group_admin,1,1,1,1
+access_software_module_direction,caissecash.software.module direction,model_caissecash_software_module,group_direction,1,1,1,0
+access_software_module_commercial,caissecash.software.module commercial,model_caissecash_software_module,group_commercial,1,0,0,0
+access_software_module_stock,caissecash.software.module stock,model_caissecash_software_module,group_stock,1,0,0,0
+access_software_module_technicien,caissecash.software.module technicien,model_caissecash_software_module,group_technicien,1,0,0,0
+access_software_module_comptabilite,caissecash.software.module comptabilite,model_caissecash_software_module,group_comptabilite,1,0,0,0
+
+access_establishment_stagiaire,caissecash.establishment stagiaire,model_caissecash_establishment,group_stagiaire,1,0,0,0
+access_equipment_stagiaire,caissecash.equipment stagiaire,model_caissecash_equipment,group_stagiaire,1,0,0,0
+access_installation_stagiaire,caissecash.installation stagiaire,model_caissecash_installation,group_stagiaire,1,1,0,0
+access_warranty_stagiaire,caissecash.warranty stagiaire,model_caissecash_warranty,group_stagiaire,1,0,0,0
+access_sav_ticket_stagiaire,caissecash.sav.ticket stagiaire,model_caissecash_sav_ticket,group_stagiaire,1,1,1,0
+access_sav_ticket_part_stagiaire,caissecash.sav.ticket.part stagiaire,model_caissecash_sav_ticket_part,group_stagiaire,1,1,1,0
+access_software_module_stagiaire,caissecash.software.module stagiaire,model_caissecash_software_module,group_stagiaire,1,0,0,0
+
+access_founder_admin,caissecash.founder admin,model_caissecash_founder,group_admin,1,1,1,1
+access_founder_direction,caissecash.founder direction,model_caissecash_founder,group_direction,1,1,1,0
+access_founder_finance,caissecash.founder finance,model_caissecash_founder,group_comptabilite,1,1,1,0
+
+access_founder_movement_admin,caissecash.founder.movement admin,model_caissecash_founder_movement,group_admin,1,1,1,1
+access_founder_movement_direction,caissecash.founder.movement direction,model_caissecash_founder_movement,group_direction,1,1,1,0
+access_founder_movement_finance,caissecash.founder.movement finance,model_caissecash_founder_movement,group_comptabilite,1,1,1,0
+
+access_expense_admin,caissecash.expense admin,model_caissecash_expense,group_admin,1,1,1,1
+access_expense_direction,caissecash.expense direction,model_caissecash_expense,group_direction,1,1,1,0
+access_expense_finance,caissecash.expense finance,model_caissecash_expense,group_comptabilite,1,1,1,0
+
+access_expense_category_admin,caissecash.expense.category admin,model_caissecash_expense_category,group_admin,1,1,1,1
+access_expense_category_direction,caissecash.expense.category direction,model_caissecash_expense_category,group_direction,1,1,1,0
+access_expense_category_finance,caissecash.expense.category finance,model_caissecash_expense_category,group_comptabilite,1,1,1,0
+
+access_onboarding_step_admin,caissecash.onboarding.step admin,model_caissecash_onboarding_step,group_admin,1,1,1,1
+access_onboarding_step_direction,caissecash.onboarding.step direction,model_caissecash_onboarding_step,group_direction,1,1,0,0
+
+access_dashboard_admin,caissecash.dashboard admin,model_caissecash_dashboard,group_admin,1,1,1,1
+access_dashboard_direction,caissecash.dashboard direction,model_caissecash_dashboard,group_direction,1,1,1,1
+access_dashboard_finance,caissecash.dashboard finance,model_caissecash_dashboard,group_comptabilite,1,1,1,1
+
+access_financial_snapshot_admin,caissecash.financial.snapshot admin,model_caissecash_financial_snapshot,group_admin,1,1,1,1
+access_financial_snapshot_direction,caissecash.financial.snapshot direction,model_caissecash_financial_snapshot,group_direction,1,0,0,0
+access_financial_snapshot_finance,caissecash.financial.snapshot finance,model_caissecash_financial_snapshot,group_comptabilite,1,0,0,0

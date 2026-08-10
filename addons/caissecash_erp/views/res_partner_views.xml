@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_partner_form_inherit_caissecash" model="ir.ui.view">
+        <field name="name">res.partner.form.inherit.caissecash</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page name="caissecash_info" string="Informations CaisseCash">
+                    <group>
+                        <group string="Identité commerciale">
+                            <field name="commercial_name"/>
+                            <field name="responsable_name"/>
+                            <field name="whatsapp"/>
+                            <field name="business_type"/>
+                        </group>
+                        <group string="Identifiants légaux">
+                            <field name="ice"/>
+                            <field name="identifiant_fiscal"/>
+                            <field name="rc"/>
+                            <field name="taxe_professionnelle"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="source_id"/>
+                    </group>
+                    <field name="establishment_ids" nolabel="1" context="{'default_partner_id': id}">
+                        <list>
+                            <field name="name"/>
+                            <field name="city"/>
+                            <field name="state"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

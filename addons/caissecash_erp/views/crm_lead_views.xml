@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="crm_lead_view_form_inherit_caissecash" model="ir.ui.view">
+        <field name="name">crm.lead.form.inherit.caissecash</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_lead_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page name="caissecash_info" string="Informations CaisseCash">
+                    <group>
+                        <group string="Identifiants légaux">
+                            <field name="ice"/>
+                            <field name="identifiant_fiscal"/>
+                            <field name="rc"/>
+                        </group>
+                        <group string="Contact">
+                            <field name="whatsapp"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Besoin exprimé">
+                            <field name="business_type"/>
+                            <field name="pos_count"/>
+                        </group>
+                        <group string="Solution demandée">
+                            <field name="requested_module_ids" widget="many2many_tags" nolabel="1" colspan="2"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_caissecash_subscription_tree" model="ir.ui.view">
+        <field name="name">caissecash.subscription.tree</field>
+        <field name="model">caissecash.subscription</field>
+        <field name="arch" type="xml">
+            <list decoration-danger="state == 'impaye'" decoration-muted="state in ('resilie','expire')">
+                <field name="currency_id" column_invisible="1"/>
+                <field name="partner_id"/>
+                <field name="product_id"/>
+                <field name="periodicity"/>
+                <field name="amount"/>
+                <field name="next_invoice_date"/>
+                <field name="state" widget="badge"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_caissecash_subscription_form" model="ir.ui.view">
+        <field name="name">caissecash.subscription.form</field>
+        <field name="model">caissecash.subscription</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <field name="state" widget="statusbar" statusbar_visible="essai,actif,resilie"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_invoices" type="object" class="oe_stat_button" icon="fa-file-text-o">
+                            <field name="invoice_ids" widget="statinfo" string="Factures"/>
+                        </button>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="partner_id"/>
+                            <field name="establishment_id" domain="[('partner_id', '=', partner_id)]"/>
+                            <field name="product_id"/>
+                            <field name="software_module_ids" widget="many2many_tags"/>
+                        </group>
+                        <group>
+                            <field name="periodicity"/>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="amount"/>
+                            <field name="date_start"/>
+                            <field name="next_invoice_date"/>
+                            <field name="date_end"/>
+                            <field name="payment_mode"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Historique de facturation">
+                            <field name="invoice_log_ids">
+                                <list>
+                                    <field name="period_key"/>
+                                    <field name="move_id"/>
+                                    <field name="create_date"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_caissecash_subscription" model="ir.actions.act_window">
+        <field name="name">Abonnements</field>
+        <field name="res_model">caissecash.subscription</field>
+        <field name="view_mode">list,form,pivot,graph</field>
+        <field name="help" type="html"><p class="o_view_nocontent_smiling_face">Créez le premier abonnement</p></field>
+    </record>
+
+</odoo>

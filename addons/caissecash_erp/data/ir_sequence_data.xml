@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="seq_sav_ticket" model="ir.sequence">
+        <field name="name">Ticket SAV CaisseCash</field>
+        <field name="code">caissecash.sav.ticket</field>
+        <field name="prefix">SAV/%(year)s/</field>
+        <field name="padding">4</field>
+        <field name="company_id" eval="False"/>
+    </record>
+    <record id="seq_installation" model="ir.sequence">
+        <field name="name">Installation CaisseCash</field>
+        <field name="code">caissecash.installation</field>
+        <field name="prefix">INST/%(year)s/</field>
+        <field name="padding">4</field>
+        <field name="company_id" eval="False"/>
+    </record>
+    <record id="seq_warranty" model="ir.sequence">
+        <field name="name">Garantie CaisseCash</field>
+        <field name="code">caissecash.warranty</field>
+        <field name="prefix">GAR/%(year)s/</field>
+        <field name="padding">4</field>
+        <field name="company_id" eval="False"/>
+    </record>
+    <record id="seq_founder_movement" model="ir.sequence">
+        <field name="name">Mouvement associé CaisseCash</field>
+        <field name="code">caissecash.founder.movement</field>
+        <field name="prefix">MVT/%(year)s/</field>
+        <field name="padding">4</field>
+        <field name="company_id" eval="False"/>
+    </record>
+    <record id="seq_expense" model="ir.sequence">
+        <field name="name">Dépense CaisseCash</field>
+        <field name="code">caissecash.expense</field>
+        <field name="prefix">DEP/%(year)s/</field>
+        <field name="padding">4</field>
+        <field name="company_id" eval="False"/>
+    </record>
+</odoo>

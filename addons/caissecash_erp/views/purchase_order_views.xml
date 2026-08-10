@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="purchase_order_form_inherit_caissecash" model="ir.ui.view">
+        <field name="name">purchase.order.form.inherit.caissecash</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page name="caissecash_costs" string="Frais annexes (CaisseCash)">
+                    <group>
+                        <group string="Frais additionnels">
+                            <field name="transport_cost"/>
+                            <field name="customs_cost"/>
+                            <field name="import_cost"/>
+                            <field name="other_cost"/>
+                            <field name="total_landed_cost"/>
+                        </group>
+                        <group string="Paiement">
+                            <field name="payment_mode"/>
+                            <field name="paid_by_user_id"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>
