@@ -1,6 +1,6 @@
 {
     "name": "CaisseCash ERP",
-    "version": "19.0.2.0.0",
+    "version": "19.0.2.1.0",
     "category": "Services/Field Service",
     "summary": "ERP interne CaisseCash : associés, achats, dépenses, établissements, installations, garanties, SAV, abonnements",
     "description": """
@@ -67,6 +67,11 @@ installations, garanties et abonnements logiciels.
     "demo": [
         "demo/caissecash_demo.xml",
     ],
+    "assets": {
+        "web.assets_backend": [
+            "caissecash_erp/static/src/dashboard/*",
+        ],
+    },
     "installable": True,
     "application": True,
     "auto_install": False,

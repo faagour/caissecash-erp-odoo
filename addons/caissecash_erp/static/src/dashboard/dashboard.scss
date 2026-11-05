@@ -1,0 +1,424 @@
+// Tableau de bord financier. Sobre : cartes blanches, filets fins, couleur
+// réservée aux données (bleu = facturé, orange = dépenses, marine = valeur).
+$ccd-navy: #0d1b4a;
+$ccd-navy-light: #1d3a8a;
+$ccd-ink: #0b0b0b;
+$ccd-ink-2: #52514e;
+$ccd-muted: #898781;
+$ccd-grid: #e1e0d9;
+$ccd-border: rgba(11, 11, 11, .08);
+$ccd-critical: #d03b3b;
+
+.o_ccd {
+    height: 100%;
+    overflow-y: auto;
+    background: #f4f6fb;
+    color: $ccd-ink;
+    transition: opacity .2s ease;
+
+    // Pendant un rechargement on garde l'affichage précédent, atténué.
+    &.is-loading {
+        opacity: .6;
+        pointer-events: none;
+    }
+}
+
+.o_ccd_container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 24px 16px 32px;
+}
+
+// --- En-tête et filtre de période ----------------------------------------------
+.o_ccd_header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 18px;
+
+    h1 {
+        margin: 0;
+        font-size: 26px;
+        font-weight: 700;
+        color: $ccd-navy;
+    }
+
+    p {
+        margin: 2px 0 0;
+        color: $ccd-ink-2;
+    }
+}
+
+.o_ccd_filters {
+    display: flex;
+    gap: 8px;
+}
+
+.o_ccd_segmented {
+    display: inline-flex;
+    padding: 3px;
+    border: 1px solid $ccd-border;
+    border-radius: 10px;
+    background: #fff;
+
+    button {
+        padding: 6px 12px;
+        border: 0;
+        border-radius: 8px;
+        background: transparent;
+        color: $ccd-ink-2;
+        font-weight: 500;
+        transition: background-color .15s ease, color .15s ease;
+
+        &:hover {
+            background: #f1f3f8;
+        }
+
+        &.is-active {
+            background: $ccd-navy;
+            color: #fff;
+        }
+    }
+}
+
+.o_ccd_refresh {
+    border: 1px solid $ccd-border;
+    border-radius: 10px;
+    background: #fff;
+}
+
+// --- Indicateurs ----------------------------------------------------------------
+.o_ccd_kpis {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 14px;
+    margin-bottom: 18px;
+}
+
+.o_ccd_kpi {
+    position: relative;
+    padding: 16px;
+    border: 1px solid $ccd-border;
+    border-radius: 14px;
+    background: #fff;
+    box-shadow: 0 1px 3px rgba($ccd-navy, .05);
+}
+
+.o_ccd_kpi_icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    margin-bottom: 10px;
+    border-radius: 10px;
+    background: color-mix(in srgb, var(--chip) 14%, #fff);
+    color: var(--chip);
+    font-size: 15px;
+}
+
+.o_ccd_kpi_label {
+    font-size: 13px;
+    color: $ccd-ink-2;
+}
+
+.o_ccd_kpi_value {
+    margin: 2px 0 4px;
+    font-size: 22px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.o_ccd_kpi_sub {
+    font-size: 12px;
+    color: $ccd-muted;
+
+    &.is-critical {
+        color: $ccd-critical;
+        font-weight: 600;
+    }
+}
+
+.o_ccd_kpi.is-result {
+    border: 0;
+    background:
+        radial-gradient(circle at 100% 0%, rgba(#f97316, .35) 0%, transparent 55%),
+        linear-gradient(135deg, $ccd-navy-light, $ccd-navy);
+    color: #fff;
+    box-shadow: 0 8px 22px rgba($ccd-navy, .25);
+
+    .o_ccd_kpi_icon {
+        background: rgba(#fff, .14);
+        color: #fff;
+    }
+
+    .o_ccd_kpi_label,
+    .o_ccd_kpi_sub {
+        color: rgba(#fff, .8);
+    }
+}
+
+.o_ccd_badge {
+    display: inline-block;
+    margin-right: 4px;
+    padding: 1px 8px;
+    border-radius: 999px;
+    background: rgba(#fff, .16);
+    color: #fff;
+    font-weight: 600;
+}
+
+// --- Cartes ----------------------------------------------------------------------
+.o_ccd_grid {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.o_ccd_card {
+    display: flex;
+    flex-direction: column;
+    grid-column: span 2;
+    padding: 18px;
+    border: 1px solid $ccd-border;
+    border-radius: 16px;
+    background: #fcfcfb;
+    box-shadow: 0 1px 3px rgba($ccd-navy, .05);
+}
+
+.o_ccd_span_2 { grid-column: span 4; }
+.o_ccd_span_half { grid-column: span 3; }
+
+.o_ccd_card_header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 14px;
+
+    h2 {
+        margin: 0;
+        font-size: 16px;
+        font-weight: 700;
+    }
+}
+
+.o_ccd_card_hint {
+    font-size: 12px;
+    color: $ccd-muted;
+}
+
+.o_ccd_card_links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-top: auto;
+    padding-top: 10px;
+
+    .btn-link {
+        padding-left: 0;
+        font-size: 12px;
+    }
+}
+
+.o_ccd_legend {
+    display: flex;
+    gap: 14px;
+    font-size: 12px;
+    color: $ccd-ink-2;
+
+    span {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    i {
+        width: 10px;
+        height: 10px;
+        border-radius: 3px;
+    }
+}
+
+// La hauteur inclut l'axe des mois (dessiné dans le canevas).
+.o_ccd_chart {
+    position: relative;
+    height: 260px;
+}
+
+// --- Barres horizontales (catégories, associés) ----------------------------------
+.o_ccd_bars {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
+    li.is-clickable {
+        cursor: pointer;
+
+        &:hover .o_ccd_bars_label span:first-child {
+            text-decoration: underline;
+        }
+    }
+}
+
+.o_ccd_bars_label {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 5px;
+    font-size: 13px;
+
+    span:first-child {
+        overflow: hidden;
+        color: $ccd-ink-2;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    b,
+    span:last-child {
+        flex: 0 0 auto;
+        font-variant-numeric: tabular-nums;
+    }
+}
+
+.o_ccd_track {
+    overflow: hidden;
+    height: 8px;
+    border-radius: 999px;
+    background: #edeef0;
+}
+
+.o_ccd_fill {
+    height: 100%;
+    border-radius: 999px;
+    transition: width .5s ease;
+}
+
+// --- Listes ----------------------------------------------------------------------
+.o_ccd_table {
+    width: 100%;
+    border-collapse: collapse;
+
+    tr {
+        cursor: pointer;
+        transition: background-color .15s ease;
+
+        &:hover {
+            background: #f1f3f8;
+        }
+
+        & + tr td {
+            border-top: 1px solid $ccd-grid;
+        }
+    }
+
+    td {
+        padding: 9px 6px;
+        vertical-align: middle;
+    }
+}
+
+.o_ccd_table_main {
+    font-weight: 600;
+}
+
+.o_ccd_table_sub {
+    font-size: 12px;
+    color: $ccd-muted;
+}
+
+.o_ccd_table_date {
+    width: 1%;
+    font-size: 12px;
+    color: $ccd-ink-2;
+    white-space: nowrap;
+
+    &.is-critical {
+        color: $ccd-critical;
+        font-weight: 600;
+    }
+}
+
+.o_ccd_table_amount {
+    width: 1%;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+    white-space: nowrap;
+}
+
+.o_ccd_empty {
+    padding: 18px 0;
+    color: $ccd-muted;
+    text-align: center;
+}
+
+.o_ccd_disclaimer {
+    margin: 18px 0 0;
+    font-size: 12px;
+    color: $ccd-muted;
+    text-align: center;
+}
+
+// --- Tablette et téléphone ---------------------------------------------------------
+@include media-breakpoint-down(xl) {
+    .o_ccd_card,
+    .o_ccd_span_2,
+    .o_ccd_span_half {
+        grid-column: span 6;
+    }
+}
+
+@include media-breakpoint-down(md) {
+    .o_ccd_container {
+        padding: 12px 12px 24px;
+    }
+
+    .o_ccd_header h1 {
+        font-size: 22px;
+    }
+
+    .o_ccd_filters {
+        width: 100%;
+    }
+
+    .o_ccd_segmented {
+        flex: 1 1 auto;
+
+        button {
+            flex: 1 1 0;
+            padding: 6px 4px;
+            font-size: 12px;
+        }
+    }
+
+    .o_ccd_kpis {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+    }
+
+    .o_ccd_kpi {
+        padding: 12px;
+    }
+
+    .o_ccd_kpi_value {
+        font-size: 17px;
+    }
+
+    // Sur téléphone, le résultat ouvre la page : c'est le chiffre qu'on vient chercher.
+    .o_ccd_kpi.is-result {
+        grid-column: span 2;
+        order: -1;
+    }
+
+    .o_ccd_chart {
+        height: 220px;
+    }
+}

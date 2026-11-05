@@ -1,0 +1,36 @@
+.o_cc_apps_grid.dropdown-menu {
+    display: grid;
+    grid-template-columns: repeat(4, 96px);
+    gap: 4px;
+    padding: 10px;
+    border-radius: 16px;
+
+    .o_app.dropdown-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 6px;
+        padding: 10px 4px;
+        border-radius: 12px;
+        font-size: 12px;
+        text-align: center;
+        white-space: normal;
+        transition: background-color .15s ease, transform .15s ease;
+
+        &:hover,
+        &.focus {
+            transform: translateY(-2px);
+        }
+    }
+
+    .o_cc_app_icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        box-shadow: 0 3px 8px rgba(#0d1b4a, .15);
+    }
+
+    .o_cc_app_name {
+        line-height: 1.2;
+    }
+}

@@ -1,0 +1,490 @@
+// Page « Mon espace ». Couleurs CaisseCash définies ici pour ne pas dépendre
+// du module de thème.
+$cc-navy: #0d1b4a;
+$cc-navy-light: #1d3a8a;
+$cc-orange: #f97316;
+$cc-amber: #f59e0b;
+$cc-green: #16a34a;
+$cc-text-muted: #64748b;
+$cc-border: #e6eaf2;
+
+.o_cc_home {
+    height: 100%;
+    overflow-y: auto;
+    background: #f4f6fb;
+    color: #1e293b;
+}
+
+.o_cc_container {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 24px 16px 40px;
+}
+
+// Apparition en douceur, décalée par bloc.
+@keyframes o_cc_rise {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: none; }
+}
+
+.o_cc_hero,
+.o_cc_tile,
+.o_cc_card {
+    animation: o_cc_rise .45s ease both;
+}
+
+.o_cc_tile:nth-child(2) { animation-delay: .05s; }
+.o_cc_tile:nth-child(3) { animation-delay: .1s; }
+.o_cc_tile:nth-child(4) { animation-delay: .15s; }
+.o_cc_tile:nth-child(5) { animation-delay: .2s; }
+.o_cc_card { animation-delay: .2s; }
+
+// --- Bandeau de bienvenue -------------------------------------------------
+.o_cc_hero {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 28px 28px 24px;
+    border-radius: 20px;
+    color: #fff;
+    background:
+        radial-gradient(circle at 90% -20%, rgba($cc-orange, .55) 0%, transparent 45%),
+        linear-gradient(135deg, $cc-navy-light 0%, $cc-navy 70%);
+    box-shadow: 0 10px 30px rgba($cc-navy, .25);
+}
+
+.o_cc_hero_date {
+    font-size: 13px;
+    text-transform: capitalize;
+    opacity: .75;
+}
+
+.o_cc_hero_title {
+    margin: 4px 0 6px;
+    font-size: 28px;
+    font-weight: 700;
+    color: #fff;
+}
+
+.o_cc_hero_quote {
+    margin: 0;
+    font-size: 15px;
+    opacity: .9;
+}
+
+.o_cc_hero_badge {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 12px 18px;
+    border-radius: 16px;
+    background: rgba(#fff, .12);
+    font-size: 12px;
+    text-align: center;
+    backdrop-filter: blur(4px);
+}
+
+.o_cc_hero_badge_value {
+    font-size: 26px;
+    font-weight: 700;
+}
+
+// --- Tuiles d'action -------------------------------------------------------
+.o_cc_tiles {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+    gap: 14px;
+    margin: 18px 0;
+}
+
+.o_cc_tile {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+    min-height: 124px;
+    padding: 16px;
+    border: 0;
+    border-radius: 18px;
+    color: #fff;
+    text-align: left;
+    box-shadow: 0 6px 18px rgba($cc-navy, .15);
+    transition: transform .15s ease, box-shadow .15s ease;
+    cursor: pointer;
+
+    &:hover:not(:disabled) {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 26px rgba($cc-navy, .22);
+    }
+
+    &:active:not(:disabled) {
+        transform: scale(.98);
+    }
+
+    &:disabled {
+        opacity: .7;
+        cursor: progress;
+    }
+}
+
+.o_cc_tile_icon {
+    font-size: 26px;
+    line-height: 1;
+    margin-bottom: 6px;
+}
+
+.o_cc_tile_label {
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.o_cc_tile_count {
+    position: absolute;
+    top: 12px;
+    right: 16px;
+    font-size: 30px;
+    font-weight: 800;
+    line-height: 1;
+}
+
+.o_cc_tile_sub {
+    margin-top: auto;
+    font-size: 13px;
+    opacity: .9;
+}
+
+.o_cc_tile_attendance.is-out { background: linear-gradient(135deg, $cc-orange, $cc-amber); }
+.o_cc_tile_attendance.is-in { background: linear-gradient(135deg, $cc-green, #22c55e); }
+.o_cc_tile_tasks { background: linear-gradient(135deg, $cc-navy, $cc-navy-light); }
+.o_cc_tile_messages { background: linear-gradient(135deg, #0284c7, #38bdf8); }
+.o_cc_tile_new_task { background: linear-gradient(135deg, #7c3aed, #a855f7); }
+.o_cc_tile_expense { background: linear-gradient(135deg, #db2777, #f472b6); }
+
+// --- Cartes -----------------------------------------------------------------
+.o_cc_grid {
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+    gap: 18px;
+    align-items: start;
+}
+
+.o_cc_side {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.o_cc_card {
+    padding: 18px;
+    border: 1px solid $cc-border;
+    border-radius: 16px;
+    background: #fff;
+    box-shadow: 0 2px 10px rgba($cc-navy, .04);
+}
+
+.o_cc_card_header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+
+    h2 {
+        margin: 0;
+        font-size: 17px;
+        font-weight: 700;
+    }
+}
+
+.o_cc_card_hint {
+    font-size: 12px;
+    color: $cc-text-muted;
+}
+
+// --- Mes tâches -------------------------------------------------------------
+.o_cc_task_list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.o_cc_task {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 6px;
+    transition: background-color .15s ease;
+
+    & + & {
+        border-top: 1px solid $cc-border;
+    }
+
+    &:hover {
+        background: #f8fafc;
+    }
+}
+
+.o_cc_task_check {
+    flex: 0 0 auto;
+    width: 34px;
+    height: 34px;
+    border: 2px solid #cbd5e1;
+    border-radius: 50%;
+    background: #fff;
+    color: transparent;
+    font-weight: 800;
+    transition: all .15s ease;
+
+    &:hover {
+        border-color: $cc-green;
+        background: $cc-green;
+        color: #fff;
+        transform: scale(1.08);
+    }
+}
+
+.o_cc_task_body {
+    flex: 1 1 auto;
+    min-width: 0;
+    cursor: pointer;
+}
+
+.o_cc_task_name {
+    overflow: hidden;
+    font-weight: 600;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.o_cc_task_meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 4px;
+}
+
+.o_cc_chip {
+    padding: 2px 9px;
+    border-radius: 999px;
+    background: #eef2ff;
+    color: $cc-navy-light;
+    font-size: 12px;
+
+    &.is-date { background: #f1f5f9; color: $cc-text-muted; }
+    &.is-late { background: #fee2e2; color: #b91c1c; font-weight: 600; }
+}
+
+.o_cc_empty {
+    padding: 24px 0;
+    color: $cc-text-muted;
+    text-align: center;
+}
+
+.o_cc_empty_icon {
+    font-size: 40px;
+}
+
+// --- Équipe -----------------------------------------------------------------
+.o_cc_team_list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+}
+
+.o_cc_member {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 62px;
+    font-size: 12px;
+    text-align: center;
+}
+
+.o_cc_avatar {
+    position: relative;
+
+    img {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        object-fit: cover;
+        filter: grayscale(.6);
+        opacity: .75;
+        transition: all .2s ease;
+    }
+}
+
+.o_cc_presence {
+    position: absolute;
+    right: 0;
+    bottom: 2px;
+    width: 13px;
+    height: 13px;
+    border: 2px solid #fff;
+    border-radius: 50%;
+    background: #cbd5e1;
+}
+
+.o_cc_member.is-present {
+    .o_cc_avatar img {
+        filter: none;
+        opacity: 1;
+        box-shadow: 0 0 0 2px #fff, 0 0 0 4px rgba($cc-green, .5);
+    }
+
+    .o_cc_presence {
+        background: $cc-green;
+        animation: o_cc_pulse 2s ease-out infinite;
+    }
+}
+
+@keyframes o_cc_pulse {
+    0% { box-shadow: 0 0 0 0 rgba($cc-green, .6); }
+    70% { box-shadow: 0 0 0 7px rgba($cc-green, 0); }
+    100% { box-shadow: 0 0 0 0 rgba($cc-green, 0); }
+}
+
+.o_cc_member_name {
+    margin-top: 6px;
+    overflow: hidden;
+    max-width: 100%;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+// --- Classement ---------------------------------------------------------------
+.o_cc_goal {
+    margin-bottom: 14px;
+}
+
+.o_cc_goal_label {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 6px;
+    font-size: 13px;
+    color: $cc-text-muted;
+}
+
+.o_cc_bar {
+    overflow: hidden;
+    height: 8px;
+    border-radius: 999px;
+    background: #edf1f7;
+}
+
+.o_cc_bar_fill {
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, $cc-orange, $cc-amber);
+    transition: width .6s ease;
+}
+
+.o_cc_bar_goal {
+    background: linear-gradient(90deg, $cc-green, #4ade80);
+}
+
+.o_cc_ranking {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.o_cc_rank {
+    display: grid;
+    grid-template-columns: 22px 28px 70px 1fr 22px;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 4px;
+    border-radius: 10px;
+    font-size: 13px;
+
+    &.is-me {
+        background: #fff7ed;
+    }
+}
+
+.o_cc_rank_medal {
+    font-size: 16px;
+    text-align: center;
+}
+
+.o_cc_rank_avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.o_cc_rank_name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.o_cc_rank_count {
+    text-align: right;
+}
+
+.o_cc_board_hint {
+    margin: 10px 0 0;
+    font-size: 12px;
+    color: $cc-text-muted;
+}
+
+// --- Téléphone et tablette ----------------------------------------------------
+@include media-breakpoint-down(lg) {
+    .o_cc_grid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}
+
+@include media-breakpoint-down(md) {
+    .o_cc_container {
+        padding: 12px 12px 32px;
+    }
+
+    .o_cc_hero {
+        padding: 20px;
+        border-radius: 16px;
+    }
+
+    .o_cc_hero_title {
+        font-size: 22px;
+    }
+
+    .o_cc_hero_badge {
+        flex-direction: row;
+        gap: 8px;
+        width: 100%;
+        padding: 8px 12px;
+    }
+
+    .o_cc_hero_badge_value {
+        font-size: 18px;
+    }
+
+    .o_cc_tiles {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+    }
+
+    .o_cc_tile {
+        min-height: 112px;
+        padding: 14px;
+    }
+
+    .o_cc_tile_count {
+        font-size: 24px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .o_cc_hero,
+    .o_cc_tile,
+    .o_cc_card,
+    .o_cc_member.is-present .o_cc_presence {
+        animation: none;
+    }
+}

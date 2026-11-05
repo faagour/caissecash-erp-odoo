@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Titre d'onglet et favicon par défaut (page de connexion comprise). -->
+    <template id="layout" inherit_id="web.layout" name="CaisseCash : titre et favicon">
+        <xpath expr="//title" position="attributes">
+            <attribute name="t-esc">title or 'CaisseCash'</attribute>
+        </xpath>
+        <xpath expr="//link[@rel='shortcut icon']" position="attributes">
+            <attribute name="t-att-href">x_icon or '/caissecash_theme/static/src/img/favicon.ico'</attribute>
+        </xpath>
+    </template>
+
+    <!-- Couleur de la barre du navigateur et icône iPhone de l'application installée. -->
+    <template id="webclient_bootstrap" inherit_id="web.webclient_bootstrap" name="CaisseCash : application mobile">
+        <xpath expr="//meta[@name='theme-color']" position="attributes">
+            <attribute name="content">#0d1b4a</attribute>
+        </xpath>
+        <xpath expr="//link[@rel='apple-touch-icon']" position="attributes">
+            <attribute name="href">/caissecash_theme/static/src/img/icon-ios.png</attribute>
+        </xpath>
+    </template>
+
+    <!-- Page de connexion aux couleurs CaisseCash. -->
+    <template id="login_layout" inherit_id="web.login_layout" name="CaisseCash : page de connexion">
+        <xpath expr="//t[@t-set='body_classname']" position="attributes">
+            <attribute name="t-value">'o_caissecash_login'</attribute>
+        </xpath>
+        <!-- La carte n'a qu'un t-attf-class (que hasclass() ne voit pas) : on la cible par son enfant. -->
+        <xpath expr="//div[hasclass('card-body')]/.." position="attributes">
+            <attribute name="style">max-width: 380px;</attribute>
+            <attribute name="t-attf-class" add="o_caissecash_login_card" separator=" "/>
+        </xpath>
+        <xpath expr="//img" position="attributes">
+            <attribute name="t-attf-src"/>
+            <attribute name="src">/caissecash_theme/static/src/img/logo_full.png</attribute>
+            <attribute name="alt">CaisseCash</attribute>
+            <attribute name="style">max-height: 110px; max-width: 100%; width: auto;</attribute>
+        </xpath>
+        <xpath expr="//div[@t-if='not disable_footer']" position="replace">
+            <div class="text-center small mt-4 pt-3 border-top text-muted" t-if="not disable_footer">
+                Espace interne CaisseCash
+            </div>
+        </xpath>
+    </template>
+
+</odoo>

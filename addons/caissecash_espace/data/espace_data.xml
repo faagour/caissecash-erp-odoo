@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="action_caissecash_home" model="ir.actions.client">
+        <field name="name">Mon espace</field>
+        <field name="tag">caissecash_espace.home</field>
+        <field name="path">mon-espace</field>
+    </record>
+
+    <menuitem id="menu_caissecash_home" name="Mon espace" action="action_caissecash_home"
+              sequence="1" web_icon="caissecash_espace,static/src/img/apps/espace.svg"/>
+
+    <!-- « Mes tâches » sur les étapes des projets (À faire, En cours…), et non sur
+         les étapes personnelles d'Odoo (Boîte de réception, Aujourd'hui…). -->
+    <record id="action_caissecash_my_tasks" model="ir.actions.act_window">
+        <field name="name">Mes tâches</field>
+        <field name="res_model">project.task</field>
+        <field name="path">mes-taches</field>
+        <field name="view_mode">kanban,list,form,calendar</field>
+        <field name="view_id" ref="project.view_task_kanban"/>
+        <field name="search_view_id" ref="project.view_task_search_form"/>
+        <field name="domain">[('user_ids', 'in', uid), ('project_id', '!=', False)]</field>
+        <field name="context">{'default_user_ids': [uid], 'caissecash_my_tasks': True}</field>
+    </record>
+
+    <!-- Applications du quotidien en tête de liste, avec des icônes aux couleurs vives.
+         (Réappliqué à chaque mise à jour de ce module.) -->
+    <record id="mail.menu_root_discuss" model="ir.ui.menu">
+        <field name="sequence">2</field>
+        <field name="web_icon">caissecash_espace,static/src/img/apps/discussion.svg</field>
+    </record>
+    <record id="project.menu_main_pm" model="ir.ui.menu">
+        <field name="sequence">3</field>
+        <field name="web_icon">caissecash_espace,static/src/img/apps/projet.svg</field>
+    </record>
+    <record id="hr_attendance.menu_hr_attendance_root" model="ir.ui.menu">
+        <field name="sequence">4</field>
+        <field name="web_icon">caissecash_espace,static/src/img/apps/presences.svg</field>
+    </record>
+    <record id="calendar.mail_menu_calendar" model="ir.ui.menu">
+        <field name="web_icon">caissecash_espace,static/src/img/apps/calendrier.svg</field>
+    </record>
+    <record id="hr.menu_hr_root" model="ir.ui.menu">
+        <field name="web_icon">caissecash_espace,static/src/img/apps/employes.svg</field>
+    </record>
+
+    <!-- La direction voit le pointage de toute l'équipe (application Présences) ;
+         les autres ne voient que le leur. -->
+    <record id="caissecash_erp.group_direction" model="res.groups">
+        <field name="implied_ids" eval="[(4, ref('hr_attendance.group_hr_attendance_officer'))]"/>
+    </record>
+
+    <data noupdate="1">
+        <!-- Objectif collectif de tâches terminées par semaine (modifiable dans
+             Paramètres > Technique > Paramètres système). -->
+        <record id="param_weekly_goal" model="ir.config_parameter">
+            <field name="key">caissecash_espace.weekly_goal</field>
+            <field name="value">15</field>
+        </record>
+    </data>
+
+</odoo>

@@ -1,0 +1,19 @@
+// Couleurs du logo CaisseCash. Ce fichier est chargé AVANT les variables
+// d'Odoo, qui sont toutes en !default : nos valeurs prennent donc le dessus
+// partout (backend, page de connexion, rapports).
+
+$o-caissecash-navy: #0d1b4a;
+$o-caissecash-navy-light: #1d3a8a;
+$o-caissecash-orange: #f97316;
+
+$o-community-color: $o-caissecash-navy;
+// Sert de couleur principale aux pages publiques (connexion, portail) et
+// aux contours de sélection : sans ça, ces écrans restent mauves.
+$o-enterprise-color: $o-caissecash-navy;
+$o-enterprise-action-color: $o-caissecash-navy-light;
+$o-brand-odoo: $o-caissecash-navy;
+$o-brand-primary: $o-caissecash-navy;
+
+// Liens et boutons d'action : marine un peu plus clair pour rester
+// distinguable du texte courant.
+$o-action: $o-caissecash-navy-light;

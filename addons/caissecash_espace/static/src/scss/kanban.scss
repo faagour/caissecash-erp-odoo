@@ -1,0 +1,21 @@
+// Tableau des tâches plus vivant : cartes arrondies qui se soulèvent au
+// survol, et une couleur par colonne (À faire, En cours, En attente, Terminé).
+.o_kanban_project_tasks .o_kanban_renderer {
+    .o_kanban_record {
+        border-radius: 12px;
+        box-shadow: 0 1px 3px rgba(#0d1b4a, .08), 0 4px 12px rgba(#0d1b4a, .05);
+        transition: transform .15s ease, box-shadow .15s ease;
+
+        &:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(#0d1b4a, .14);
+        }
+    }
+
+    $column-colors: (1: #94a3b8, 2: #2563eb, 3: #f97316, 4: #16a34a);
+    @each $index, $color in $column-colors {
+        > .o_kanban_group:nth-child(#{$index}) .o_kanban_header {
+            box-shadow: inset 0 3px 0 $color;
+        }
+    }
+}

@@ -1,0 +1,18 @@
+// Liseré orange sous la barre principale, rappel du socle orange du logo.
+// Pseudo-élément au-dessus des entrées de menu (qui ont leur propre fond et
+// masqueraient une bordure ou une ombre), sans changer la hauteur de la barre.
+.o_main_navbar {
+    position: relative;
+
+    &::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 3px;
+        background-color: $o-caissecash-orange;
+        pointer-events: none;
+        z-index: 1;
+    }
+}

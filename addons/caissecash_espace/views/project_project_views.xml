@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="edit_project_inherit_caissecash_channel" model="ir.ui.view">
+        <field name="name">project.project.form.caissecash.channel</field>
+        <field name="model">project.project</field>
+        <field name="inherit_id" ref="project.edit_project"/>
+        <field name="arch" type="xml">
+            <field name="user_id" position="after">
+                <field name="caissecash_channel_id" options="{'no_create': True}"/>
+            </field>
+        </field>
+    </record>
+
+</odoo>

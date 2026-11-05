@@ -1,0 +1,21 @@
+// Page de connexion (classe posée par le template login_layout).
+body.o_caissecash_login {
+    min-height: 100vh;
+    background:
+        radial-gradient(circle at 15% -10%, rgba($o-caissecash-orange, .25) 0%, transparent 45%),
+        linear-gradient(160deg, $o-caissecash-navy-light 0%, $o-caissecash-navy 60%);
+    background-attachment: fixed;
+
+    .o_caissecash_login_card {
+        background-color: $o-white !important;
+        border-top: 4px solid $o-caissecash-orange !important;
+        border-radius: 1rem;
+        box-shadow: 0 1.5rem 3rem rgba($o-black, .35);
+    }
+
+    .oe_login_form .btn-primary {
+        padding-top: .6rem;
+        padding-bottom: .6rem;
+        font-weight: $o-font-weight-bold;
+    }
+}

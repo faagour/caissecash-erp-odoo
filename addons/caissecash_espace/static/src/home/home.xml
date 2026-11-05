@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="caissecash_espace.Home">
+        <div class="o_cc_home">
+            <div class="o_cc_container" t-if="state.data">
+                <t t-set="data" t-value="state.data"/>
+
+                <header class="o_cc_hero">
+                    <div>
+                        <div class="o_cc_hero_date" t-esc="todayLabel"/>
+                        <h1 class="o_cc_hero_title"><t t-esc="greeting"/> <t t-esc="data.user.first_name"/> 👋</h1>
+                        <p class="o_cc_hero_quote" t-esc="quote"/>
+                    </div>
+                    <div class="o_cc_hero_badge" t-if="data.counts.done_week">
+                        <span class="o_cc_hero_badge_value">🔥 <t t-esc="data.counts.done_week"/></span>
+                        <span>tâche<t t-if="data.counts.done_week > 1">s</t> terminée<t t-if="data.counts.done_week > 1">s</t> cette semaine</span>
+                    </div>
+                </header>
+
+                <section class="o_cc_tiles">
+                    <button t-if="attendance" type="button"
+                            t-attf-class="o_cc_tile o_cc_tile_attendance {{ checkedIn ? 'is-in' : 'is-out' }}"
+                            t-att-disabled="state.busy" t-on-click="toggleAttendance">
+                        <span class="o_cc_tile_icon">⏱️</span>
+                        <span class="o_cc_tile_label" t-if="checkedIn">Pointer la sortie</span>
+                        <span class="o_cc_tile_label" t-else="">Pointer l'entrée</span>
+                        <span class="o_cc_tile_sub" t-if="checkedIn">Présent depuis <t t-esc="workedToday"/></span>
+                        <span class="o_cc_tile_sub" t-elif="attendance.hours_previously_today">Aujourd'hui : <t t-esc="workedToday"/></span>
+                        <span class="o_cc_tile_sub" t-else="">Pas encore pointé</span>
+                    </button>
+                    <button type="button" class="o_cc_tile o_cc_tile_tasks" t-on-click="openMyTasks">
+                        <span class="o_cc_tile_icon">✅</span>
+                        <span class="o_cc_tile_label">Mes tâches</span>
+                        <span class="o_cc_tile_count" t-esc="data.counts.tasks"/>
+                        <span class="o_cc_tile_sub" t-if="data.counts.overdue">⚠️ <t t-esc="data.counts.overdue"/> en retard</span>
+                        <span class="o_cc_tile_sub" t-else="">Rien en retard 👌</span>
+                    </button>
+                    <button type="button" class="o_cc_tile o_cc_tile_messages" t-on-click="openDiscuss">
+                        <span class="o_cc_tile_icon">💬</span>
+                        <span class="o_cc_tile_label">Messages</span>
+                        <span class="o_cc_tile_count" t-esc="data.counts.unread"/>
+                        <span class="o_cc_tile_sub" t-if="data.counts.unread">non lu<t t-if="data.counts.unread > 1">s</t></span>
+                        <span class="o_cc_tile_sub" t-else="">Tout est lu</span>
+                    </button>
+                    <button type="button" class="o_cc_tile o_cc_tile_new_task" t-on-click="newTask">
+                        <span class="o_cc_tile_icon">➕</span>
+                        <span class="o_cc_tile_label">Nouvelle tâche</span>
+                        <span class="o_cc_tile_sub">Pour moi ou l'équipe</span>
+                    </button>
+                    <button t-if="data.can_expense" type="button" class="o_cc_tile o_cc_tile_expense" t-on-click="newExpense">
+                        <span class="o_cc_tile_icon">🧾</span>
+                        <span class="o_cc_tile_label">Nouvelle dépense</span>
+                        <span class="o_cc_tile_sub">Ticket, facture, frais</span>
+                    </button>
+                </section>
+
+                <div class="o_cc_grid">
+                    <section class="o_cc_card o_cc_tasks">
+                        <div class="o_cc_card_header">
+                            <h2>Mes tâches</h2>
+                            <button type="button" class="btn btn-link btn-sm" t-on-click="openMyTasks">Tout voir</button>
+                        </div>
+                        <ul class="o_cc_task_list" t-if="data.tasks.length">
+                            <li t-foreach="data.tasks" t-as="task" t-key="task.id" class="o_cc_task">
+                                <button type="button" class="o_cc_task_check" title="Marquer comme terminée"
+                                        t-on-click="() => this.markDone(task)">✓</button>
+                                <div class="o_cc_task_body" t-on-click="() => this.openTask(task)">
+                                    <div class="o_cc_task_name"><t t-if="task.priority">⭐ </t><t t-esc="task.name"/></div>
+                                    <div class="o_cc_task_meta">
+                                        <span class="o_cc_chip" t-esc="task.project"/>
+                                        <span t-if="task.deadline" t-attf-class="o_cc_chip {{ task.overdue ? 'is-late' : 'is-date' }}">
+                                            📅 <t t-esc="deadlineLabel(task)"/>
+                                        </span>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                        <div class="o_cc_empty" t-else="">
+                            <div class="o_cc_empty_icon">🎉</div>
+                            <div>Aucune tâche en cours, bravo !</div>
+                            <button type="button" class="btn btn-primary btn-sm mt-2" t-on-click="newTask">Ajouter une tâche</button>
+                        </div>
+                    </section>
+
+                    <div class="o_cc_side">
+                        <section class="o_cc_card o_cc_team">
+                            <div class="o_cc_card_header">
+                                <h2>L'équipe aujourd'hui</h2>
+                                <span class="o_cc_card_hint" t-if="attendance"><t t-esc="presentCount"/> / <t t-esc="data.team.length"/> présents</span>
+                            </div>
+                            <div class="o_cc_team_list">
+                                <div t-foreach="data.team" t-as="member" t-key="member.id"
+                                     t-attf-class="o_cc_member {{ member.present ? 'is-present' : '' }}" t-att-title="member.job">
+                                    <span class="o_cc_avatar">
+                                        <img t-att-src="member.avatar" alt=""/>
+                                        <span class="o_cc_presence"/>
+                                    </span>
+                                    <span class="o_cc_member_name" t-esc="member.name"/>
+                                </div>
+                            </div>
+                        </section>
+
+                        <section class="o_cc_card o_cc_board">
+                            <div class="o_cc_card_header">
+                                <h2>🏆 Classement de la semaine</h2>
+                            </div>
+                            <div class="o_cc_goal">
+                                <div class="o_cc_goal_label">
+                                    <span>Objectif équipe</span>
+                                    <b><t t-esc="data.team_done"/> / <t t-esc="data.weekly_goal"/></b>
+                                </div>
+                                <div class="o_cc_bar"><div class="o_cc_bar_fill o_cc_bar_goal" t-attf-style="width: {{ goalPercent }}%"/></div>
+                            </div>
+                            <ol class="o_cc_ranking">
+                                <li t-foreach="data.leaderboard" t-as="row" t-key="row.user_id"
+                                    t-attf-class="o_cc_rank {{ row.user_id === data.user.id ? 'is-me' : '' }}">
+                                    <span class="o_cc_rank_medal" t-esc="medal(row.count)"/>
+                                    <img class="o_cc_rank_avatar" t-att-src="row.avatar" alt=""/>
+                                    <span class="o_cc_rank_name" t-esc="row.name"/>
+                                    <div class="o_cc_bar"><div class="o_cc_bar_fill" t-attf-style="width: {{ barWidth(row) }}%"/></div>
+                                    <b class="o_cc_rank_count" t-esc="row.count"/>
+                                </li>
+                            </ol>
+                            <p class="o_cc_board_hint" t-if="!data.team_done">Aucune tâche terminée cette semaine pour l'instant. Qui ouvre le bal ? 🚀</p>
+                        </section>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </t>
+
+</templates>

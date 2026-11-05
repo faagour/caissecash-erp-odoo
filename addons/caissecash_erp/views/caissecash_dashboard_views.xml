@@ -68,8 +68,16 @@
         <field name="target">current</field>
     </record>
 
+    <!-- Tableau de bord visuel (indicateurs, courbes, listes). L'ancienne fiche
+         ci-dessus reste disponible pour ses boutons de graphiques. -->
+    <record id="action_caissecash_dashboard_home" model="ir.actions.client">
+        <field name="name">Tableau de bord</field>
+        <field name="tag">caissecash_erp.dashboard</field>
+        <field name="path">tableau-de-bord</field>
+    </record>
+
     <menuitem id="menu_caissecash_dashboard" name="Tableau de bord" parent="menu_caissecash_root"
-              action="action_caissecash_dashboard" sequence="1"
+              action="action_caissecash_dashboard_home" sequence="1"
               groups="caissecash_erp.group_comptabilite,caissecash_erp.group_direction,caissecash_erp.group_admin"/>
 
 </odoo>

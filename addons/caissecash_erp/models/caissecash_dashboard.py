@@ -1,4 +1,10 @@
-from odoo import fields, models
+from collections import defaultdict
+
+from dateutil.relativedelta import relativedelta
+
+from odoo import api, fields, models
+
+PAID_STATES = ("paid", "in_payment")
 
 
 class CaissecashDashboard(models.TransientModel):
@@ -51,6 +57,118 @@ class CaissecashDashboard(models.TransientModel):
             rec.total_purchases = sum(purchases.mapped("amount_total"))
 
             rec.result = rec.total_invoiced - rec.total_expenses
+
+    @api.model
+    def get_dashboard_data(self, period="all"):
+        """Données de la page « Tableau de bord » (action client).
+
+        La période (all / year / month) s'applique aux indicateurs, aux
+        catégories et aux listes ; les deux courbes couvrent toujours les
+        12 derniers mois.
+        """
+        self.check_access("read")
+        Move = self.env["account.move"]
+        Expense = self.env["caissecash.expense"]
+        Purchase = self.env["purchase.order"]
+        currency = self.env.company.currency_id
+
+        today = fields.Date.context_today(self)
+        start = {"year": today.replace(month=1, day=1), "month": today.replace(day=1)}.get(period)
+
+        invoice_domain = [("move_type", "=", "out_invoice"), ("state", "=", "posted")]
+        expense_domain = [("state", "in", ("validated", "paid"))]
+        purchase_domain = [("state", "in", ("purchase", "done"))]
+        if start:
+            invoice_domain += [("invoice_date", ">=", start)]
+            expense_domain += [("date", ">=", start)]
+            purchase_domain += [("date_order", ">=", start)]
+
+        invoices = Move.search(invoice_domain)
+        paid = invoices.filtered(lambda m: m.payment_state in PAID_STATES)
+        unpaid = invoices.filtered(lambda m: m.payment_state not in (*PAID_STATES, "reversed"))
+        expenses = Expense.search(expense_domain, order="date desc, id desc")
+        invoiced = sum(invoices.mapped("amount_total"))
+        spent = sum(expenses.mapped("amount_total"))
+
+        by_category = defaultdict(float)
+        for expense in expenses:
+            by_category[expense.category_id.name or "Sans catégorie"] += expense.amount_total
+        categories = sorted(by_category.items(), key=lambda item: -item[1])
+        if len(categories) > 6:
+            categories = categories[:5] + [("Autres", sum(amount for _, amount in categories[5:]))]
+
+        # 12 derniers mois : montants du mois, et résultat cumulé (depuis le début) en fin de mois.
+        all_invoices = Move.search([("move_type", "=", "out_invoice"), ("state", "=", "posted")])
+        all_expenses = Expense.search([("state", "in", ("validated", "paid"))])
+        monthly = []
+        for offset in range(11, -1, -1):
+            month_start = today.replace(day=1) - relativedelta(months=offset)
+            month_end = month_start + relativedelta(months=1)
+
+            def total(records, date_field, lower=None):
+                return sum(
+                    r.amount_total for r in records
+                    if r[date_field] and r[date_field] < month_end and (lower is None or r[date_field] >= lower)
+                )
+
+            monthly.append({
+                "month": month_start.isoformat(),
+                "invoiced": total(all_invoices, "invoice_date", month_start),
+                "expenses": total(all_expenses, "date", month_start),
+                "value": total(all_invoices, "invoice_date") - total(all_expenses, "date"),
+            })
+
+        founders = self.env["caissecash.founder"].search([("state", "=", "actif")])
+        capital_total = sum(founders.mapped("total_capital"))
+
+        return {
+            "currency": {"symbol": currency.symbol, "position": currency.position},
+            "kpis": {
+                "invoiced": invoiced,
+                "invoice_count": len(invoices),
+                "paid": sum(paid.mapped("amount_total")),
+                "unpaid": sum(unpaid.mapped("amount_residual")),
+                "unpaid_count": len(unpaid),
+                "expenses": spent,
+                "expense_count": len(expenses),
+                "purchases": sum(Purchase.search(purchase_domain).mapped("amount_total")),
+                "result": invoiced - spent,
+            },
+            "categories": [{"name": name, "amount": amount} for name, amount in categories],
+            "monthly": monthly,
+            "founders": [
+                {
+                    "id": f.id,
+                    "name": f.name,
+                    "capital": f.total_capital,
+                    "share": capital_total and f.total_capital / capital_total * 100,
+                }
+                for f in founders.sorted(lambda f: -f.total_capital)
+            ],
+            "capital_total": capital_total,
+            "latest_expenses": [
+                {
+                    "id": e.id,
+                    "date": e.date and e.date.isoformat(),
+                    "label": e.description or e.name,
+                    "category": e.category_id.name or "",
+                    "founder": e.founder_id.name or "",
+                    "amount": e.amount_total,
+                }
+                for e in expenses[:6]
+            ],
+            "unpaid_invoices": [
+                {
+                    "id": m.id,
+                    "name": m.name,
+                    "partner": m.partner_id.display_name or "",
+                    "due": m.invoice_date_due and m.invoice_date_due.isoformat(),
+                    "overdue": bool(m.invoice_date_due and m.invoice_date_due < today),
+                    "amount": m.amount_residual,
+                }
+                for m in unpaid.sorted(lambda m: -m.amount_residual)[:6]
+            ],
+        }
 
     def action_refresh(self):
         """Rouvrir le formulaire relance le calcul des KPI ; on reconstruit

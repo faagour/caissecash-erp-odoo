@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <!-- Menu des applications (ordinateur) : grille d'icônes au lieu d'une simple liste de noms. -->
+    <t t-inherit="web.NavBar.AppsMenu" t-inherit-mode="extension">
+        <xpath expr="//Dropdown" position="attributes">
+            <attribute name="menuClass">'o_cc_apps_grid'</attribute>
+        </xpath>
+        <xpath expr="//DropdownItem" position="attributes">
+            <attribute name="t-esc"/>
+        </xpath>
+        <xpath expr="//DropdownItem" position="inside">
+            <img t-if="app.webIconData" class="o_cc_app_icon" t-att-src="app.webIconData" alt=""/>
+            <span class="o_cc_app_name" t-esc="app.name"/>
+        </xpath>
+    </t>
+
+</templates>
