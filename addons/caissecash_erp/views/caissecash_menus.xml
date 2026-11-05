@@ -1,30 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <menuitem id="menu_caissecash_root" name="CaisseCash ERP" sequence="5"
+    <!-- Chaque domaine est une application à part dans le menu des applications,
+         numérotée dans l'ordre du parcours client (rubriques, noms des
+         applications Odoo et icônes : module caissecash_espace). -->
+
+    <!-- Les établissements se gèrent avec les clients, dans l'application CRM. -->
+    <menuitem id="menu_caissecash_establishment" name="Établissements" parent="crm.crm_menu_root"
+              action="action_caissecash_establishment" sequence="3"/>
+
+    <menuitem id="menu_caissecash_field" name="Installations &amp; SAV" sequence="40"
               web_icon="caissecash_erp,static/description/icon.png"/>
-
-    <menuitem id="menu_caissecash_clients" name="Clients" parent="menu_caissecash_root" sequence="10"/>
-    <menuitem id="menu_caissecash_establishment" name="Établissements" parent="menu_caissecash_clients"
-              action="action_caissecash_establishment" sequence="10"/>
-
-    <menuitem id="menu_caissecash_stock" name="Équipements" parent="menu_caissecash_root" sequence="20"/>
-    <menuitem id="menu_caissecash_equipment" name="Équipements suivis" parent="menu_caissecash_stock"
-              action="action_caissecash_equipment" sequence="10"/>
-    <menuitem id="menu_caissecash_warranty" name="Garanties" parent="menu_caissecash_stock"
-              action="action_caissecash_warranty" sequence="20"/>
-
-    <menuitem id="menu_caissecash_field" name="Installations &amp; SAV" parent="menu_caissecash_root" sequence="30"/>
     <menuitem id="menu_caissecash_installation" name="Installations" parent="menu_caissecash_field"
               action="action_caissecash_installation" sequence="10"/>
     <menuitem id="menu_caissecash_sav_ticket" name="Tickets SAV" parent="menu_caissecash_field"
               action="action_caissecash_sav_ticket" sequence="20"/>
+    <menuitem id="menu_caissecash_equipment" name="Équipements installés" parent="menu_caissecash_field"
+              action="action_caissecash_equipment" sequence="30"/>
+    <menuitem id="menu_caissecash_warranty" name="Garanties" parent="menu_caissecash_field"
+              action="action_caissecash_warranty" sequence="40"/>
 
-    <menuitem id="menu_caissecash_billing" name="Abonnements" parent="menu_caissecash_root" sequence="40"/>
+    <menuitem id="menu_caissecash_billing" name="Abonnements" sequence="60"
+              web_icon="caissecash_erp,static/description/icon.png"/>
     <menuitem id="menu_caissecash_subscription" name="Abonnements" parent="menu_caissecash_billing"
               action="action_caissecash_subscription" sequence="10"/>
 
-    <menuitem id="menu_caissecash_expense_root" name="Dépenses" parent="menu_caissecash_root" sequence="50"
+    <menuitem id="menu_caissecash_expense_root" name="Dépenses" sequence="80"
+              web_icon="caissecash_erp,static/description/icon.png"
               groups="caissecash_erp.group_comptabilite,caissecash_erp.group_direction,caissecash_erp.group_admin"/>
     <menuitem id="menu_caissecash_expense" name="Dépenses" parent="menu_caissecash_expense_root"
               action="action_caissecash_expense" sequence="10"/>
@@ -34,7 +36,7 @@
     <!-- Application séparée (accès très restreint : Finance/Direction/Admin
          uniquement) car domaine sensible et distinct de l'usage opérationnel
          quotidien du reste de l'ERP. -->
-    <menuitem id="menu_founders_root" name="Associés et financement" sequence="6"
+    <menuitem id="menu_founders_root" name="Associés et financement" sequence="90"
               web_icon="caissecash_erp,static/description/icon_founders.png"
               groups="caissecash_erp.group_comptabilite,caissecash_erp.group_direction,caissecash_erp.group_admin"/>
     <menuitem id="menu_founders_list" name="Associés" parent="menu_founders_root"

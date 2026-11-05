@@ -1,6 +1,6 @@
 {
     "name": "CaisseCash ERP — Mon espace",
-    "version": "19.0.1.0.0",
+    "version": "19.0.1.1.0",
     "category": "Productivity",
     "summary": "Page d'accueil « Mon espace », pointage en un clic, animations et classement de l'équipe",
     "description": """
@@ -8,7 +8,11 @@ CaisseCash ERP — Mon espace
 ===========================
 - Page d'accueil « Mon espace » (accueil par défaut de chaque utilisateur) :
   pointage en un clic, mes tâches du jour, messages non lus, raccourcis,
-  qui est présent aujourd'hui, classement de la semaine.
+  qui est présent aujourd'hui, classement de la semaine, et le parcours
+  client « Du prospect au SAV » avec le nombre de dossiers à chaque étape.
+- Menu des applications rangé par rubrique (Au quotidien, Du prospect au SAV,
+  Gestion), noms clairs (Clients, Stock, Pointage…) ; les applications
+  inutilisées n'apparaissent qu'en mode développeur.
 - Tâche terminée (bouton ✔, glisser dans « Terminé » ou case « Fait ») :
   animation « Bravo » et annonce dans le canal du pôle.
 - Pointage sans géolocalisation.

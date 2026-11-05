@@ -12,6 +12,27 @@ def iso_utc(dt):
     return dt and dt.isoformat() + "Z"
 
 
+# Parcours d'un client, de A à Z : (étape, icône, modèle, dossiers en cours,
+# libellé du nombre, action ouverte au clic).
+CUSTOMER_JOURNEY = [
+    ("Prospects", "🎯", "crm.lead", [("type", "=", "opportunity"), ("won_status", "=", "pending")],
+     "en cours", "crm.crm_lead_action_pipeline"),
+    ("Devis", "📝", "sale.order", [("state", "in", ("draft", "sent"))],
+     "à confirmer", "sale.action_quotations_with_onboarding"),
+    ("Stock", "📦", "stock.picking", [("state", "in", ("confirmed", "waiting", "assigned"))],
+     "à réceptionner ou livrer", "stock.action_picking_tree_ready"),
+    ("Installations", "🔧", "caissecash.installation", [("state", "not in", ("terminee", "annulee"))],
+     "à faire", "caissecash_erp.action_caissecash_installation"),
+    ("Factures", "🧾", "account.move",
+     [("move_type", "=", "out_invoice"), ("state", "=", "posted"), ("payment_state", "in", ("not_paid", "partial"))],
+     "à encaisser", "account.action_move_out_invoice"),
+    ("Abonnements", "🔁", "caissecash.subscription", [("state", "in", ("essai", "actif"))],
+     "en service", "caissecash_erp.action_caissecash_subscription"),
+    ("SAV", "🛠️", "caissecash.sav.ticket", [("state", "not in", ("resolu", "ferme", "annule"))],
+     "à traiter", "caissecash_erp.action_caissecash_sav_ticket"),
+]
+
+
 class CaissecashEspace(models.AbstractModel):
     _name = "caissecash.espace"
     _description = "Données de la page d'accueil « Mon espace »"
@@ -70,6 +91,13 @@ class CaissecashEspace(models.AbstractModel):
 
         can_expense = "caissecash.expense" in self.env and self.env["caissecash.expense"].has_access("create")
 
+        # Étapes que l'utilisateur peut consulter.
+        journey = [
+            {"label": label, "icon": icon, "count": self.env[model].search_count(domain), "hint": hint, "action": action}
+            for label, icon, model, domain, hint, action in CUSTOMER_JOURNEY
+            if model in self.env and self.env[model].has_access("read") and self.env.ref(action, raise_if_not_found=False)
+        ]
+
         return {
             "user": {"id": user.id, "first_name": first_name(user), "lang": user.lang},
             "attendance": attendance or False,
@@ -104,4 +132,5 @@ class CaissecashEspace(models.AbstractModel):
             "team_done": len(done_this_week),
             "weekly_goal": int(self.env["ir.config_parameter"].sudo().get_param("caissecash_espace.weekly_goal", 15)),
             "can_expense": can_expense,
+            "journey": journey,
         }

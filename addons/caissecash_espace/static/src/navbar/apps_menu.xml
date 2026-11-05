@@ -1,17 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <templates xml:space="preserve">
 
-    <!-- Menu des applications (ordinateur) : grille d'icônes au lieu d'une simple liste de noms. -->
+    <!-- Menu des applications (ordinateur) : grille d'icônes rangée par rubrique. -->
     <t t-inherit="web.NavBar.AppsMenu" t-inherit-mode="extension">
         <xpath expr="//Dropdown" position="attributes">
             <attribute name="menuClass">'o_cc_apps_grid'</attribute>
         </xpath>
-        <xpath expr="//DropdownItem" position="attributes">
-            <attribute name="t-esc"/>
+        <xpath expr="//DropdownItem" position="replace">
+            <t t-foreach="caissecashAppGroups(apps)" t-as="group" t-key="group.label">
+                <div t-if="group.label" class="o_cc_apps_section" t-esc="group.label"/>
+                <DropdownItem
+                    t-foreach="group.apps"
+                    t-as="app"
+                    t-key="app.id"
+                    class="{ 'o_app': true, focus: menuService.getCurrentApp() === app }"
+                    onSelected="() => this.onNavBarDropdownItemSelection(app)"
+                    attrs="{ href: getMenuItemHref(app), 'data-menu-xmlid': app.xmlid, 'data-section': app.id }">
+                    <img t-if="app.webIconData" class="o_cc_app_icon" t-att-src="app.webIconData" alt=""/>
+                    <span class="o_cc_app_name" t-esc="app.name"/>
+                </DropdownItem>
+            </t>
         </xpath>
-        <xpath expr="//DropdownItem" position="inside">
-            <img t-if="app.webIconData" class="o_cc_app_icon" t-att-src="app.webIconData" alt=""/>
-            <span class="o_cc_app_name" t-esc="app.name"/>
+    </t>
+
+    <!-- Menu latéral (téléphone), liste de toutes les applications : mêmes rubriques. -->
+    <t t-inherit="web.NavBar.AppsMenu.Sidebar" t-inherit-mode="extension">
+        <xpath expr="//t[@t-foreach='apps']" position="replace">
+            <t t-foreach="caissecashAppGroups(apps)" t-as="group" t-key="group.label">
+                <li t-if="group.label" class="o_cc_apps_sidebar_section" t-esc="group.label"/>
+                <li t-foreach="group.apps" t-as="app" t-key="app.id"
+                    t-att-data-menu-xmlid="app.xmlid" class="o_app fw-bolder py-2"
+                    t-att-class="{'bg-primary-subtle': menuService.getCurrentApp() === app}"
+                    t-on-click="() => {this.onNavBarDropdownItemSelection(app); this._closeAppMenuSidebar();}">
+                    <div class="d-flex align-items-center">
+                        <img style="height: 3em;" t-if="app.webIconData" class="o_app_icon me-2" t-attf-src="{{app.webIconData}}"/>
+                        <t t-esc="app.name"/>
+                    </div>
+                </li>
+            </t>
         </xpath>
     </t>
 

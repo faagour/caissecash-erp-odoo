@@ -153,6 +153,10 @@ export class CaissecashHome extends Component {
         this.action.doAction("mail.action_discuss");
     }
 
+    openJourneyStep(step) {
+        this.action.doAction(step.action);
+    }
+
     newTask() {
         this.action.doAction(
             {

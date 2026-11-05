@@ -76,8 +76,14 @@
         <field name="path">tableau-de-bord</field>
     </record>
 
-    <menuitem id="menu_caissecash_dashboard" name="Tableau de bord" parent="menu_caissecash_root"
-              action="action_caissecash_dashboard_home" sequence="1"
+    <menuitem id="menu_caissecash_dashboard" name="Tableau de bord" sequence="70"
+              action="action_caissecash_dashboard_home"
+              web_icon="caissecash_erp,static/description/icon.png"
               groups="caissecash_erp.group_comptabilite,caissecash_erp.group_direction,caissecash_erp.group_admin"/>
+    <menuitem id="menu_caissecash_dashboard_home" name="Tableau de bord" parent="menu_caissecash_dashboard"
+              action="action_caissecash_dashboard_home" sequence="1"/>
+    <menuitem id="menu_caissecash_onboarding" name="Checklist de mise en service" parent="menu_caissecash_dashboard"
+              action="action_caissecash_onboarding" sequence="90"
+              groups="caissecash_erp.group_admin,caissecash_erp.group_direction"/>
 
 </odoo>

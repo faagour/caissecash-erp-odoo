@@ -55,6 +55,24 @@
                     </button>
                 </section>
 
+                <section class="o_cc_card o_cc_journey" t-if="data.journey.length">
+                    <div class="o_cc_card_header">
+                        <h2>Du prospect au SAV</h2>
+                        <span class="o_cc_card_hint">Le parcours d'un client, étape par étape</span>
+                    </div>
+                    <ol class="o_cc_journey_steps">
+                        <li t-foreach="data.journey" t-as="step" t-key="step.label">
+                            <button type="button" t-attf-class="o_cc_journey_step {{ step.count ? 'has-items' : '' }}"
+                                    t-on-click="() => this.openJourneyStep(step)">
+                                <span class="o_cc_journey_index" t-esc="step_index + 1"/>
+                                <span class="o_cc_journey_icon" t-esc="step.icon"/>
+                                <span class="o_cc_journey_label" t-esc="step.label"/>
+                                <span class="o_cc_journey_count"><b t-esc="step.count"/> <t t-esc="step.hint"/></span>
+                            </button>
+                        </li>
+                    </ol>
+                </section>
+
                 <div class="o_cc_grid">
                     <section class="o_cc_card o_cc_tasks">
                         <div class="o_cc_card_header">

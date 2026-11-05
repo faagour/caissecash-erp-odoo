@@ -1,16 +1,40 @@
+// Une ligne par rubrique : le parcours client se lit de gauche à droite.
 .o_cc_apps_grid.dropdown-menu {
     display: grid;
-    grid-template-columns: repeat(4, 96px);
-    gap: 4px;
-    padding: 10px;
+    grid-template-columns: repeat(7, 92px);
+    gap: 2px 4px;
+    max-width: calc(100vw - 24px);
+    max-height: calc(100vh - 64px);
+    overflow: auto;
+    padding: 6px 10px 10px;
     border-radius: 16px;
+
+    .o_cc_apps_section {
+        grid-column: 1 / -1;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin: 8px 4px 2px;
+        color: #64748b;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: .06em;
+        text-transform: uppercase;
+
+        &::after {
+            content: "";
+            flex: 1 1 auto;
+            height: 1px;
+            background: #e2e8f0;
+        }
+    }
 
     .o_app.dropdown-item {
         display: flex;
         flex-direction: column;
         align-items: center;
         gap: 6px;
-        padding: 10px 4px;
+        padding: 8px 4px;
         border-radius: 12px;
         font-size: 12px;
         text-align: center;
@@ -33,4 +57,13 @@
     .o_cc_app_name {
         line-height: 1.2;
     }
+}
+
+.o_burger_menu_app .o_cc_apps_sidebar_section {
+    margin: 14px 16px 2px;
+    color: #64748b;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: .06em;
+    text-transform: uppercase;
 }

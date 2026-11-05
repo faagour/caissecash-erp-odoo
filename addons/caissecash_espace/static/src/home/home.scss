@@ -203,6 +203,101 @@ $cc-border: #e6eaf2;
     color: $cc-text-muted;
 }
 
+// --- Parcours client -----------------------------------------------------------
+.o_cc_journey {
+    margin-bottom: 18px;
+
+    .o_cc_card_header {
+        flex-wrap: wrap;
+        gap: 2px 12px;
+    }
+}
+
+.o_cc_journey_steps {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: 10px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
+    li {
+        position: relative;
+    }
+
+    // Flèche entre deux étapes.
+    li + li::before {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: -9px;
+        width: 8px;
+        height: 8px;
+        border-top: 2px solid #cbd5e1;
+        border-right: 2px solid #cbd5e1;
+        transform: translateY(-50%) rotate(45deg);
+    }
+}
+
+.o_cc_journey_step {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+    width: 100%;
+    height: 100%;
+    padding: 12px;
+    border: 1px solid $cc-border;
+    border-radius: 14px;
+    background: #f8fafc;
+    color: inherit;
+    text-align: left;
+    transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+
+    &:hover {
+        border-color: rgba($cc-orange, .5);
+        box-shadow: 0 6px 16px rgba($cc-navy, .08);
+        transform: translateY(-2px);
+    }
+
+    &.has-items {
+        border-color: rgba($cc-orange, .35);
+        background: #fff7ed;
+    }
+}
+
+.o_cc_journey_index {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: $cc-navy;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.o_cc_journey_icon {
+    margin-top: 6px;
+    font-size: 22px;
+    line-height: 1;
+}
+
+.o_cc_journey_label {
+    font-weight: 700;
+}
+
+.o_cc_journey_count {
+    font-size: 12px;
+    color: $cc-text-muted;
+
+    b {
+        color: #1e293b;
+    }
+}
+
 // --- Mes tâches -------------------------------------------------------------
 .o_cc_task_list {
     margin: 0;
@@ -437,6 +532,27 @@ $cc-border: #e6eaf2;
 @include media-breakpoint-down(lg) {
     .o_cc_grid {
         grid-template-columns: minmax(0, 1fr);
+    }
+
+    // Les étapes défilent horizontalement, toujours dans l'ordre.
+    .o_cc_journey_steps {
+        grid-template-columns: none;
+        grid-auto-flow: column;
+        grid-auto-columns: 136px;
+        gap: 12px;
+        overflow-x: auto;
+        margin: 0 -18px;
+        padding: 2px 18px 6px;
+        scroll-padding: 0 18px;
+        scroll-snap-type: x mandatory;
+
+        li {
+            scroll-snap-align: start;
+        }
+
+        li + li::before {
+            left: -10px;
+        }
     }
 }
 

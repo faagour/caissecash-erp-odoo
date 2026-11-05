@@ -23,26 +23,10 @@
         <field name="context">{'default_user_ids': [uid], 'caissecash_my_tasks': True}</field>
     </record>
 
-    <!-- Applications du quotidien en tête de liste, avec des icônes aux couleurs vives.
-         (Réappliqué à chaque mise à jour de ce module.) -->
-    <record id="mail.menu_root_discuss" model="ir.ui.menu">
-        <field name="sequence">2</field>
-        <field name="web_icon">caissecash_espace,static/src/img/apps/discussion.svg</field>
-    </record>
-    <record id="project.menu_main_pm" model="ir.ui.menu">
-        <field name="sequence">3</field>
-        <field name="web_icon">caissecash_espace,static/src/img/apps/projet.svg</field>
-    </record>
-    <record id="hr_attendance.menu_hr_attendance_root" model="ir.ui.menu">
-        <field name="sequence">4</field>
-        <field name="web_icon">caissecash_espace,static/src/img/apps/presences.svg</field>
-    </record>
-    <record id="calendar.mail_menu_calendar" model="ir.ui.menu">
-        <field name="web_icon">caissecash_espace,static/src/img/apps/calendrier.svg</field>
-    </record>
-    <record id="hr.menu_hr_root" model="ir.ui.menu">
-        <field name="web_icon">caissecash_espace,static/src/img/apps/employes.svg</field>
-    </record>
+    <!-- Menu des applications par rubrique, dans l'ordre du parcours client, avec
+         des noms clairs et des icônes aux couleurs vives (models/ir_ui_menu.py).
+         Réappliqué à chaque mise à jour de ce module. -->
+    <function model="ir.ui.menu" name="_caissecash_apply_navigation"/>
 
     <!-- La direction voit le pointage de toute l'équipe (application Présences) ;
          les autres ne voient que le leur. -->
