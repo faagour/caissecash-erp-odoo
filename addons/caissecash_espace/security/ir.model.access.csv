@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_journey_step_user,caissecash.journey.step user,model_caissecash_journey_step,base.group_user,1,0,0,0
+access_journey_step_admin,caissecash.journey.step admin,model_caissecash_journey_step,base.group_system,1,1,0,0

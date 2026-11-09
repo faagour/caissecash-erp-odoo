@@ -100,6 +100,25 @@ export class CaissecashDashboard extends Component {
         return invoiced ? Math.round((paid / invoiced) * 100) : 0;
     }
 
+    get objectivesHint() {
+        const counts = this.state.data.objectives.counts;
+        const parts = [];
+        for (const [key, singular, plural] of [
+            ["done", "atteint", "atteints"],
+            ["on_track", "dans les temps", "dans les temps"],
+            ["at_risk", "en léger retard", "en léger retard"],
+            ["late", "en retard", "en retard"],
+            ["missed", "non atteint", "non atteints"],
+            ["upcoming", "à venir", "à venir"],
+            ["no_target", "sans cible", "sans cible"],
+        ]) {
+            if (counts[key]) {
+                parts.push(`${counts[key]} ${counts[key] > 1 ? plural : singular}`);
+            }
+        }
+        return parts.join(" · ");
+    }
+
     categoryWidth(category) {
         const max = Math.max(...this.state.data.categories.map((c) => c.amount), 1);
         return Math.max(2, Math.round((category.amount / max) * 100));
@@ -199,6 +218,16 @@ export class CaissecashDashboard extends Component {
 
     openAction(xmlid) {
         this.action.doAction(xmlid);
+    }
+
+    openObjectives() {
+        this.action.doAction("caissecash_erp.action_caissecash_objective");
+    }
+
+    planObjectives() {
+        this.action.doAction("caissecash_erp.action_caissecash_objective_plan", {
+            onClose: () => this.refresh(),
+        });
     }
 
     openRecord(model, id) {

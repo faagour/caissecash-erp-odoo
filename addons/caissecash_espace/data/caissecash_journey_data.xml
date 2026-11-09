@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Étapes du parcours « Du prospect au SAV » de Mon espace. noupdate : les
+         réglages de l'administrateur (nom, ordre, affichage) sont conservés
+         lors des mises à jour du module. -->
+    <data noupdate="1">
+        <record id="journey_prospects" model="caissecash.journey.step">
+            <field name="sequence">10</field>
+            <field name="icon">🎯</field>
+            <field name="name">Prospects</field>
+            <field name="hint">en cours</field>
+            <field name="model_name">crm.lead</field>
+            <field name="domain">[('type', '=', 'opportunity'), ('won_status', '=', 'pending')]</field>
+            <field name="action_xmlid">crm.crm_lead_action_pipeline</field>
+        </record>
+        <record id="journey_quotations" model="caissecash.journey.step">
+            <field name="sequence">20</field>
+            <field name="icon">📝</field>
+            <field name="name">Devis</field>
+            <field name="hint">à confirmer</field>
+            <field name="model_name">sale.order</field>
+            <field name="domain">[('state', 'in', ('draft', 'sent'))]</field>
+            <field name="action_xmlid">sale.action_quotations_with_onboarding</field>
+        </record>
+        <record id="journey_stock" model="caissecash.journey.step">
+            <field name="sequence">30</field>
+            <field name="icon">📦</field>
+            <field name="name">Stock</field>
+            <field name="hint">à réceptionner ou livrer</field>
+            <field name="model_name">stock.picking</field>
+            <field name="domain">[('state', 'in', ('confirmed', 'waiting', 'assigned'))]</field>
+            <field name="action_xmlid">stock.action_picking_tree_ready</field>
+        </record>
+        <record id="journey_installations" model="caissecash.journey.step">
+            <field name="sequence">40</field>
+            <field name="icon">🔧</field>
+            <field name="name">Installations</field>
+            <field name="hint">à faire</field>
+            <field name="model_name">caissecash.installation</field>
+            <field name="domain">[('state', 'not in', ('terminee', 'annulee'))]</field>
+            <field name="action_xmlid">caissecash_erp.action_caissecash_installation</field>
+        </record>
+        <record id="journey_invoices" model="caissecash.journey.step">
+            <field name="sequence">50</field>
+            <field name="icon">🧾</field>
+            <field name="name">Factures</field>
+            <field name="hint">à encaisser</field>
+            <field name="model_name">account.move</field>
+            <field name="domain">[('move_type', '=', 'out_invoice'), ('state', '=', 'posted'), ('payment_state', 'in', ('not_paid', 'partial'))]</field>
+            <field name="action_xmlid">account.action_move_out_invoice</field>
+        </record>
+        <record id="journey_subscriptions" model="caissecash.journey.step">
+            <field name="sequence">60</field>
+            <field name="icon">🔁</field>
+            <field name="name">Abonnements</field>
+            <field name="hint">en service</field>
+            <field name="model_name">caissecash.subscription</field>
+            <field name="domain">[('state', 'in', ('essai', 'actif'))]</field>
+            <field name="action_xmlid">caissecash_erp.action_caissecash_subscription</field>
+        </record>
+        <record id="journey_sav" model="caissecash.journey.step">
+            <field name="sequence">70</field>
+            <field name="icon">🛠️</field>
+            <field name="name">SAV</field>
+            <field name="hint">à traiter</field>
+            <field name="model_name">caissecash.sav.ticket</field>
+            <field name="domain">[('state', 'not in', ('resolu', 'ferme', 'annule'))]</field>
+            <field name="action_xmlid">caissecash_erp.action_caissecash_sav_ticket</field>
+        </record>
+    </data>
+</odoo>

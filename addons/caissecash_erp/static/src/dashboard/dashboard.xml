@@ -68,6 +68,56 @@
                     </div>
                 </section>
 
+                <section class="o_ccd_card o_ccd_objectives">
+                    <div class="o_ccd_card_header">
+                        <div>
+                            <h2>Objectifs <t t-esc="data.objectives.year"/></h2>
+                            <span class="o_ccd_card_hint" t-if="data.objectives.items.length" t-esc="objectivesHint"/>
+                            <span class="o_ccd_card_hint" t-else="">Fixez les cibles de l’année et suivez-les trimestre par trimestre</span>
+                        </div>
+                        <button t-if="data.objectives.can_plan" type="button" class="btn btn-light btn-sm" t-on-click="planObjectives">
+                            <i class="fa fa-bullseye"/> Fixer les objectifs de l’année
+                        </button>
+                    </div>
+                    <div class="o_ccd_objectives_list" t-if="data.objectives.items.length">
+                        <article t-foreach="data.objectives.items" t-as="objective" t-key="objective.id"
+                                 t-attf-class="o_ccd_objective is-{{ objective.status }}"
+                                 t-on-click="() => this.openRecord('caissecash.objective', objective.id)">
+                            <div class="o_ccd_objective_head">
+                                <span class="o_ccd_objective_name" t-esc="objective.name"/>
+                                <span class="o_ccd_status" t-esc="objective.status_label"/>
+                            </div>
+                            <div class="o_ccd_objective_meta">
+                                <t t-esc="objective.indicator"/><t t-if="objective.user"> · <t t-esc="objective.user.name"/></t>
+                            </div>
+                            <div class="o_ccd_objective_values">
+                                <b t-esc="objective.current"/>
+                                <span>/ <t t-esc="objective.target"/></span>
+                                <span class="o_ccd_objective_percent"><t t-esc="objective.progress"/> %</span>
+                            </div>
+                            <div class="o_ccd_objective_track" t-att-title="objective.expected ? 'Attendu aujourd’hui : ' + objective.expected : ''">
+                                <div class="o_ccd_objective_fill" t-attf-style="width: {{ objective.bar }}%"/>
+                                <span t-if="objective.expected" class="o_ccd_objective_marker" t-attf-style="left: {{ objective.marker }}%"/>
+                            </div>
+                            <ol class="o_ccd_objective_quarters">
+                                <li t-foreach="objective.quarters" t-as="quarter" t-key="quarter.label"
+                                    t-attf-class="is-{{ quarter.period }} {{ quarter.value ? 'has-value' : '' }} {{ quarter.reached ? 'is-reached' : '' }}"
+                                    t-att-title="quarter.label + ' (' + quarter.months + ') — cible : ' + quarter.target + (quarter.value ? ' · réalisé : ' + quarter.value : '')"
+                                    t-esc="quarter.label"/>
+                            </ol>
+                        </article>
+                    </div>
+                    <div class="o_ccd_empty" t-else="">
+                        Aucun objectif pour <t t-esc="data.objectives.year"/>.
+                        <button t-if="data.objectives.can_plan" type="button" class="btn btn-primary btn-sm ms-2" t-on-click="planObjectives">
+                            Fixer les objectifs de l’année
+                        </button>
+                    </div>
+                    <div class="o_ccd_card_links">
+                        <button type="button" class="btn btn-link btn-sm" t-on-click="openObjectives">Tous les objectifs</button>
+                    </div>
+                </section>
+
                 <div class="o_ccd_grid">
                     <section class="o_ccd_card o_ccd_span_2">
                         <div class="o_ccd_card_header">

@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_caissecash_objective_kanban" model="ir.ui.view">
+        <field name="name">caissecash.objective.kanban</field>
+        <field name="model">caissecash.objective</field>
+        <field name="arch" type="xml">
+            <kanban class="o_kanban_mobile" sample="1">
+                <field name="status"/>
+                <field name="tracking_mode"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="d-flex align-items-start gap-2">
+                            <field name="name" class="fw-bolder fs-5 flex-grow-1"/>
+                            <field name="status" widget="badge"
+                                   decoration-success="status in ('done', 'on_track')"
+                                   decoration-warning="status == 'at_risk'"
+                                   decoration-danger="status in ('late', 'missed')"
+                                   decoration-info="status in ('upcoming', 'no_target')"/>
+                        </div>
+                        <div class="text-muted small">
+                            <field name="indicator" invisible="tracking_mode != 'auto'"/>
+                            <span invisible="tracking_mode != 'manual'">Suivi à la main</span>
+                            <span invisible="not project_id"> · </span><field name="project_id"/>
+                        </div>
+                        <field name="progress" widget="progressbar" class="mt-2"/>
+                        <div class="d-flex align-items-center mt-1">
+                            <field name="progress_label" class="fw-bold"/>
+                            <field name="user_id" class="ms-auto" widget="many2one_avatar_user"/>
+                        </div>
+                        <div class="text-muted small" invisible="not expected_label">
+                            Attendu aujourd'hui : <field name="expected_label"/>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="view_caissecash_objective_list" model="ir.ui.view">
+        <field name="name">caissecash.objective.list</field>
+        <field name="model">caissecash.objective</field>
+        <field name="arch" type="xml">
+            <list decoration-success="status == 'done'" decoration-warning="status == 'at_risk'"
+                  decoration-danger="status in ('late', 'missed')" decoration-muted="status in ('upcoming', 'no_target')">
+                <field name="sequence" widget="handle"/>
+                <field name="year" options="{'enable_formatting': false}"/>
+                <field name="name"/>
+                <field name="user_id" widget="many2one_avatar_user" optional="show"/>
+                <field name="project_id" optional="show"/>
+                <field name="indicator" optional="show"/>
+                <field name="progress_label"/>
+                <field name="progress" widget="progressbar"/>
+                <field name="status" widget="badge"
+                       decoration-success="status in ('done', 'on_track')"
+                       decoration-warning="status == 'at_risk'"
+                       decoration-danger="status in ('late', 'missed')"
+                       decoration-info="status in ('upcoming', 'no_target')"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Fiche : d'abord où on en est, puis la cible et sa mesure ; les détails
+         (trimestres, plan d'action) dans des onglets. Les cibles ne sont
+         modifiables que par l'administrateur et la direction. -->
+    <record id="view_caissecash_objective_form" model="ir.ui.view">
+        <field name="name">caissecash.objective.form</field>
+        <field name="model">caissecash.objective</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <field name="status" widget="badge" invisible="not id"
+                           decoration-success="status in ('done', 'on_track')"
+                           decoration-warning="status == 'at_risk'"
+                           decoration-danger="status in ('late', 'missed')"
+                           decoration-info="status in ('upcoming', 'no_target')"/>
+                </header>
+                <sheet>
+                    <widget name="web_ribbon" title="Atteint" bg_color="text-bg-success" invisible="status != 'done'"/>
+                    <widget name="web_ribbon" title="Archivé" bg_color="text-bg-danger" invisible="active"/>
+                    <field name="active" invisible="1"/>
+                    <field name="is_monetary" invisible="1"/>
+                    <field name="current_quarter" invisible="1"/>
+                    <field name="can_manage" invisible="1"/>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" readonly="not can_manage" placeholder="ex. Chiffre d'affaires de l'année"/></h1>
+                    </div>
+                    <div class="alert alert-info" role="status" invisible="can_manage">
+                        Les cibles sont fixées par la direction.
+                        <span invisible="tracking_mode != 'manual'">Mettez à jour la valeur atteinte et le plan d'action.</span>
+                        <span invisible="tracking_mode != 'auto'">L'avancement se calcule tout seul ; vous pouvez compléter le plan d'action.</span>
+                    </div>
+
+                    <group invisible="not id">
+                        <group string="Où en est-on ?">
+                            <field name="progress_label"/>
+                            <field name="progress" widget="progressbar"/>
+                            <field name="expected_label" invisible="not expected_label"/>
+                        </group>
+                        <group string="Mise à jour" invisible="tracking_mode != 'manual'">
+                            <field name="manual_value" options="{'hide_trailing_zeros': true}"/>
+                            <div class="text-muted" colspan="2">
+                                À mettre à jour dès que ça avance : chaque changement est gardé dans l'historique.
+                            </div>
+                        </group>
+                    </group>
+
+                    <group>
+                        <group string="Objectif">
+                            <label for="target"/>
+                            <div class="o_row">
+                                <field name="target" readonly="not can_manage" options="{'hide_trailing_zeros': true}"/>
+                                <field name="unit_label" class="text-muted"/>
+                            </div>
+                            <field name="year" readonly="not can_manage" options="{'enable_formatting': false}"/>
+                            <field name="user_id" readonly="not can_manage" widget="many2one_avatar_user"/>
+                            <field name="project_id" readonly="not can_manage"/>
+                        </group>
+                        <group string="Comment on le mesure">
+                            <field name="tracking_mode" widget="radio" readonly="not can_manage"/>
+                            <field name="indicator" invisible="tracking_mode != 'auto'" required="tracking_mode == 'auto'"
+                                   readonly="not can_manage"/>
+                            <field name="measure" widget="radio" invisible="tracking_mode == 'auto'" readonly="not can_manage"/>
+                            <field name="unit" invisible="tracking_mode == 'auto'" readonly="not can_manage"
+                                   placeholder="ex. recrutements, %"/>
+                            <field name="manual_start_value" invisible="tracking_mode == 'auto' or measure != 'level'"
+                                   readonly="not can_manage" options="{'hide_trailing_zeros': true}"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Plan d'action" name="plan">
+                            <field name="description" placeholder="Comment allons-nous atteindre cet objectif ? Actions, échéances, qui fait quoi…"/>
+                        </page>
+                        <page string="Trimestres" name="quarters">
+                            <p class="text-muted" invisible="measure != 'cumulative'">
+                                L'objectif de l'année se répartit tout seul sur les 4 trimestres. Modifiez un
+                                trimestre si l'activité n'est pas régulière : le total de l'année suit.
+                            </p>
+                            <p class="text-muted" invisible="measure != 'level'">
+                                Chaque trimestre indique la valeur visée en fin de trimestre ; celle de T4
+                                (fin décembre) est l'objectif de l'année.
+                            </p>
+                            <group>
+                                <group string="T1 · janvier – mars">
+                                    <field name="target_q1" string="Cible" readonly="not can_manage" options="{'hide_trailing_zeros': true}"/>
+                                    <field name="value_q1" string="Réalisé" invisible="tracking_mode != 'auto' or current_quarter == 0" options="{'hide_trailing_zeros': true}"/>
+                                </group>
+                                <group string="T2 · avril – juin">
+                                    <field name="target_q2" string="Cible" readonly="not can_manage" options="{'hide_trailing_zeros': true}"/>
+                                    <field name="value_q2" string="Réalisé" invisible="tracking_mode != 'auto' or current_quarter &lt; 2" options="{'hide_trailing_zeros': true}"/>
+                                </group>
+                            </group>
+                            <group>
+                                <group string="T3 · juillet – septembre">
+                                    <field name="target_q3" string="Cible" readonly="not can_manage" options="{'hide_trailing_zeros': true}"/>
+                                    <field name="value_q3" string="Réalisé" invisible="tracking_mode != 'auto' or current_quarter &lt; 3" options="{'hide_trailing_zeros': true}"/>
+                                </group>
+                                <group string="T4 · octobre – décembre">
+                                    <field name="target_q4" string="Cible" readonly="not can_manage" options="{'hide_trailing_zeros': true}"/>
+                                    <field name="value_q4" string="Réalisé" invisible="tracking_mode != 'auto' or current_quarter &lt; 4" options="{'hide_trailing_zeros': true}"/>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- Fenêtre « Mettre à jour » ouverte depuis Mon espace (objectifs suivis à la main). -->
+    <record id="view_caissecash_objective_update_form" model="ir.ui.view">
+        <field name="name">caissecash.objective.update.form</field>
+        <field name="model">caissecash.objective</field>
+        <field name="priority">100</field>
+        <field name="arch" type="xml">
+            <form string="Mettre à jour l'objectif">
+                <h2><field name="name" readonly="1"/></h2>
+                <group>
+                    <field name="progress_label" string="Jusqu'ici"/>
+                    <label for="manual_value" string="Valeur atteinte aujourd'hui"/>
+                    <div class="o_row">
+                        <field name="manual_value" options="{'hide_trailing_zeros': true}"/>
+                        <field name="unit_label" class="text-muted"/>
+                    </div>
+                </group>
+                <footer>
+                    <button string="Enregistrer" special="save" class="btn-primary"/>
+                    <button string="Annuler" special="cancel" class="btn-secondary"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_caissecash_objective_search" model="ir.ui.view">
+        <field name="name">caissecash.objective.search</field>
+        <field name="model">caissecash.objective</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="user_id"/>
+                <field name="project_id"/>
+                <filter name="this_year" string="Cette année" domain="[('year', '=', context_today().year)]"/>
+                <filter name="next_year" string="L'année prochaine" domain="[('year', '=', context_today().year + 1)]"/>
+                <separator/>
+                <filter name="mine" string="Mes objectifs" domain="[('user_id', '=', uid)]"/>
+                <separator/>
+                <filter name="auto" string="Calculés automatiquement" domain="[('tracking_mode', '=', 'auto')]"/>
+                <filter name="manual" string="Mis à jour à la main" domain="[('tracking_mode', '=', 'manual')]"/>
+                <separator/>
+                <filter name="archived" string="Archivés" domain="[('active', '=', False)]"/>
+                <group>
+                    <filter name="group_year" string="Année" context="{'group_by': 'year'}"/>
+                    <filter name="group_user" string="Responsable" context="{'group_by': 'user_id'}"/>
+                    <filter name="group_project" string="Pôle" context="{'group_by': 'project_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_caissecash_objective" model="ir.actions.act_window">
+        <field name="name">Objectifs</field>
+        <field name="res_model">caissecash.objective</field>
+        <field name="path">objectifs</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="context">{'search_default_this_year': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Fixez les objectifs de l'année</p>
+            <p>
+                Le plus simple : menu « Fixer les objectifs de l'année », un seul tableau pour toutes les cibles.
+                Les chiffres de l'ERP (CA facturé, CA encaissé, nouveaux clients, installations, abonnements)
+                se mettent à jour tout seuls ; les autres objectifs sont mis à jour par leur responsable.
+            </p>
+        </field>
+    </record>
+
+    <!-- Assistant « Fixer les objectifs de l'année » (direction et administrateur). -->
+    <record id="view_caissecash_objective_plan_form" model="ir.ui.view">
+        <field name="name">caissecash.objective.plan.form</field>
+        <field name="model">caissecash.objective.plan</field>
+        <field name="arch" type="xml">
+            <form string="Fixer les objectifs de l'année">
+                <p class="text-muted">
+                    Saisissez la cible de l'année pour chaque objectif à suivre ; laissez à 0 ceux que vous ne suivez pas.
+                    Chaque cible se répartit toute seule sur les 4 trimestres (modifiable ensuite dans l'objectif).
+                    Ajoutez une ligne pour un objectif suivi à la main : recrutements, note client, ouverture d'une ville…
+                </p>
+                <group>
+                    <field name="year" options="{'enable_formatting': false}"/>
+                </group>
+                <field name="line_ids">
+                    <list editable="bottom">
+                        <field name="sequence" widget="handle"/>
+                        <field name="tracking_mode" column_invisible="1"/>
+                        <field name="objective_id" column_invisible="1"/>
+                        <field name="name"/>
+                        <field name="indicator" readonly="1" string="Calculé depuis"/>
+                        <field name="last_year_label" readonly="1"/>
+                        <field name="target" options="{'hide_trailing_zeros': true}"/>
+                        <field name="unit" readonly="tracking_mode == 'auto'" placeholder="ex. recrutements"/>
+                        <field name="user_id" widget="many2one_avatar_user"/>
+                        <field name="project_id" optional="show"/>
+                    </list>
+                </field>
+                <footer>
+                    <button name="action_apply" type="object" string="Enregistrer les objectifs" class="btn-primary"/>
+                    <button string="Annuler" special="cancel" class="btn-secondary"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_caissecash_objective_plan" model="ir.actions.act_window">
+        <field name="name">Fixer les objectifs de l'année</field>
+        <field name="res_model">caissecash.objective.plan</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="context">{'dialog_size': 'extra-large'}</field>
+    </record>
+
+    <!-- Chacun voit ses propres objectifs ; la direction et la finance voient tout
+         (règles dans security/caissecash_security.xml). -->
+    <menuitem id="menu_caissecash_objective_root" name="Objectifs" sequence="72"
+              action="action_caissecash_objective"
+              web_icon="caissecash_erp,static/description/icon.png"
+              groups="caissecash_erp.group_commercial,caissecash_erp.group_stock,caissecash_erp.group_technicien,caissecash_erp.group_comptabilite,caissecash_erp.group_stagiaire"/>
+    <menuitem id="menu_caissecash_objective" name="Objectifs" parent="menu_caissecash_objective_root"
+              action="action_caissecash_objective" sequence="1"/>
+    <menuitem id="menu_caissecash_objective_plan" name="Fixer les objectifs de l'année" parent="menu_caissecash_objective_root"
+              action="action_caissecash_objective_plan" sequence="2" groups="caissecash_erp.group_direction"/>
+
+</odoo>

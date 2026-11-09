@@ -1,8 +1,8 @@
 {
     "name": "CaisseCash ERP",
-    "version": "19.0.2.2.0",
+    "version": "19.0.2.3.0",
     "category": "Services/Field Service",
-    "summary": "ERP interne CaisseCash : associés, achats, dépenses, établissements, installations, garanties, SAV, abonnements",
+    "summary": "ERP interne CaisseCash : associés, achats, dépenses, établissements, installations, garanties, SAV, abonnements, objectifs",
     "description": """
 CaisseCash ERP
 ==============
@@ -12,7 +12,8 @@ Addon interne complementant Odoo Community pour l'activite de CaisseCash
 Ne remplace ni le POS ni les applications CaisseCash existantes (POS, KDS,
 Kiosk, Waiter App, Dashboard). Sert uniquement d'ERP interne : associés et
 financement (suivi indicatif), CRM, ventes, achats, dépenses, stock/SAV,
-installations, garanties et abonnements logiciels.
+installations, garanties, abonnements logiciels et objectifs de l'année
+(cible annuelle répartie par trimestre, suivie automatiquement ou à la main).
 """,
     "author": "CaisseCash",
     "license": "LGPL-3",
@@ -59,6 +60,7 @@ installations, garanties et abonnements logiciels.
         "views/caissecash_onboarding_views.xml",
         "views/caissecash_financial_snapshot_views.xml",
         "views/caissecash_dashboard_views.xml",
+        "views/caissecash_objective_views.xml",
         "report/caissecash_reports.xml",
         "report/caissecash_installation_report_templates.xml",
         "report/caissecash_warranty_report_templates.xml",

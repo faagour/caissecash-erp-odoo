@@ -139,5 +139,33 @@
             <field name="groups" eval="[(4, ref('group_technicien')), (4, ref('group_stagiaire'))]"/>
         </record>
 
+        <!-- Objectifs : chacun voit et met à jour les siens, la finance les consulte
+             tous, la direction les gère tous (les règles d'un même utilisateur
+             s'additionnent : la direction, qui hérite des autres rôles, voit tout). -->
+        <record id="rule_objective_own" model="ir.rule">
+            <field name="name">Objectif : chacun voit et met à jour ses objectifs</field>
+            <field name="model_id" ref="model_caissecash_objective"/>
+            <field name="domain_force">[('user_id', '=', user.id)]</field>
+            <field name="groups" eval="[(4, ref('group_commercial')), (4, ref('group_stock')), (4, ref('group_technicien')), (4, ref('group_comptabilite')), (4, ref('group_stagiaire'))]"/>
+        </record>
+
+        <record id="rule_objective_finance_read" model="ir.rule">
+            <field name="name">Objectif : la finance consulte tous les objectifs</field>
+            <field name="model_id" ref="model_caissecash_objective"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('group_comptabilite'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <record id="rule_objective_direction" model="ir.rule">
+            <field name="name">Objectif : la direction gère tous les objectifs</field>
+            <field name="model_id" ref="model_caissecash_objective"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('group_direction'))]"/>
+        </record>
+
     </data>
 </odoo>

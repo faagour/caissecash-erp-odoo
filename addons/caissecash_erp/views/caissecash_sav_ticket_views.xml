@@ -21,17 +21,20 @@
         <field name="name">caissecash.sav.ticket.kanban</field>
         <field name="model">caissecash.sav.ticket</field>
         <field name="arch" type="xml">
-            <kanban default_group_by="state">
-                <field name="name"/>
-                <field name="partner_id"/>
-                <field name="priority"/>
+            <!-- Odoo 19 : modèle « card » (l'ancien « kanban-box » n'est plus lu
+                 et faisait planter l'écran des tickets SAV). -->
+            <kanban default_group_by="state" class="o_kanban_mobile">
                 <templates>
-                    <t t-name="kanban-box">
-                        <div class="oe_kanban_card oe_kanban_global_click">
-                            <strong><field name="name"/></strong>
-                            <div><field name="partner_id"/></div>
-                            <field name="priority" widget="priority"/>
+                    <t t-name="card">
+                        <div class="d-flex align-items-start gap-2">
+                            <field name="partner_id" class="fw-bold flex-grow-1"/>
+                            <field name="name" class="text-muted small"/>
                         </div>
+                        <field name="category" class="small"/>
+                        <footer class="pt-1">
+                            <field name="priority" widget="priority"/>
+                            <field name="technician_id" widget="many2one_avatar_user" class="ms-auto"/>
+                        </footer>
                     </t>
                 </templates>
             </kanban>
@@ -51,33 +54,35 @@
                     <div class="oe_title">
                         <h1><field name="name" readonly="1"/></h1>
                     </div>
+                    <!-- L'essentiel pour prendre en charge le ticket ; garantie,
+                         facturation et pièces sont dans les onglets. -->
                     <group>
-                        <group>
+                        <group string="Chez qui">
                             <field name="partner_id"/>
-                            <field name="contact_name"/>
                             <field name="establishment_id" domain="[('partner_id', '=', partner_id)]"/>
+                            <field name="contact_name" placeholder="Personne à rappeler sur place"/>
                             <field name="equipment_id"/>
-                            <field name="warranty_id"/>
-                            <field name="under_warranty"/>
-                            <field name="billable"/>
                         </group>
-                        <group>
+                        <group string="Prise en charge">
                             <field name="category"/>
                             <field name="priority" widget="priority"/>
-                            <field name="technician_id"/>
+                            <field name="technician_id" widget="many2one_avatar_user"/>
                             <field name="date_open"/>
-                            <field name="time_spent"/>
-                            <field name="currency_id" invisible="1"/>
-                            <field name="cost"/>
                         </group>
                     </group>
-                    <field name="description" placeholder="Description du problème..."/>
+                    <label for="description" class="fw-bold"/>
+                    <field name="description" placeholder="Ce que le client signale : symptôme, depuis quand, ce qui a déjà été essayé…"/>
                     <notebook>
-                        <page string="Diagnostic et actions">
-                            <field name="diagnostic" placeholder="Diagnostic..."/>
-                            <field name="actions_taken" placeholder="Actions réalisées..."/>
+                        <page string="Diagnostic et actions" name="diagnostic">
+                            <group>
+                                <field name="diagnostic" placeholder="Cause trouvée…"/>
+                                <field name="actions_taken" placeholder="Ce qui a été fait…"/>
+                            </group>
                         </page>
-                        <page string="Pièces utilisées">
+                        <page string="Solution" name="resolution">
+                            <field name="resolution" placeholder="Solution apportée, à réutiliser pour un problème semblable…"/>
+                        </page>
+                        <page string="Pièces utilisées" name="parts">
                             <field name="part_ids">
                                 <list editable="bottom">
                                     <field name="product_id"/>
@@ -85,16 +90,23 @@
                                 </list>
                             </field>
                         </page>
-                        <page string="Solution">
-                            <field name="resolution"/>
+                        <page string="Garantie et facturation" name="billing">
+                            <group>
+                                <group>
+                                    <field name="warranty_id"/>
+                                    <field name="under_warranty"/>
+                                    <field name="billable"/>
+                                </group>
+                                <group>
+                                    <field name="time_spent" widget="float_time"/>
+                                    <field name="currency_id" invisible="1"/>
+                                    <field name="cost"/>
+                                </group>
+                            </group>
                         </page>
                     </notebook>
                 </sheet>
-                <div class="oe_chatter">
-                    <field name="message_follower_ids"/>
-                    <field name="activity_ids"/>
-                    <field name="message_ids"/>
-                </div>
+                <chatter/>
             </form>
         </field>
     </record>

@@ -31,25 +31,32 @@
                             <field name="invoice_ids" widget="statinfo" string="Factures"/>
                         </button>
                     </div>
+                    <!-- Qui paie quoi et quand ; dates de contrat et historique dans les onglets. -->
                     <group>
-                        <group>
+                        <group string="Client et offre">
                             <field name="partner_id"/>
                             <field name="establishment_id" domain="[('partner_id', '=', partner_id)]"/>
                             <field name="product_id"/>
-                            <field name="software_module_ids" widget="many2many_tags"/>
+                            <field name="software_module_ids" widget="many2many_tags" placeholder="Logiciels inclus"/>
                         </group>
-                        <group>
-                            <field name="periodicity"/>
+                        <group string="Facturation">
                             <field name="currency_id" invisible="1"/>
                             <field name="amount"/>
-                            <field name="date_start"/>
+                            <field name="periodicity"/>
                             <field name="next_invoice_date"/>
-                            <field name="date_end"/>
                             <field name="payment_mode"/>
                         </group>
                     </group>
                     <notebook>
-                        <page string="Historique de facturation">
+                        <page string="Contrat" name="contract">
+                            <group>
+                                <group>
+                                    <field name="date_start"/>
+                                    <field name="date_end" placeholder="Laisser vide si sans fin prévue"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Historique de facturation" name="history">
                             <field name="invoice_log_ids">
                                 <list>
                                     <field name="period_key"/>
@@ -60,11 +67,7 @@
                         </page>
                     </notebook>
                 </sheet>
-                <div class="oe_chatter">
-                    <field name="message_follower_ids"/>
-                    <field name="activity_ids"/>
-                    <field name="message_ids"/>
-                </div>
+                <chatter/>
             </form>
         </field>
     </record>

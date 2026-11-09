@@ -58,13 +58,30 @@ class CaissecashInstallation(models.Model):
         tracking=True,
         string="Statut",
     )
+    date_done = fields.Date(
+        string="Terminée le", copy=False, tracking=True,
+        help="Renseignée automatiquement quand l'installation passe à « Terminée » "
+             "(sert aux objectifs « Installations terminées »).",
+    )
 
     @api.model_create_multi
     def create(self, vals_list):
+        today = fields.Date.context_today(self)
         for vals in vals_list:
             if not vals.get("name") or vals.get("name") == "Nouvelle installation":
                 vals["name"] = self.env["ir.sequence"].next_by_code("caissecash.installation") or "Nouvelle installation"
+            if vals.get("state") == "terminee" and not vals.get("date_done"):
+                vals["date_done"] = today
         return super().create(vals_list)
+
+    def write(self, vals):
+        if vals.get("state") == "terminee" and "date_done" not in vals:
+            finishing = self.filtered(lambda rec: rec.state != "terminee" and not rec.date_done)
+            result = super().write(vals)
+            if finishing:
+                finishing.date_done = fields.Date.context_today(self)
+            return result
+        return super().write(vals)
 
     def action_mark_done(self):
         for rec in self:

@@ -121,8 +121,18 @@ class CaissecashDashboard(models.TransientModel):
         founders = self.env["caissecash.founder"].search([("state", "=", "actif")])
         capital_total = sum(founders.mapped("total_capital"))
 
+        # Objectifs de l'année en cours, quelle que soit la période choisie.
+        Objective = self.env["caissecash.objective"]
+        objective_cards = Objective.search([("year", "=", today.year)])._caissecash_card_data()
+
         return {
             "currency": {"symbol": currency.symbol, "position": currency.position},
+            "objectives": {
+                "year": today.year,
+                "items": objective_cards,
+                "counts": Objective._caissecash_summary(objective_cards),
+                "can_plan": self.env["caissecash.objective.plan"].has_access("create"),
+            },
             "kpis": {
                 "invoiced": invoiced,
                 "invoice_count": len(invoices),

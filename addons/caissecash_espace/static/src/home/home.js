@@ -40,7 +40,7 @@ export class CaissecashHome extends Component {
         this.action = useService("action");
         this.effect = useService("effect");
         this.notification = useService("notification");
-        this.state = useState({ data: null, now: new Date(), busy: false });
+        this.state = useState({ data: null, now: new Date(), busy: false, createOpen: false });
 
         onWillStart(() => this.load());
         // Rafraîchit le compteur de temps de travail.
@@ -66,9 +66,15 @@ export class CaissecashHome extends Component {
     }
 
     get quote() {
+        // Phrases réglables dans Paramètres > CaisseCash ; une différente chaque jour.
+        const quotes = this.state.data.quotes?.length ? this.state.data.quotes : QUOTES;
         const start = new Date(this.state.now.getFullYear(), 0, 0);
         const dayOfYear = Math.floor((this.state.now - start) / 86400000);
-        return QUOTES[dayOfYear % QUOTES.length];
+        return quotes[dayOfYear % quotes.length];
+    }
+
+    get createHint() {
+        return this.state.data.create.map((shortcut) => shortcut.label).join(", ");
     }
 
     get attendance() {
@@ -157,6 +163,22 @@ export class CaissecashHome extends Component {
         this.action.doAction(step.action);
     }
 
+    openObjective(objective) {
+        this.action.doAction({
+            type: "ir.actions.act_window",
+            res_model: "caissecash.objective",
+            res_id: objective.id,
+            views: [[false, "form"]],
+            target: "current",
+        });
+    }
+
+    openMyObjectives() {
+        this.action.doAction("caissecash_erp.action_caissecash_objective", {
+            additionalContext: { search_default_mine: 1 },
+        });
+    }
+
     newTask() {
         this.action.doAction(
             {
@@ -171,14 +193,43 @@ export class CaissecashHome extends Component {
         );
     }
 
-    newExpense() {
+    toggleCreate() {
+        this.state.createOpen = !this.state.createOpen;
+    }
+
+    create(shortcut) {
+        this.state.createOpen = false;
         this.action.doAction({
             type: "ir.actions.act_window",
-            name: "Nouvelle dépense",
-            res_model: "caissecash.expense",
+            name: shortcut.label,
+            res_model: shortcut.model,
             views: [[false, "form"]],
             target: "current",
+            context: shortcut.context,
         });
+    }
+
+    openAction(xmlid) {
+        this.action.doAction(xmlid);
+    }
+
+    async setGuideHidden(hidden) {
+        await this.orm.call("caissecash.espace", "set_guide_hidden", [hidden]);
+        await this.load();
+    }
+
+    updateObjective(objective) {
+        this.action.doAction(
+            {
+                type: "ir.actions.act_window",
+                name: "Mettre à jour l'objectif",
+                res_model: "caissecash.objective",
+                res_id: objective.id,
+                views: [[this.state.data.objectives.update_view_id, "form"]],
+                target: "new",
+            },
+            { onClose: () => this.load() }
+        );
     }
 }
 

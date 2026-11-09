@@ -11,6 +11,7 @@
                 <field name="establishment_id"/>
                 <field name="technician_id"/>
                 <field name="date_planned"/>
+                <field name="date_done" optional="hide"/>
                 <field name="state" widget="badge"/>
             </list>
         </field>
@@ -20,19 +21,20 @@
         <field name="name">caissecash.installation.kanban</field>
         <field name="model">caissecash.installation</field>
         <field name="arch" type="xml">
-            <kanban default_group_by="state">
-                <field name="name"/>
-                <field name="partner_id"/>
-                <field name="technician_id"/>
-                <field name="date_planned"/>
+            <!-- Odoo 19 : modèle « card » (l'ancien « kanban-box » n'est plus lu
+                 et faisait planter l'écran des installations). -->
+            <kanban default_group_by="state" class="o_kanban_mobile">
                 <templates>
-                    <t t-name="kanban-box">
-                        <div class="oe_kanban_card oe_kanban_global_click">
-                            <strong><field name="name"/></strong>
-                            <div><field name="partner_id"/></div>
-                            <div><field name="date_planned"/></div>
-                            <div><field name="technician_id" widget="many2one_avatar_user"/></div>
+                    <t t-name="card">
+                        <div class="d-flex align-items-start gap-2">
+                            <field name="partner_id" class="fw-bold flex-grow-1"/>
+                            <field name="name" class="text-muted small"/>
                         </div>
+                        <field name="establishment_id" class="small"/>
+                        <footer class="pt-1">
+                            <field name="date_planned" widget="date" class="small text-muted"/>
+                            <field name="technician_id" widget="many2one_avatar_user" class="ms-auto"/>
+                        </footer>
                     </t>
                 </templates>
             </kanban>
@@ -53,43 +55,48 @@
                     <div class="oe_title">
                         <h1><field name="name" readonly="1"/></h1>
                     </div>
+                    <!-- L'essentiel pour préparer l'intervention ; la fin
+                         d'installation et les détails sont dans les onglets. -->
                     <group>
-                        <group>
+                        <group string="Chez qui">
                             <field name="partner_id"/>
                             <field name="establishment_id" domain="[('partner_id', '=', partner_id)]"/>
-                            <field name="address"/>
-                            <field name="sale_order_id" domain="[('partner_id', '=', partner_id)]"/>
+                            <field name="address" placeholder="Adresse de l'intervention si différente de l'établissement"/>
                         </group>
-                        <group>
-                            <field name="technician_id"/>
+                        <group string="Qui et quand">
+                            <field name="technician_id" widget="many2one_avatar_user"/>
                             <field name="date_planned"/>
-                            <field name="time_slot"/>
-                            <field name="training_done"/>
-                            <field name="customer_validated"/>
+                            <field name="time_slot" placeholder="ex. 09:00 – 11:00"/>
+                            <field name="date_done" invisible="state != 'terminee'"/>
                         </group>
                     </group>
-                    <group string="Matériel et logiciels">
-                        <field name="equipment_ids" widget="many2many_tags"/>
-                        <field name="software_module_ids" widget="many2many_tags"/>
+                    <group string="Ce qu'on installe">
+                        <field name="equipment_ids" widget="many2many_tags" placeholder="Caisse, imprimante, tiroir…"/>
+                        <field name="software_module_ids" widget="many2many_tags" placeholder="Logiciels à activer chez le client"/>
                     </group>
                     <notebook>
-                        <page string="Checklist">
-                            <field name="checklist"/>
+                        <page string="Checklist" name="checklist">
+                            <field name="checklist" placeholder="Étapes à vérifier sur place…"/>
                         </page>
-                        <page string="Tests et observations">
-                            <field name="tests_done"/>
-                            <field name="observations"/>
+                        <page string="Fin d'installation" name="closing">
+                            <group>
+                                <group>
+                                    <field name="training_done"/>
+                                    <field name="customer_validated"/>
+                                </group>
+                                <group>
+                                    <field name="sale_order_id" domain="[('partner_id', '=', partner_id)]"/>
+                                </group>
+                            </group>
+                            <field name="tests_done" placeholder="Tests effectués : impression, paiement, réseau…"/>
+                            <field name="observations" placeholder="Remarques pour l'équipe ou le SAV…"/>
                         </page>
-                        <page string="Photos">
+                        <page string="Photos" name="photos">
                             <field name="photo_ids" widget="many2many_binary"/>
                         </page>
                     </notebook>
                 </sheet>
-                <div class="oe_chatter">
-                    <field name="message_follower_ids"/>
-                    <field name="activity_ids"/>
-                    <field name="message_ids"/>
-                </div>
+                <chatter/>
             </form>
         </field>
     </record>

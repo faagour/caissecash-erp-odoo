@@ -6,30 +6,73 @@ import pytz
 from odoo import api, fields, models
 
 from .project_task import DONE, first_name
+from .res_config_settings import DEFAULT_QUOTES, QUOTES_PARAM, WEEKLY_GOAL_PARAM
 
 
 def iso_utc(dt):
     return dt and dt.isoformat() + "Z"
 
 
-# Parcours d'un client, de A à Z : (étape, icône, modèle, dossiers en cours,
-# libellé du nombre, action ouverte au clic).
-CUSTOMER_JOURNEY = [
-    ("Prospects", "🎯", "crm.lead", [("type", "=", "opportunity"), ("won_status", "=", "pending")],
-     "en cours", "crm.crm_lead_action_pipeline"),
-    ("Devis", "📝", "sale.order", [("state", "in", ("draft", "sent"))],
-     "à confirmer", "sale.action_quotations_with_onboarding"),
-    ("Stock", "📦", "stock.picking", [("state", "in", ("confirmed", "waiting", "assigned"))],
-     "à réceptionner ou livrer", "stock.action_picking_tree_ready"),
-    ("Installations", "🔧", "caissecash.installation", [("state", "not in", ("terminee", "annulee"))],
-     "à faire", "caissecash_erp.action_caissecash_installation"),
-    ("Factures", "🧾", "account.move",
-     [("move_type", "=", "out_invoice"), ("state", "=", "posted"), ("payment_state", "in", ("not_paid", "partial"))],
-     "à encaisser", "account.action_move_out_invoice"),
-    ("Abonnements", "🔁", "caissecash.subscription", [("state", "in", ("essai", "actif"))],
-     "en service", "caissecash_erp.action_caissecash_subscription"),
-    ("SAV", "🛠️", "caissecash.sav.ticket", [("state", "not in", ("resolu", "ferme", "annule"))],
-     "à traiter", "caissecash_erp.action_caissecash_sav_ticket"),
+# Guide « Bien démarrer », selon le rôle : (groupe, rôle, étapes). Chaque étape :
+# (icône, titre, explication, action ouverte au clic). Le premier rôle trouvé
+# l'emporte (la direction hérite de tous les autres).
+ROLE_GUIDES = [
+    ("caissecash_erp.group_direction", "Direction", [
+        ("🎯", "Fixer les objectifs de l'année", "Toutes les cibles dans un seul tableau",
+         "caissecash_erp.action_caissecash_objective_plan"),
+        ("📊", "Suivre le tableau de bord", "Facturé, encaissé, dépenses et objectifs",
+         "caissecash_erp.action_caissecash_dashboard_home"),
+        ("👥", "Donner les accès à l'équipe", "Un rôle par personne : commercial, technicien…",
+         "base.action_res_users"),
+        ("⚙️", "Régler CaisseCash", "Objectif de l'équipe, parcours client, seuils de retard",
+         "caissecash_espace.action_caissecash_settings"),
+    ]),
+    ("caissecash_erp.group_comptabilite", "Finance", [
+        ("🧾", "Factures à encaisser", "Relancer les clients en retard de paiement",
+         "account.action_move_out_invoice"),
+        ("💸", "Enregistrer une dépense", "Ticket, facture, frais", "caissecash_erp.action_caissecash_expense"),
+        ("📊", "Suivre le tableau de bord", "Facturé, encaissé et dépenses",
+         "caissecash_erp.action_caissecash_dashboard_home"),
+        ("🏆", "Voir les objectifs", "Où en est l'entreprise sur l'année", "caissecash_erp.action_caissecash_objective"),
+    ]),
+    ("caissecash_erp.group_commercial", "Commercial", [
+        ("🎯", "Ajouter un prospect", "Chaque restaurant intéressé, même à peine", "crm.crm_lead_action_pipeline"),
+        ("📝", "Préparer un devis", "À envoyer au client pour validation", "sale.action_quotations_with_onboarding"),
+        ("🏪", "Suivre les établissements", "Les restaurants équipés et leur matériel",
+         "caissecash_erp.action_caissecash_establishment"),
+        ("🏆", "Voir mes objectifs", "Où j'en suis sur l'année", "caissecash_erp.action_caissecash_objective"),
+    ]),
+    ("caissecash_erp.group_stock", "Stock", [
+        ("📦", "Réceptions et livraisons", "Ce qui entre et ce qui sort", "stock.action_picking_tree_ready"),
+        ("🛒", "Commander du matériel", "Demandes de prix et achats fournisseurs", "purchase.purchase_rfq"),
+        ("🔧", "Préparer les installations", "Le matériel à sortir pour chaque intervention",
+         "caissecash_erp.action_caissecash_installation"),
+    ]),
+    ("caissecash_erp.group_technicien", "Technicien", [
+        ("🔧", "Voir mes installations", "Matériel, checklist, puis « Marquer terminée »",
+         "caissecash_erp.action_caissecash_installation"),
+        ("🛠️", "Traiter mes tickets SAV", "Diagnostic, actions, solution", "caissecash_erp.action_caissecash_sav_ticket"),
+        ("✅", "Terminer mes tâches", "Le bouton ✓ suffit", "caissecash_espace.action_caissecash_my_tasks"),
+    ]),
+    ("caissecash_erp.group_stagiaire", "Stagiaire", [
+        ("🔧", "Voir mes installations", "Celles qui me sont confiées", "caissecash_erp.action_caissecash_installation"),
+        ("🛠️", "Voir mes tickets SAV", "Ceux qui me sont confiés", "caissecash_erp.action_caissecash_sav_ticket"),
+        ("✅", "Terminer mes tâches", "Le bouton ✓ suffit", "caissecash_espace.action_caissecash_my_tasks"),
+    ]),
+]
+TEAM_GUIDE = ("Équipe", [
+    ("✅", "Mes tâches", "Ce que j'ai à faire, le bouton ✓ quand c'est fait",
+     "caissecash_espace.action_caissecash_my_tasks"),
+    ("💬", "Discussion", "Les canaux de l'équipe", "mail.action_discuss"),
+    ("📅", "Agenda", "Rendez-vous et réunions", "calendar.action_calendar_event"),
+])
+
+# Raccourcis « Créer » : (clé, icône, libellé, modèle, valeurs par défaut).
+CREATE_SHORTCUTS = [
+    ("prospect", "🎯", "Prospect", "crm.lead", {"default_type": "opportunity"}),
+    ("installation", "🔧", "Installation", "caissecash.installation", {}),
+    ("sav", "🛠️", "Ticket SAV", "caissecash.sav.ticket", {}),
+    ("expense", "🧾", "Dépense", "caissecash.expense", {}),
 ]
 
 
@@ -89,14 +132,21 @@ class CaissecashEspace(models.AbstractModel):
             "hours_previously_today": employee.hours_previously_today,
         }
 
-        can_expense = "caissecash.expense" in self.env and self.env["caissecash.expense"].has_access("create")
-
-        # Étapes que l'utilisateur peut consulter.
-        journey = [
-            {"label": label, "icon": icon, "count": self.env[model].search_count(domain), "hint": hint, "action": action}
-            for label, icon, model, domain, hint, action in CUSTOMER_JOURNEY
-            if model in self.env and self.env[model].has_access("read") and self.env.ref(action, raise_if_not_found=False)
+        create_shortcuts = [
+            {"key": key, "icon": icon, "label": label, "model": model, "context": context}
+            for key, icon, label, model, context in CREATE_SHORTCUTS
+            if model in self.env and self.env[model].has_access("create")
         ]
+
+        # Étapes affichées (réglables par l'administrateur) que l'utilisateur peut consulter.
+        journey = self.env["caissecash.journey.step"]._home_data()
+
+        # Objectifs de l'année dont l'utilisateur est responsable.
+        Objective = self.env["caissecash.objective"]
+        my_objectives = (
+            Objective.search([("user_id", "=", user.id), ("year", "=", today.year)])._caissecash_card_data()
+            if Objective.has_access("read") else []
+        )
 
         return {
             "user": {"id": user.id, "first_name": first_name(user), "lang": user.lang},
@@ -130,7 +180,51 @@ class CaissecashEspace(models.AbstractModel):
             ],
             "leaderboard": leaderboard,
             "team_done": len(done_this_week),
-            "weekly_goal": int(self.env["ir.config_parameter"].sudo().get_param("caissecash_espace.weekly_goal", 15)),
-            "can_expense": can_expense,
+            "weekly_goal": self._weekly_goal(),
+            "create": create_shortcuts,
             "journey": journey,
+            "objectives": {
+                "year": today.year,
+                "items": my_objectives,
+                "update_view_id": self.env.ref("caissecash_erp.view_caissecash_objective_update_form").id,
+            },
+            "quotes": self._quotes(),
+            "guide": self._guide(user),
         }
+
+    @api.model
+    def _weekly_goal(self):
+        try:
+            return max(1, int(self.env["ir.config_parameter"].sudo().get_param(WEEKLY_GOAL_PARAM, 15)))
+        except (TypeError, ValueError):
+            return 15
+
+    @api.model
+    def _quotes(self):
+        text = self.env["ir.config_parameter"].sudo().get_param(QUOTES_PARAM) or ""
+        quotes = [line.strip() for line in text.splitlines() if line.strip()]
+        return quotes or DEFAULT_QUOTES
+
+    @api.model
+    def _guide(self, user):
+        """Guide « Bien démarrer » du rôle de l'utilisateur, limité aux écrans
+        qu'il a le droit d'ouvrir."""
+        role, steps = next(
+            ((role, steps) for group, role, steps in ROLE_GUIDES if user.has_group(group)), TEAM_GUIDE
+        )
+        visible = []
+        for icon, title, hint, xmlid in steps:
+            action = self.env.ref(xmlid, raise_if_not_found=False)
+            if not action:
+                continue
+            model = action._name == "ir.actions.act_window" and action.sudo().res_model
+            if model and (model not in self.env or not self.env[model].has_access("read")):
+                continue
+            visible.append({"icon": icon, "title": title, "hint": hint, "action": xmlid})
+        return {"role": role, "steps": visible, "hidden": user.caissecash_hide_guide}
+
+    @api.model
+    def set_guide_hidden(self, hidden=True):
+        """Masque ou réaffiche le guide « Bien démarrer » de l'utilisateur."""
+        self.env.user.sudo().caissecash_hide_guide = bool(hidden)
+        return True

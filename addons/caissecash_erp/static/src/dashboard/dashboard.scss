@@ -367,6 +367,165 @@ $ccd-critical: #d03b3b;
     text-align: center;
 }
 
+// --- Objectifs de l'année ------------------------------------------------------------
+// La couleur dit l'état : vert atteint, bleu dans les temps, ambre léger retard,
+// rouge en retard, gris à venir.
+$ccd-objective-status: (
+    done: #0ca30c,
+    on_track: #2a78d6,
+    at_risk: #c26a04,
+    late: $ccd-critical,
+    missed: $ccd-critical,
+    upcoming: $ccd-muted,
+    no_target: $ccd-muted,
+);
+
+.o_ccd_objectives {
+    margin-bottom: 18px;
+}
+
+.o_ccd_objectives_list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 12px;
+}
+
+.o_ccd_objective {
+    --status: #{$ccd-muted};
+    --status-bg: #{rgba($ccd-muted, .12)};
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 14px;
+    border: 1px solid $ccd-border;
+    border-left: 4px solid var(--status);
+    border-radius: 12px;
+    background: #fff;
+    cursor: pointer;
+    transition: box-shadow .15s ease, transform .15s ease;
+
+    &:hover {
+        box-shadow: 0 4px 14px rgba($ccd-navy, .08);
+        transform: translateY(-1px);
+    }
+
+    @each $key, $color in $ccd-objective-status {
+        &.is-#{$key} {
+            --status: #{$color};
+            --status-bg: #{rgba($color, .12)};
+        }
+    }
+}
+
+.o_ccd_objective_head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.o_ccd_objective_name {
+    font-weight: 700;
+    color: $ccd-navy;
+}
+
+.o_ccd_status {
+    flex-shrink: 0;
+    padding: 1px 8px;
+    border-radius: 999px;
+    background: var(--status-bg);
+    color: var(--status);
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.o_ccd_objective_meta {
+    margin-top: -4px;
+    font-size: 12px;
+    color: $ccd-muted;
+}
+
+.o_ccd_objective_values {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 4px;
+    color: $ccd-ink-2;
+
+    b {
+        font-size: 18px;
+        color: $ccd-ink;
+    }
+}
+
+.o_ccd_objective_percent {
+    margin-left: auto;
+    font-weight: 700;
+    color: var(--status);
+}
+
+.o_ccd_objective_track {
+    position: relative;
+    height: 8px;
+    border-radius: 999px;
+    background: #edeef0;
+}
+
+.o_ccd_objective_fill {
+    height: 100%;
+    border-radius: inherit;
+    background: var(--status);
+    transition: width .5s ease;
+}
+
+// Repère : où il faudrait être aujourd'hui.
+.o_ccd_objective_marker {
+    position: absolute;
+    top: -4px;
+    bottom: -4px;
+    width: 2px;
+    margin-left: -1px;
+    border-radius: 1px;
+    background: $ccd-ink;
+    opacity: .5;
+}
+
+.o_ccd_objective_quarters {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 4px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
+    li {
+        padding: 2px 0;
+        border-radius: 6px;
+        background: #f1f2f4;
+        color: $ccd-muted;
+        font-size: 11px;
+        font-weight: 600;
+        text-align: center;
+
+        &.is-current {
+            box-shadow: inset 0 0 0 1px var(--status);
+            color: $ccd-ink;
+        }
+
+        &.is-past.has-value {
+            background: rgba($ccd-critical, .1);
+            color: $ccd-critical;
+        }
+
+        &.is-reached,
+        &.is-past.is-reached {
+            background: rgba(#0ca30c, .14);
+            color: #087a08;
+        }
+    }
+}
+
 // --- Tablette et téléphone ---------------------------------------------------------
 @include media-breakpoint-down(xl) {
     .o_ccd_card,

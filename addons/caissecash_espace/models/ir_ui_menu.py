@@ -24,6 +24,7 @@ APPS = [
     (CUSTOMER_JOURNEY, "account.menu_finance", "Facturation", "facturation"),
     (CUSTOMER_JOURNEY, "caissecash_erp.menu_caissecash_billing", None, "abonnements"),
     (MANAGEMENT, "caissecash_erp.menu_caissecash_dashboard", None, "tableau"),
+    (MANAGEMENT, "caissecash_erp.menu_caissecash_objective_root", None, "objectifs"),
     (MANAGEMENT, "caissecash_erp.menu_caissecash_expense_root", None, "depenses"),
     (MANAGEMENT, "caissecash_erp.menu_founders_root", None, "associes"),
     (MANAGEMENT, "hr.menu_hr_root", "Employés", "employes"),

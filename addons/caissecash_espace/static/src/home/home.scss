@@ -161,7 +161,105 @@ $cc-border: #e6eaf2;
 .o_cc_tile_tasks { background: linear-gradient(135deg, $cc-navy, $cc-navy-light); }
 .o_cc_tile_messages { background: linear-gradient(135deg, #0284c7, #38bdf8); }
 .o_cc_tile_new_task { background: linear-gradient(135deg, #7c3aed, #a855f7); }
-.o_cc_tile_expense { background: linear-gradient(135deg, #db2777, #f472b6); }
+.o_cc_tile_create { background: linear-gradient(135deg, #db2777, #f472b6); }
+.o_cc_tile_create.is-open { box-shadow: 0 0 0 3px rgba(#db2777, .35), 0 12px 26px rgba($cc-navy, .22); }
+
+// --- Panneau « Créer » -------------------------------------------------------
+.o_cc_create {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 10px;
+    margin: -4px 0 18px;
+    animation: o_cc_rise .25s ease both;
+}
+
+.o_cc_create_item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 14px;
+    border: 1px solid $cc-border;
+    border-radius: 14px;
+    background: #fff;
+    color: #1e293b;
+    font-weight: 600;
+    text-align: left;
+    box-shadow: 0 2px 10px rgba($cc-navy, .04);
+    transition: border-color .15s ease, transform .15s ease;
+
+    &:hover {
+        border-color: #db2777;
+        transform: translateY(-2px);
+    }
+}
+
+.o_cc_create_icon {
+    font-size: 22px;
+    line-height: 1;
+}
+
+// --- Guide « Bien démarrer » ---------------------------------------------------
+.o_cc_guide {
+    margin-bottom: 18px;
+    background: linear-gradient(135deg, #fff7ed, #fff);
+    border-color: #fed7aa;
+}
+
+.o_cc_guide_steps {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+    gap: 10px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.o_cc_guide_step {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    height: 100%;
+    padding: 12px 14px;
+    border: 1px solid $cc-border;
+    border-radius: 12px;
+    background: #fff;
+    color: #1e293b;
+    text-align: left;
+    transition: border-color .15s ease, box-shadow .15s ease;
+
+    &:hover {
+        border-color: $cc-orange;
+        box-shadow: 0 4px 14px rgba($cc-navy, .08);
+    }
+}
+
+.o_cc_guide_icon {
+    font-size: 24px;
+    line-height: 1;
+}
+
+.o_cc_guide_text {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    gap: 2px;
+
+    span {
+        font-size: 12px;
+        color: $cc-text-muted;
+    }
+}
+
+.o_cc_guide_arrow {
+    font-size: 22px;
+    color: $cc-orange;
+}
+
+.o_cc_footer {
+    margin: 18px 0 0;
+    text-align: center;
+}
 
 // --- Cartes -----------------------------------------------------------------
 .o_cc_grid {
@@ -526,6 +624,124 @@ $cc-border: #e6eaf2;
     margin: 10px 0 0;
     font-size: 12px;
     color: $cc-text-muted;
+}
+
+// --- Mes objectifs ------------------------------------------------------------
+$cc-objective-status: (
+    done: $cc-green,
+    on_track: #2563eb,
+    at_risk: #c2410c,
+    late: #dc2626,
+    missed: #dc2626,
+    upcoming: $cc-text-muted,
+    no_target: $cc-text-muted,
+);
+
+.o_cc_objectives {
+    margin-bottom: 18px;
+}
+
+.o_cc_objective_list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 12px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.o_cc_objective {
+    --status: #{$cc-text-muted};
+    --status-bg: #{rgba($cc-text-muted, .12)};
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 12px 14px;
+    border: 1px solid $cc-border;
+    border-radius: 12px;
+    background: #fbfcfe;
+    cursor: pointer;
+    transition: border-color .15s ease, box-shadow .15s ease;
+
+    &:hover {
+        border-color: var(--status);
+        box-shadow: 0 4px 14px rgba($cc-navy, .08);
+    }
+
+    @each $key, $color in $cc-objective-status {
+        &.is-#{$key} {
+            --status: #{$color};
+            --status-bg: #{rgba($color, .12)};
+        }
+    }
+}
+
+.o_cc_objective_head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.o_cc_objective_name {
+    font-weight: 700;
+    color: $cc-navy;
+}
+
+.o_cc_objective_status {
+    flex-shrink: 0;
+    padding: 1px 9px;
+    border-radius: 999px;
+    background: var(--status-bg);
+    color: var(--status);
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.o_cc_objective_track {
+    position: relative;
+    height: 8px;
+    border-radius: 999px;
+    background: #edf1f7;
+}
+
+.o_cc_objective_fill {
+    height: 100%;
+    border-radius: inherit;
+    background: var(--status);
+    transition: width .6s ease;
+}
+
+// Repère : où il faudrait être aujourd'hui.
+.o_cc_objective_marker {
+    position: absolute;
+    top: -4px;
+    bottom: -4px;
+    width: 2px;
+    margin-left: -1px;
+    border-radius: 1px;
+    background: $cc-navy;
+    opacity: .5;
+}
+
+.o_cc_objective_update {
+    align-self: flex-start;
+    border-radius: 999px;
+}
+
+.o_cc_objective_meta {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 4px 12px;
+    font-size: 12px;
+    color: $cc-text-muted;
+
+    b {
+        color: #1e293b;
+        font-size: 14px;
+    }
 }
 
 // --- Téléphone et tablette ----------------------------------------------------

@@ -48,11 +48,43 @@
                         <span class="o_cc_tile_label">Nouvelle tâche</span>
                         <span class="o_cc_tile_sub">Pour moi ou l'équipe</span>
                     </button>
-                    <button t-if="data.can_expense" type="button" class="o_cc_tile o_cc_tile_expense" t-on-click="newExpense">
-                        <span class="o_cc_tile_icon">🧾</span>
-                        <span class="o_cc_tile_label">Nouvelle dépense</span>
-                        <span class="o_cc_tile_sub">Ticket, facture, frais</span>
+                    <button t-if="data.create.length" type="button"
+                            t-attf-class="o_cc_tile o_cc_tile_create {{ state.createOpen ? 'is-open' : '' }}"
+                            t-att-aria-expanded="state.createOpen ? 'true' : 'false'" t-on-click="toggleCreate">
+                        <span class="o_cc_tile_icon">✨</span>
+                        <span class="o_cc_tile_label">Créer</span>
+                        <span class="o_cc_tile_sub" t-esc="createHint"/>
                     </button>
+                </section>
+
+                <section class="o_cc_create" t-if="state.createOpen and data.create.length">
+                    <button t-foreach="data.create" t-as="shortcut" t-key="shortcut.key" type="button"
+                            class="o_cc_create_item" t-on-click="() => this.create(shortcut)">
+                        <span class="o_cc_create_icon" t-esc="shortcut.icon"/>
+                        <span><t t-esc="shortcut.label"/></span>
+                    </button>
+                </section>
+
+                <section class="o_cc_card o_cc_guide" t-if="!data.guide.hidden and data.guide.steps.length">
+                    <div class="o_cc_card_header">
+                        <div>
+                            <h2>🚀 Bien démarrer</h2>
+                            <span class="o_cc_card_hint">L'essentiel pour le rôle <b t-esc="data.guide.role"/></span>
+                        </div>
+                        <button type="button" class="btn btn-link btn-sm" t-on-click="() => this.setGuideHidden(true)">Masquer</button>
+                    </div>
+                    <ol class="o_cc_guide_steps">
+                        <li t-foreach="data.guide.steps" t-as="step" t-key="step.action">
+                            <button type="button" class="o_cc_guide_step" t-on-click="() => this.openAction(step.action)">
+                                <span class="o_cc_guide_icon" t-esc="step.icon"/>
+                                <span class="o_cc_guide_text">
+                                    <b t-esc="step.title"/>
+                                    <span t-esc="step.hint"/>
+                                </span>
+                                <span class="o_cc_guide_arrow">›</span>
+                            </button>
+                        </li>
+                    </ol>
                 </section>
 
                 <section class="o_cc_card o_cc_journey" t-if="data.journey.length">
@@ -71,6 +103,35 @@
                             </button>
                         </li>
                     </ol>
+                </section>
+
+                <section class="o_cc_card o_cc_objectives" t-if="data.objectives.items.length">
+                    <div class="o_cc_card_header">
+                        <h2>🎯 Mes objectifs <t t-esc="data.objectives.year"/></h2>
+                        <button type="button" class="btn btn-link btn-sm" t-on-click="openMyObjectives">Tout voir</button>
+                    </div>
+                    <ul class="o_cc_objective_list">
+                        <li t-foreach="data.objectives.items" t-as="objective" t-key="objective.id"
+                            t-attf-class="o_cc_objective is-{{ objective.status }}"
+                            t-on-click="() => this.openObjective(objective)">
+                            <div class="o_cc_objective_head">
+                                <span class="o_cc_objective_name" t-esc="objective.name"/>
+                                <span class="o_cc_objective_status" t-esc="objective.status_label"/>
+                            </div>
+                            <div class="o_cc_objective_track">
+                                <div class="o_cc_objective_fill" t-attf-style="width: {{ objective.bar }}%"/>
+                                <span t-if="objective.expected" class="o_cc_objective_marker" t-attf-style="left: {{ objective.marker }}%"/>
+                            </div>
+                            <div class="o_cc_objective_meta">
+                                <span><b t-esc="objective.current"/> / <t t-esc="objective.target"/> · <t t-esc="objective.progress"/> %</span>
+                                <span t-if="objective.expected">Attendu aujourd’hui : <t t-esc="objective.expected"/></span>
+                            </div>
+                            <button t-if="objective.manual" type="button" class="btn btn-sm btn-outline-primary o_cc_objective_update"
+                                    t-on-click.stop="() => this.updateObjective(objective)">
+                                ✏️ Mettre à jour
+                            </button>
+                        </li>
+                    </ul>
                 </section>
 
                 <div class="o_cc_grid">
@@ -144,6 +205,12 @@
                         </section>
                     </div>
                 </div>
+
+                <p class="o_cc_footer" t-if="data.guide.hidden and data.guide.steps.length">
+                    <button type="button" class="btn btn-link btn-sm" t-on-click="() => this.setGuideHidden(false)">
+                        Afficher le guide « Bien démarrer »
+                    </button>
+                </p>
             </div>
         </div>
     </t>
