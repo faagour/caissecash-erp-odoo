@@ -70,7 +70,8 @@
         <record id="group_stock" model="res.groups">
             <field name="name">Responsable stock</field>
             <field name="privilege_id" ref="privilege_stock"/>
-            <field name="implied_ids" eval="[(4, ref('stock.group_stock_user')), (4, ref('purchase.group_purchase_user'))]"/>
+            <!-- Gère aussi le catalogue d'articles (création, prix, seuils d'alerte). -->
+            <field name="implied_ids" eval="[(4, ref('stock.group_stock_user')), (4, ref('purchase.group_purchase_user')), (4, ref('product.group_product_manager'))]"/>
         </record>
 
         <record id="group_technicien" model="res.groups">

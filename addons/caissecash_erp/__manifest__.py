@@ -1,8 +1,8 @@
 {
     "name": "CaisseCash ERP",
-    "version": "19.0.2.3.1",
+    "version": "19.0.2.5.0",
     "category": "Services/Field Service",
-    "summary": "ERP interne CaisseCash : associés, achats, dépenses, établissements, installations, garanties, SAV, abonnements, objectifs",
+    "summary": "ERP interne CaisseCash : associés, achats, dépenses, établissements, installations, garanties, SAV, abonnements, objectifs, partenaires",
     "description": """
 CaisseCash ERP
 ==============
@@ -44,6 +44,8 @@ installations, garanties, abonnements logiciels et objectifs de l'année
         "data/caissecash_onboarding_data.xml",
         "data/caissecash_subscription_cron.xml",
         "data/caissecash_hide_generic_menus.xml",
+        "data/caissecash_stock_data.xml",
+        "data/caissecash_partner_category_data.xml",
         "views/caissecash_equipment_views.xml",
         "views/caissecash_establishment_views.xml",
         "views/caissecash_installation_views.xml",
@@ -61,6 +63,11 @@ installations, garanties, abonnements logiciels et objectifs de l'année
         "views/caissecash_financial_snapshot_views.xml",
         "views/caissecash_dashboard_views.xml",
         "views/caissecash_objective_views.xml",
+        "views/caissecash_stock_views.xml",
+        "views/caissecash_product_views.xml",
+        "views/caissecash_customer_views.xml",
+        "views/caissecash_stock_menus.xml",
+        "views/caissecash_partner_views.xml",
         "report/caissecash_reports.xml",
         "report/caissecash_installation_report_templates.xml",
         "report/caissecash_warranty_report_templates.xml",

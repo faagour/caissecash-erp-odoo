@@ -199,6 +199,14 @@ export class CaissecashHome extends Component {
 
     create(shortcut) {
         this.state.createOpen = false;
+        if (shortcut.action) {
+            // Assistant (entrée / sortie de stock) ou fiche simplifiée (client).
+            this.action.doAction(shortcut.action, {
+                additionalContext: shortcut.context,
+                onClose: () => this.load(),
+            });
+            return;
+        }
         this.action.doAction({
             type: "ir.actions.act_window",
             name: shortcut.label,

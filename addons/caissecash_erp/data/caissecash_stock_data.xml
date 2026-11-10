@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Le matériel CaisseCash est suivi par numéro de série (garantie, SAV) :
+         le réglage « Lots et numéros de série » est donc activé pour tous.
+         (Appel explicite : le groupe « Utilisateur interne » est protégé contre
+         les mises à jour faites par d'autres modules.) -->
+    <function model="res.groups" name="write">
+        <value eval="[ref('base.group_user')]"/>
+        <value eval="{'implied_ids': [(4, ref('stock.group_production_lot'))]}"/>
+    </function>
+
+</odoo>

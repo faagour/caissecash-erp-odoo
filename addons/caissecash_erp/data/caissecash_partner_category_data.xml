@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+
+    <!-- Activités de départ des partenaires (modifiables dans
+         Clients > Configuration > Activités des partenaires). -->
+    <record id="partner_category_kitchen_layout" model="caissecash.partner.category">
+        <field name="name">Aménagement de cuisine</field>
+        <field name="sequence">10</field>
+        <field name="color">2</field>
+    </record>
+    <record id="partner_category_kitchen_equipment" model="caissecash.partner.category">
+        <field name="name">Matériel de cuisine</field>
+        <field name="sequence">20</field>
+        <field name="color">4</field>
+    </record>
+    <record id="partner_category_cold" model="caissecash.partner.category">
+        <field name="name">Froid et réfrigération</field>
+        <field name="sequence">30</field>
+        <field name="color">6</field>
+    </record>
+    <record id="partner_category_extraction" model="caissecash.partner.category">
+        <field name="name">Hotte et extraction</field>
+        <field name="sequence">40</field>
+        <field name="color">3</field>
+    </record>
+    <record id="partner_category_furniture" model="caissecash.partner.category">
+        <field name="name">Mobilier et agencement de salle</field>
+        <field name="sequence">50</field>
+        <field name="color">9</field>
+    </record>
+
+</odoo>

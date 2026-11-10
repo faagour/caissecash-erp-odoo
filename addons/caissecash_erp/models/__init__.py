@@ -15,3 +15,5 @@ from . import caissecash_warranty
 from . import caissecash_sav_ticket
 from . import caissecash_subscription
 from . import caissecash_objective
+from . import product_template
+from . import caissecash_partner

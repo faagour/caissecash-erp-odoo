@@ -1,0 +1,290 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Articles : une seule liste et une fiche courte. La sorte d'article
+         (matériel, consommable, logiciel, pack) remplace les réglages techniques
+         d'Odoo ; la fiche Odoo complète reste accessible par un lien. -->
+
+    <record id="view_caissecash_product_list" model="ir.ui.view">
+        <field name="name">caissecash.product.list</field>
+        <field name="model">product.template</field>
+        <field name="priority">100</field>
+        <field name="arch" type="xml">
+            <list string="Articles" decoration-danger="caissecash_to_restock" decoration-muted="not active">
+                <header>
+                    <button name="%(action_caissecash_stock_entry)d" type="action" string="📥 Entrée de stock"
+                            display="always" class="btn-secondary" groups="caissecash_erp.group_stock,caissecash_erp.group_direction"/>
+                    <button name="%(action_caissecash_stock_exit)d" type="action" string="📤 Sortie de stock"
+                            display="always" class="btn-secondary" groups="caissecash_erp.group_stock,caissecash_erp.group_direction"/>
+                </header>
+                <field name="active" column_invisible="1"/>
+                <field name="currency_id" column_invisible="1"/>
+                <field name="name" string="Article"/>
+                <field name="default_code" string="Référence" optional="show"/>
+                <field name="caissecash_kind" string="Sorte" optional="show"/>
+                <field name="categ_id" string="Catégorie" optional="hide"/>
+                <field name="list_price" string="Prix de vente" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                <field name="qty_available" string="En stock" invisible="caissecash_kind not in ('materiel', 'consommable')"
+                       options="{'hide_trailing_zeros': True}"/>
+                <field name="caissecash_min_qty" string="Seuil d'alerte" optional="show"
+                       invisible="caissecash_kind not in ('materiel', 'consommable')"/>
+                <field name="caissecash_to_restock" string="À racheter" widget="boolean" optional="hide"/>
+                <field name="caissecash_vendor_id" string="Fournisseur" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_caissecash_product_kanban" model="ir.ui.view">
+        <field name="name">caissecash.product.kanban</field>
+        <field name="model">product.template</field>
+        <field name="priority">100</field>
+        <field name="arch" type="xml">
+            <kanban class="o_kanban_mobile">
+                <field name="currency_id"/>
+                <templates>
+                    <t t-name="card" class="flex-row">
+                        <aside class="o_kanban_aside_full">
+                            <field name="image_128" widget="image" class="o_kanban_image_fill w-100" alt="Article"/>
+                        </aside>
+                        <main class="ms-2">
+                            <field name="name" class="fw-bold"/>
+                            <field name="caissecash_kind" class="text-muted small"/>
+                            <field name="list_price" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                            <div invisible="caissecash_kind not in ('materiel', 'consommable')">
+                                En stock : <field name="qty_available" class="fw-bold"/>
+                                <span class="badge text-bg-danger ms-1" invisible="not caissecash_to_restock">À racheter</span>
+                            </div>
+                        </main>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="view_caissecash_product_form" model="ir.ui.view">
+        <field name="name">caissecash.product.form</field>
+        <field name="model">product.template</field>
+        <field name="priority">100</field>
+        <field name="arch" type="xml">
+            <form string="Article">
+                <header>
+                    <button name="action_caissecash_adjust" type="object" string="Corriger le stock"
+                            invisible="not id or caissecash_kind not in ('materiel', 'consommable')"
+                            groups="caissecash_erp.group_stock,caissecash_erp.group_direction"/>
+                    <button name="action_caissecash_order" type="object" string="Commander" class="btn-primary"
+                            invisible="not caissecash_to_restock" groups="purchase.group_purchase_user"/>
+                </header>
+                <sheet>
+                    <field name="active" invisible="1"/>
+                    <field name="currency_id" invisible="1"/>
+                    <field name="cost_currency_id" invisible="1"/>
+                    <field name="caissecash_to_restock" invisible="1"/>
+                    <div class="oe_button_box" name="button_box">
+                        <button type="object" name="action_open_quants" icon="fa-cubes" class="oe_stat_button"
+                                invisible="not id or caissecash_kind not in ('materiel', 'consommable')">
+                            <field name="qty_available" widget="statinfo" string="En stock"/>
+                        </button>
+                        <button type="object" name="action_open_product_lot" icon="fa-barcode" class="oe_stat_button"
+                                invisible="not id or caissecash_kind != 'materiel'">
+                            <div class="o_stat_info"><span class="o_stat_text">Numéros de série</span></div>
+                        </button>
+                        <button type="object" name="action_view_stock_move_lines" icon="fa-exchange" class="oe_stat_button"
+                                invisible="not id or caissecash_kind not in ('materiel', 'consommable')">
+                            <div class="o_stat_info"><span class="o_stat_text">Entrées et sorties</span></div>
+                        </button>
+                        <button type="object" name="action_caissecash_pack" icon="fa-th-large" class="oe_stat_button"
+                                invisible="not id or caissecash_kind != 'pack'">
+                            <div class="o_stat_info"><span class="o_stat_text">Composition</span></div>
+                        </button>
+                    </div>
+                    <widget name="web_ribbon" title="Archivé" bg_color="text-bg-danger" invisible="active"/>
+                    <field name="image_1920" widget="image" class="oe_avatar" options="{'preview_image': 'image_128'}"/>
+                    <div class="oe_title">
+                        <label for="name" string="Nom de l'article"/>
+                        <h1><field name="name" placeholder="ex. Imprimante thermique 80 mm"/></h1>
+                    </div>
+
+                    <label for="caissecash_kind" class="fw-bold"/>
+                    <field name="caissecash_kind" widget="radio" options="{'horizontal': true}" required="1"/>
+                    <div class="text-muted small mb-3">
+                        <span invisible="caissecash_kind != 'materiel'">Chaque appareil a son numéro de série : on sait s'il est en stock ou chez quel client, et on suit sa garantie et son SAV.</span>
+                        <span invisible="caissecash_kind != 'consommable'">Compté en quantité, sans numéro de série (rouleaux de papier, câbles, étiquettes…).</span>
+                        <span invisible="caissecash_kind != 'logiciel'">Vendu mais jamais stocké : licences, applications, abonnements, services.</span>
+                        <span invisible="caissecash_kind != 'pack'">Plusieurs articles vendus ensemble. À la sortie, ce sont ses composants qui quittent le stock.</span>
+                    </div>
+
+                    <group>
+                        <group string="Prix">
+                            <field name="list_price" string="Prix de vente" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                            <field name="taxes_id" string="TVA" widget="many2many_tags"
+                                   domain="[('type_tax_use', '=', 'sale')]" context="{'default_type_tax_use': 'sale'}"/>
+                            <field name="standard_price" string="Coût d'achat" widget="monetary"
+                                   options="{'currency_field': 'cost_currency_id'}"
+                                   invisible="caissecash_kind == 'pack'"/>
+                        </group>
+                        <group string="Identification">
+                            <field name="categ_id" string="Catégorie"/>
+                            <field name="default_code" string="Référence" placeholder="ex. IMP-80"/>
+                            <field name="barcode" string="Code-barres"/>
+                        </group>
+                    </group>
+                    <group invisible="caissecash_kind not in ('materiel', 'consommable')">
+                        <group string="Stock et achat">
+                            <field name="caissecash_min_qty"/>
+                            <field name="caissecash_vendor_id" context="{'res_partner_search_mode': 'supplier', 'default_supplier_rank': 1}"/>
+                        </group>
+                    </group>
+                    <div class="alert alert-info" role="status" invisible="caissecash_kind != 'pack'">
+                        <span invisible="id">Enregistrez l'article, puis choisissez ce que contient le pack.</span>
+                        <button name="action_caissecash_pack" type="object" class="btn btn-link p-0" invisible="not id"
+                                string="Choisir ce que contient le pack"/>
+                    </div>
+
+                    <notebook>
+                        <page string="Description" name="description">
+                            <field name="description_sale" placeholder="Texte repris sur les devis et les factures…"/>
+                        </page>
+                        <page string="Notes internes" name="notes">
+                            <field name="description" placeholder="Visible seulement par l'équipe…"/>
+                        </page>
+                    </notebook>
+                    <div class="text-end">
+                        <button name="action_caissecash_full_form" type="object" icon="fa-sliders" class="btn btn-link"
+                                string="Fiche complète (tous les réglages Odoo)" invisible="not id"/>
+                    </div>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_caissecash_product_search" model="ir.ui.view">
+        <field name="name">caissecash.product.search</field>
+        <field name="model">product.template</field>
+        <field name="priority">100</field>
+        <field name="arch" type="xml">
+            <search string="Articles">
+                <field name="name" string="Article" filter_domain="['|', '|', ('name', 'ilike', self), ('default_code', 'ilike', self), ('barcode', 'ilike', self)]"/>
+                <field name="categ_id" string="Catégorie"/>
+                <field name="caissecash_vendor_id" string="Fournisseur" filter_domain="[('seller_ids.partner_id', 'child_of', raw_value)]"/>
+                <filter name="materiel" string="Matériel" domain="[('caissecash_kind', '=', 'materiel')]"/>
+                <filter name="consommable" string="Consommables" domain="[('caissecash_kind', '=', 'consommable')]"/>
+                <filter name="logiciel" string="Logiciels / abonnements" domain="[('caissecash_kind', '=', 'logiciel')]"/>
+                <filter name="pack" string="Packs" domain="[('caissecash_kind', '=', 'pack')]"/>
+                <separator/>
+                <filter name="to_restock" string="À racheter" domain="[('caissecash_to_restock', '=', True)]"/>
+                <filter name="in_stock" string="En stock" domain="[('qty_available', '>', 0)]"/>
+                <separator/>
+                <filter name="archived" string="Archivés" domain="[('active', '=', False)]"/>
+                <group>
+                    <filter name="group_kind" string="Sorte" context="{'group_by': 'caissecash_kind'}"/>
+                    <filter name="group_categ" string="Catégorie" context="{'group_by': 'categ_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_caissecash_products" model="ir.actions.act_window">
+        <field name="name">Articles</field>
+        <field name="res_model">product.template</field>
+        <field name="path">articles</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="search_view_id" ref="view_caissecash_product_search"/>
+        <field name="context">{'default_caissecash_kind': 'materiel', 'default_sale_ok': True, 'default_purchase_ok': True}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Ajoutez votre premier article</p>
+            <p>Caisse tactile, imprimante, rouleau de papier, abonnement… choisissez simplement sa sorte : Odoo s'occupe du reste.</p>
+        </field>
+    </record>
+    <record id="action_caissecash_products_list" model="ir.actions.act_window.view">
+        <field name="sequence">1</field>
+        <field name="view_mode">list</field>
+        <field name="view_id" ref="view_caissecash_product_list"/>
+        <field name="act_window_id" ref="action_caissecash_products"/>
+    </record>
+    <record id="action_caissecash_products_kanban" model="ir.actions.act_window.view">
+        <field name="sequence">2</field>
+        <field name="view_mode">kanban</field>
+        <field name="view_id" ref="view_caissecash_product_kanban"/>
+        <field name="act_window_id" ref="action_caissecash_products"/>
+    </record>
+    <record id="action_caissecash_products_form" model="ir.actions.act_window.view">
+        <field name="sequence">3</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_caissecash_product_form"/>
+        <field name="act_window_id" ref="action_caissecash_products"/>
+    </record>
+
+    <!-- À racheter : les articles passés sous leur seuil d'alerte. -->
+    <record id="view_caissecash_restock_list" model="ir.ui.view">
+        <field name="name">caissecash.restock.list</field>
+        <field name="model">product.template</field>
+        <field name="priority">100</field>
+        <field name="arch" type="xml">
+            <list string="À racheter" create="0">
+                <field name="name" string="Article"/>
+                <field name="qty_available" string="En stock"/>
+                <field name="caissecash_min_qty" string="Seuil d'alerte"/>
+                <field name="caissecash_vendor_id" string="Fournisseur habituel"/>
+                <button name="action_caissecash_order" type="object" string="Commander" icon="fa-shopping-cart"
+                        class="btn-primary" groups="purchase.group_purchase_user"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_caissecash_restock" model="ir.actions.act_window">
+        <field name="name">À racheter</field>
+        <field name="res_model">product.template</field>
+        <field name="path">a-racheter</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('caissecash_to_restock', '=', True)]</field>
+        <field name="search_view_id" ref="view_caissecash_product_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Rien à racheter pour le moment</p>
+            <p>Indiquez un « Seuil d'alerte » sur la fiche d'un article : dès que son stock y descend, il apparaît ici avec un bouton « Commander ».</p>
+        </field>
+    </record>
+    <record id="action_caissecash_restock_list" model="ir.actions.act_window.view">
+        <field name="sequence">1</field>
+        <field name="view_mode">list</field>
+        <field name="view_id" ref="view_caissecash_restock_list"/>
+        <field name="act_window_id" ref="action_caissecash_restock"/>
+    </record>
+    <record id="action_caissecash_restock_form" model="ir.actions.act_window.view">
+        <field name="sequence">2</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_caissecash_product_form"/>
+        <field name="act_window_id" ref="action_caissecash_restock"/>
+    </record>
+
+    <!-- Composition d'un pack (nomenclature « kit » d'Odoo), en une liste. -->
+    <record id="view_caissecash_pack_form" model="ir.ui.view">
+        <field name="name">caissecash.pack.form</field>
+        <field name="model">mrp.bom</field>
+        <field name="priority">100</field>
+        <field name="arch" type="xml">
+            <form string="Composition du pack">
+                <field name="type" invisible="1"/>
+                <field name="product_qty" invisible="1"/>
+                <field name="product_uom_id" invisible="1"/>
+                <field name="company_id" invisible="1"/>
+                <group>
+                    <field name="product_tmpl_id" string="Pack" readonly="1"/>
+                </group>
+                <p class="text-muted">Ce que contient une unité du pack :</p>
+                <field name="bom_line_ids">
+                    <list editable="bottom">
+                        <field name="product_id" string="Article" options="{'no_create': True}"/>
+                        <field name="product_qty" string="Quantité"/>
+                        <field name="product_uom_id" column_invisible="1"/>
+                    </list>
+                </field>
+                <footer>
+                    <button special="save" string="Enregistrer" class="btn-primary" data-hotkey="q"/>
+                    <button special="cancel" string="Annuler" class="btn-secondary" data-hotkey="x"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+</odoo>

@@ -43,8 +43,12 @@ ROLE_GUIDES = [
         ("🏆", "Voir mes objectifs", "Où j'en suis sur l'année", "caissecash_erp.action_caissecash_objective"),
     ]),
     ("caissecash_erp.group_stock", "Stock", [
-        ("📦", "Réceptions et livraisons", "Ce qui entre et ce qui sort", "stock.action_picking_tree_ready"),
-        ("🛒", "Commander du matériel", "Demandes de prix et achats fournisseurs", "purchase.purchase_rfq"),
+        ("📥", "Entrée de stock", "Le fournisseur a livré : articles et numéros de série",
+         "caissecash_erp.action_caissecash_stock_entry"),
+        ("📤", "Sortie de stock", "Le matériel part chez un client ou pour une installation",
+         "caissecash_erp.action_caissecash_stock_exit"),
+        ("🛒", "Voir ce qu'il faut racheter", "Les articles passés sous leur seuil d'alerte",
+         "caissecash_erp.action_caissecash_restock"),
         ("🔧", "Préparer les installations", "Le matériel à sortir pour chaque intervention",
          "caissecash_erp.action_caissecash_installation"),
     ]),
@@ -67,12 +71,21 @@ TEAM_GUIDE = ("Équipe", [
     ("📅", "Agenda", "Rendez-vous et réunions", "calendar.action_calendar_event"),
 ])
 
-# Raccourcis « Créer » : (clé, icône, libellé, modèle, valeurs par défaut).
+# Raccourcis « Créer » : (clé, icône, libellé, modèle, valeurs par défaut, action
+# à ouvrir ou None pour la fiche du modèle, rôles ou None pour tous). Chacun
+# n'apparaît qu'à ceux qui peuvent créer ce type de fiche.
+SALES = ("caissecash_erp.group_commercial", "caissecash_erp.group_direction")
 CREATE_SHORTCUTS = [
-    ("prospect", "🎯", "Prospect", "crm.lead", {"default_type": "opportunity"}),
-    ("installation", "🔧", "Installation", "caissecash.installation", {}),
-    ("sav", "🛠️", "Ticket SAV", "caissecash.sav.ticket", {}),
-    ("expense", "🧾", "Dépense", "caissecash.expense", {}),
+    ("prospect", "🎯", "Prospect", "crm.lead", {"default_type": "opportunity"}, None, None),
+    ("customer", "👤", "Client", "res.partner", {}, "caissecash_erp.action_caissecash_customer_new", SALES),
+    ("partner", "🤝", "Partenaire", "res.partner", {}, "caissecash_erp.action_caissecash_partner_new", SALES),
+    ("installation", "🔧", "Installation", "caissecash.installation", {}, None, None),
+    ("sav", "🛠️", "Ticket SAV", "caissecash.sav.ticket", {}, None, None),
+    ("stock_entry", "📥", "Entrée de stock", "caissecash.stock.entry", {},
+     "caissecash_erp.action_caissecash_stock_entry", None),
+    ("stock_exit", "📤", "Sortie de stock", "caissecash.stock.exit", {},
+     "caissecash_erp.action_caissecash_stock_exit", None),
+    ("expense", "🧾", "Dépense", "caissecash.expense", {}, None, None),
 ]
 
 
@@ -133,9 +146,10 @@ class CaissecashEspace(models.AbstractModel):
         }
 
         create_shortcuts = [
-            {"key": key, "icon": icon, "label": label, "model": model, "context": context}
-            for key, icon, label, model, context in CREATE_SHORTCUTS
+            {"key": key, "icon": icon, "label": label, "model": model, "context": context, "action": action}
+            for key, icon, label, model, context, action, groups in CREATE_SHORTCUTS
             if model in self.env and self.env[model].has_access("create")
+            and (not groups or any(user.has_group(group) for group in groups))
         ]
 
         # Étapes affichées (réglables par l'administrateur) que l'utilisateur peut consulter.

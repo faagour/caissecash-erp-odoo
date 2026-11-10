@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Entrée de stock : le fournisseur a livré. -->
+    <record id="view_caissecash_stock_entry_form" model="ir.ui.view">
+        <field name="name">caissecash.stock.entry.form</field>
+        <field name="model">caissecash.stock.entry</field>
+        <field name="arch" type="xml">
+            <form string="Entrée de stock">
+                <p class="text-muted">
+                    Le fournisseur a livré : ajoutez ce que vous avez reçu. Pour le matériel, tapez ou
+                    scannez un numéro de série par ligne.
+                </p>
+                <field name="has_pending" invisible="1"/>
+                <group>
+                    <group>
+                        <field name="picking_id" invisible="not has_pending" options="{'no_create': True, 'no_open': True}"
+                               placeholder="Aucune : entrée libre"/>
+                        <field name="partner_id" placeholder="Qui a livré ?" context="{'res_partner_search_mode': 'supplier'}"/>
+                    </group>
+                    <group>
+                        <field name="reference" placeholder="N° du bon de livraison"/>
+                    </group>
+                </group>
+                <field name="line_ids">
+                    <list editable="bottom">
+                        <field name="tracking" column_invisible="1"/>
+                        <field name="product_id" options="{'no_create': True}"/>
+                        <field name="serial_numbers" placeholder="Un numéro par ligne"
+                               readonly="tracking != 'serial'"/>
+                        <field name="serial_count" string="N° saisis" invisible="tracking != 'serial'"/>
+                        <field name="quantity" options="{'hide_trailing_zeros': True}"/>
+                    </list>
+                </field>
+                <footer>
+                    <button name="action_validate" type="object" string="Valider l'entrée" class="btn-primary" data-hotkey="q"/>
+                    <button special="cancel" string="Annuler" class="btn-secondary" data-hotkey="x"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_caissecash_stock_entry" model="ir.actions.act_window">
+        <field name="name">Entrée de stock</field>
+        <field name="res_model">caissecash.stock.entry</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <!-- Sortie de stock : le matériel part chez un client. -->
+    <record id="view_caissecash_stock_exit_form" model="ir.ui.view">
+        <field name="name">caissecash.stock.exit.form</field>
+        <field name="model">caissecash.stock.exit</field>
+        <field name="arch" type="xml">
+            <form string="Sortie de stock">
+                <p class="text-muted">
+                    Le matériel part chez un client : choisissez-le, puis les articles. Les appareils
+                    avec numéro de série deviennent son « matériel installé » (garantie, SAV).
+                </p>
+                <field name="has_pending" invisible="1"/>
+                <group>
+                    <group>
+                        <field name="picking_id" invisible="not has_pending" options="{'no_create': True, 'no_open': True}"
+                               placeholder="Aucune : sortie libre"/>
+                        <field name="partner_id" placeholder="Pour quel client ?" context="{'res_partner_search_mode': 'customer'}"/>
+                        <field name="establishment_id" invisible="not partner_id" options="{'no_create': True}"/>
+                    </group>
+                    <group>
+                        <field name="installation_id" invisible="not partner_id" options="{'no_create': True}"/>
+                        <field name="reference" placeholder="ex. vente, remplacement SAV, prêt…"/>
+                        <field name="pack_id" options="{'no_create': True, 'no_open': True}" placeholder="Choisir un pack…"/>
+                    </group>
+                </group>
+                <field name="line_ids">
+                    <list editable="bottom">
+                        <field name="tracking" column_invisible="1"/>
+                        <field name="product_id" options="{'no_create': True}"/>
+                        <field name="available_qty" options="{'hide_trailing_zeros': True}"/>
+                        <field name="lot_ids" widget="many2many_tags" options="{'no_create': True}"
+                               readonly="tracking != 'serial'" placeholder="Choisir les numéros"/>
+                        <field name="quantity" options="{'hide_trailing_zeros': True}"/>
+                    </list>
+                </field>
+                <footer>
+                    <button name="action_validate" type="object" string="Valider la sortie" class="btn-primary" data-hotkey="q"/>
+                    <button special="cancel" string="Annuler" class="btn-secondary" data-hotkey="x"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_caissecash_stock_exit" model="ir.actions.act_window">
+        <field name="name">Sortie de stock</field>
+        <field name="res_model">caissecash.stock.exit</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <!-- Corriger une quantité : comptage, casse, perte. -->
+    <record id="view_caissecash_stock_adjust_form" model="ir.ui.view">
+        <field name="name">caissecash.stock.adjust.form</field>
+        <field name="model">caissecash.stock.adjust</field>
+        <field name="arch" type="xml">
+            <form string="Corriger le stock">
+                <p class="text-muted">Après un comptage, une casse ou une perte : indiquez la quantité réelle.</p>
+                <field name="tracking" invisible="1"/>
+                <group>
+                    <group>
+                        <field name="product_id" options="{'no_create': True}"/>
+                        <field name="lot_id" invisible="tracking != 'serial'" options="{'no_create': True}"/>
+                        <field name="lot_name" invisible="tracking != 'serial' or lot_id"
+                               placeholder="Appareil retrouvé jamais enregistré"/>
+                    </group>
+                    <group>
+                        <field name="current_qty" options="{'hide_trailing_zeros': True}"/>
+                        <field name="new_qty" options="{'hide_trailing_zeros': True}"/>
+                    </group>
+                </group>
+                <group>
+                    <field name="reason" widget="radio" options="{'horizontal': true}"/>
+                    <field name="note" placeholder="ex. écran fissuré pendant le transport"/>
+                </group>
+                <footer>
+                    <button name="action_apply" type="object" string="Corriger" class="btn-primary" data-hotkey="q"/>
+                    <button special="cancel" string="Annuler" class="btn-secondary" data-hotkey="x"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_caissecash_stock_adjust" model="ir.actions.act_window">
+        <field name="name">Corriger le stock</field>
+        <field name="res_model">caissecash.stock.adjust</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+</odoo>

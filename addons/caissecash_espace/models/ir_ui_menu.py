@@ -38,10 +38,22 @@ SUBMENUS = [
     # Clients : prospects, fiches clients puis établissements (caissecash_erp).
     ("crm.menu_crm_opportunities", "crm.crm_menu_root", 1, "Prospects"),
     ("crm.res_partner_menu_customer", "crm.crm_menu_root", 2, "Clients"),
-    # Stock : ce qu'on a en stock en premier, puis ce qui entre et sort.
-    ("stock.menu_product_stock", "stock.menu_stock_root", 0, "Quantités en stock"),
-    ("stock.stock_picking_type_menu", "stock.menu_stock_root", 1, "Réceptions et livraisons"),
-    ("mrp.menu_mrp_bom_form_action", "stock.menu_stock_inventory_control", 3, "Composition des packs"),
+    # Stock : Articles, Entrée, Sortie, Corriger et À racheter au premier niveau
+    # (caissecash_erp) ; le détail est rangé dans « Suivi ».
+    ("stock.menu_product_stock", "caissecash_erp.menu_caissecash_stock_follow", 1, "Stock détaillé"),
+    ("stock.stock_move_line_menu", "caissecash_erp.menu_caissecash_stock_follow", 2, "Historique des mouvements"),
+    ("stock.menu_action_production_lot_form", "caissecash_erp.menu_caissecash_stock_follow", 3, "Numéros de série"),
+    ("stock.stock_picking_type_menu", "caissecash_erp.menu_caissecash_stock_follow", 4, "Réceptions et livraisons"),
+    ("mrp.menu_mrp_bom_form_action", "caissecash_erp.menu_caissecash_stock_follow", 5, "Composition des packs"),
+]
+
+# Menus qui ouvrent l'écran CaisseCash simplifié au lieu de l'écran Odoo :
+# (menu, action). Les clients et les articles ont ainsi la même fiche partout.
+REPOINTED = [
+    ("crm.res_partner_menu_customer", "caissecash_erp.action_caissecash_customers"),
+    ("sale.res_partner_menu", "caissecash_erp.action_caissecash_customers"),
+    ("account.menu_account_customer", "caissecash_erp.action_caissecash_customers"),
+    ("sale.menu_product_template_action", "caissecash_erp.action_caissecash_products"),
 ]
 
 # Installés comme dépendances mais inutiles au quotidien (ou en double avec les
@@ -56,6 +68,14 @@ HIDDEN = [
     "base.menu_tests",
     "crm.crm_menu_sales",
     "crm.menu_import_crm",
+    # Stock : remplacés par Articles, Entrée, Sortie, Corriger, À racheter et Suivi.
+    "stock.menu_stock_warehouse_mgmt",
+    "stock.menu_stock_inventory_control",
+    "stock.menu_warehouse_report",
+    # Les articles se gèrent depuis Stock > Articles (ou Ventes > Produits).
+    "purchase.menu_purchase_products",
+    "account.product_product_menu_sellable",
+    "account.product_product_menu_purchasable",
 ]
 
 
@@ -90,6 +110,11 @@ class IrUiMenu(models.Model):
             if menu and parent:
                 menu.write({"parent_id": parent.id, "sequence": sequence})
                 rename(menu, name)
+
+        for xmlid, action_xmlid in REPOINTED:
+            menu, action = ref(xmlid), ref(action_xmlid)
+            if menu and action:
+                menu.action = action
 
         developer_mode = self.env.ref("base.group_no_one")
         for xmlid in HIDDEN:

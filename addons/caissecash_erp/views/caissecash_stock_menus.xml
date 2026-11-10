@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Menu Stock : les gestes du quotidien au premier niveau. Le détail
+         (historique, numéros de série, bons de réception et de livraison,
+         composition des packs) est rangé dans « Suivi » par caissecash_espace ;
+         les menus techniques d'Odoo restent accessibles en mode développeur. -->
+    <menuitem id="menu_caissecash_products" name="Articles" parent="stock.menu_stock_root"
+              action="action_caissecash_products" sequence="0"/>
+    <menuitem id="menu_caissecash_stock_entry" name="Entrée de stock" parent="stock.menu_stock_root"
+              action="action_caissecash_stock_entry" sequence="1"
+              groups="caissecash_erp.group_stock,caissecash_erp.group_direction"/>
+    <menuitem id="menu_caissecash_stock_exit" name="Sortie de stock" parent="stock.menu_stock_root"
+              action="action_caissecash_stock_exit" sequence="2"
+              groups="caissecash_erp.group_stock,caissecash_erp.group_direction"/>
+    <menuitem id="menu_caissecash_stock_adjust" name="Corriger le stock" parent="stock.menu_stock_root"
+              action="action_caissecash_stock_adjust" sequence="3"
+              groups="caissecash_erp.group_stock,caissecash_erp.group_direction"/>
+    <menuitem id="menu_caissecash_restock" name="À racheter" parent="stock.menu_stock_root"
+              action="action_caissecash_restock" sequence="4"/>
+    <menuitem id="menu_caissecash_stock_follow" name="Suivi" parent="stock.menu_stock_root" sequence="5"/>
+
+</odoo>

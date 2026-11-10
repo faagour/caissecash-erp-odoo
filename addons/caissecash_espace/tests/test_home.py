@@ -72,7 +72,19 @@ class TestHome(TransactionCase):
         self.assertNotIn("expense", technician)
         self.assertNotIn("installation", technician)
         self.assertIn("sav", technician)
-        self.assertTrue({"prospect", "installation", "sav", "expense"} <= director)
+        self.assertTrue({"customer", "partner", "stock_entry", "stock_exit"}.isdisjoint(technician))
+        self.assertTrue({"prospect", "customer", "partner", "installation", "sav", "stock_entry", "stock_exit", "expense"} <= director)
+        commercial = {s["key"] for s in self.home(self.commercial)["create"]}
+        self.assertTrue({"customer", "partner"} <= commercial)
+        self.assertNotIn("stock_entry", commercial)
+        stock = self.env["res.users"].create({
+            "name": "stock.espace", "login": "stock.espace",
+            "group_ids": [(6, 0, [self.env.ref("base.group_user").id, self.env.ref("caissecash_erp.group_stock").id])],
+        })
+        shortcuts = {s["key"]: s for s in self.home(stock)["create"]}
+        self.assertTrue({"stock_entry", "stock_exit"} <= set(shortcuts))
+        self.assertEqual(shortcuts["stock_entry"]["action"], "caissecash_erp.action_caissecash_stock_entry")
+        self.assertEqual(self.home(stock)["guide"]["role"], "Stock")
 
     def test_home_without_caissecash_role(self):
         data = self.home(self.employee)

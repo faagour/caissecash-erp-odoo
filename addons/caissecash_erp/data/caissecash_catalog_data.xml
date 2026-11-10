@@ -40,6 +40,8 @@
         <field name="name">Caisse tactile</field>
         <field name="type">consu</field>
         <field name="tracking">serial</field>
+        <field name="is_storable" eval="True"/>
+        <field name="caissecash_kind">materiel</field>
         <field name="list_price">0.0</field>
         <field name="categ_id" ref="product_category_caisses"/>
     </record>
@@ -47,6 +49,8 @@
         <field name="name">Imprimante thermique</field>
         <field name="type">consu</field>
         <field name="tracking">serial</field>
+        <field name="is_storable" eval="True"/>
+        <field name="caissecash_kind">materiel</field>
         <field name="list_price">0.0</field>
         <field name="categ_id" ref="product_category_imprimantes"/>
     </record>
@@ -54,6 +58,8 @@
         <field name="name">Scanner codes-barres</field>
         <field name="type">consu</field>
         <field name="tracking">serial</field>
+        <field name="is_storable" eval="True"/>
+        <field name="caissecash_kind">materiel</field>
         <field name="list_price">0.0</field>
         <field name="categ_id" ref="product_category_scanners"/>
     </record>
@@ -61,6 +67,8 @@
         <field name="name">Tiroir-caisse</field>
         <field name="type">consu</field>
         <field name="tracking">serial</field>
+        <field name="is_storable" eval="True"/>
+        <field name="caissecash_kind">materiel</field>
         <field name="list_price">0.0</field>
         <field name="categ_id" ref="product_category_tiroirs"/>
     </record>
@@ -68,6 +76,8 @@
         <field name="name">Borne de commande</field>
         <field name="type">consu</field>
         <field name="tracking">serial</field>
+        <field name="is_storable" eval="True"/>
+        <field name="caissecash_kind">materiel</field>
         <field name="list_price">0.0</field>
         <field name="categ_id" ref="product_category_bornes"/>
     </record>

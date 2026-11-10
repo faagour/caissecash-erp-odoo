@@ -97,3 +97,20 @@ access_objective_technicien,caissecash.objective technicien,model_caissecash_obj
 access_objective_stagiaire,caissecash.objective stagiaire,model_caissecash_objective,group_stagiaire,1,1,0,0
 access_objective_plan_direction,caissecash.objective.plan direction,model_caissecash_objective_plan,group_direction,1,1,1,1
 access_objective_plan_line_direction,caissecash.objective.plan.line direction,model_caissecash_objective_plan_line,group_direction,1,1,1,1
+access_caissecash_stock_entry_stock,caissecash.stock.entry stock,model_caissecash_stock_entry,group_stock,1,1,1,1
+access_caissecash_stock_entry_direction,caissecash.stock.entry direction,model_caissecash_stock_entry,group_direction,1,1,1,1
+access_caissecash_stock_entry_line_stock,caissecash.stock.entry.line stock,model_caissecash_stock_entry_line,group_stock,1,1,1,1
+access_caissecash_stock_entry_line_direction,caissecash.stock.entry.line direction,model_caissecash_stock_entry_line,group_direction,1,1,1,1
+access_caissecash_stock_exit_stock,caissecash.stock.exit stock,model_caissecash_stock_exit,group_stock,1,1,1,1
+access_caissecash_stock_exit_direction,caissecash.stock.exit direction,model_caissecash_stock_exit,group_direction,1,1,1,1
+access_caissecash_stock_exit_line_stock,caissecash.stock.exit.line stock,model_caissecash_stock_exit_line,group_stock,1,1,1,1
+access_caissecash_stock_exit_line_direction,caissecash.stock.exit.line direction,model_caissecash_stock_exit_line,group_direction,1,1,1,1
+access_caissecash_stock_adjust_stock,caissecash.stock.adjust stock,model_caissecash_stock_adjust,group_stock,1,1,1,1
+access_caissecash_stock_adjust_direction,caissecash.stock.adjust direction,model_caissecash_stock_adjust,group_direction,1,1,1,1
+access_caissecash_mrp_bom_stock,mrp.bom caissecash stock,mrp.model_mrp_bom,group_stock,1,1,1,1
+access_caissecash_mrp_bom_direction,mrp.bom caissecash direction,mrp.model_mrp_bom,group_direction,1,1,1,1
+access_caissecash_mrp_bom_line_stock,mrp.bom.line caissecash stock,mrp.model_mrp_bom_line,group_stock,1,1,1,1
+access_caissecash_mrp_bom_line_direction,mrp.bom.line caissecash direction,mrp.model_mrp_bom_line,group_direction,1,1,1,1
+access_partner_category_user,caissecash.partner.category user,model_caissecash_partner_category,base.group_user,1,0,0,0
+access_partner_category_commercial,caissecash.partner.category commercial,model_caissecash_partner_category,group_commercial,1,1,1,0
+access_partner_category_direction,caissecash.partner.category direction,model_caissecash_partner_category,group_direction,1,1,1,1

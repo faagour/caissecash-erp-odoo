@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Partenaires (Clients > Partenaires) : les sociétés d'aménagement et de
+         matériel de cuisine qui travaillent pour les mêmes restaurants.
+         Kanban par statut (À contacter → En discussion → Partenaire actif),
+         fiche complète et historique dans le chatter. -->
+
+    <!-- Activités des partenaires -->
+    <record id="view_caissecash_partner_category_list" model="ir.ui.view">
+        <field name="name">caissecash.partner.category.list</field>
+        <field name="model">caissecash.partner.category</field>
+        <field name="arch" type="xml">
+            <list string="Activités des partenaires" editable="bottom">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="color" widget="color_picker"/>
+                <field name="active" column_invisible="True"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_caissecash_partner_category" model="ir.actions.act_window">
+        <field name="name">Activités des partenaires</field>
+        <field name="res_model">caissecash.partner.category</field>
+        <field name="view_mode">list</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Ajoutez une activité</p>
+            <p>Par exemple : aménagement de cuisine, matériel de cuisine, froid et réfrigération.</p>
+        </field>
+    </record>
+
+    <!-- Partenaires -->
+    <record id="view_caissecash_partner_kanban" model="ir.ui.view">
+        <field name="name">caissecash.partner.kanban</field>
+        <field name="model">res.partner</field>
+        <field name="priority">100</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="caissecash_partner_state" class="o_kanban_mobile" sample="1">
+                <field name="caissecash_partner_contract_expired"/>
+                <templates>
+                    <t t-name="card" class="flex-row">
+                        <aside class="o_kanban_aside_full">
+                            <field name="avatar_128" widget="image" class="o_kanban_image_fill w-100" alt="Logo"/>
+                        </aside>
+                        <main class="ms-2">
+                            <field name="name" class="fw-bold fs-5"/>
+                            <field name="caissecash_partner_category_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
+                            <div class="text-muted" invisible="not city and not caissecash_partner_zone">
+                                <i class="fa fa-map-marker me-1" title="Ville"/>
+                                <field name="city"/>
+                                <span invisible="not city or not caissecash_partner_zone"> · </span>
+                                <field name="caissecash_partner_zone"/>
+                            </div>
+                            <field name="phone" widget="phone"/>
+                            <span class="badge text-bg-danger" invisible="not caissecash_partner_contract_expired">Contrat à renouveler</span>
+                            <footer class="pt-1">
+                                <field name="activity_ids" widget="kanban_activity"/>
+                                <field name="user_id" widget="many2one_avatar_user" class="ms-auto"/>
+                            </footer>
+                        </main>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="view_caissecash_partner_list" model="ir.ui.view">
+        <field name="name">caissecash.partner.list</field>
+        <field name="model">res.partner</field>
+        <field name="priority">100</field>
+        <field name="arch" type="xml">
+            <list string="Partenaires">
+                <field name="name" string="Partenaire"/>
+                <field name="caissecash_partner_category_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
+                <field name="city" string="Ville"/>
+                <field name="caissecash_partner_zone" optional="show"/>
+                <field name="phone" widget="phone" string="Téléphone"/>
+                <field name="caissecash_partner_state" widget="badge"
+                       decoration-muted="caissecash_partner_state == 'a_contacter'"
+                       decoration-info="caissecash_partner_state == 'discussion'"
+                       decoration-success="caissecash_partner_state == 'actif'"
+                       decoration-warning="caissecash_partner_state == 'inactif'"/>
+                <field name="caissecash_partner_date_end" optional="hide"/>
+                <field name="user_id" string="Suivi par" widget="many2one_avatar_user" optional="show"/>
+                <field name="activity_ids" widget="list_activity" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_caissecash_partner_form" model="ir.ui.view">
+        <field name="name">caissecash.partner.form</field>
+        <field name="model">res.partner</field>
+        <field name="priority">100</field>
+        <field name="arch" type="xml">
+            <form string="Partenaire">
+                <header>
+                    <field name="caissecash_partner_state" widget="statusbar" options="{'clickable': '1'}"/>
+                </header>
+                <div class="alert alert-warning mb-0 rounded-0" role="alert" invisible="not caissecash_duplicate_message">
+                    <i class="fa fa-exclamation-triangle me-1" title="Attention"/>
+                    <field name="caissecash_duplicate_message" class="d-inline"/>
+                    <field name="caissecash_duplicate_ids" invisible="1"/>
+                </div>
+                <div class="alert alert-danger mb-0 rounded-0" role="alert" invisible="not caissecash_partner_contract_expired">
+                    <i class="fa fa-calendar-times-o me-1" title="Contrat"/>
+                    Le contrat est arrivé à échéance : pensez à le renouveler.
+                </div>
+                <sheet>
+                    <field name="caissecash_is_partner" invisible="1"/>
+                    <field name="is_company" invisible="1"/>
+                    <field name="active" invisible="1"/>
+                    <widget name="web_ribbon" title="Archivé" bg_color="text-bg-danger" invisible="active"/>
+                    <field name="avatar_128" invisible="1"/>
+                    <field name="image_1920" widget="image" class="oe_avatar" options="{'preview_image': 'avatar_128'}"/>
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="Nom de la société" required="1"/></h1>
+                        <field name="caissecash_partner_category_ids" widget="many2many_tags"
+                               options="{'color_field': 'color', 'no_create_edit': True}"
+                               placeholder="Activités : aménagement de cuisine, matériel de cuisine…"/>
+                    </div>
+                    <group>
+                        <group string="Contact">
+                            <field name="responsable_name" string="Interlocuteur" placeholder="Gérant ou commercial du partenaire"/>
+                            <field name="phone" widget="phone" string="Téléphone" placeholder="06 12 34 56 78"/>
+                            <field name="whatsapp" widget="phone" placeholder="Si différent du téléphone"/>
+                            <field name="email" widget="email"/>
+                            <field name="website" widget="url" placeholder="Site web ou page Instagram"/>
+                            <field name="city" string="Ville"/>
+                            <field name="street" string="Adresse"/>
+                        </group>
+                        <group string="Partenariat">
+                            <field name="caissecash_partner_zone" placeholder="Casablanca, Rabat, Marrakech…"/>
+                            <field name="user_id" string="Suivi par" widget="many2one_avatar_user"/>
+                            <field name="caissecash_partner_date_start"/>
+                            <field name="caissecash_partner_date_end"/>
+                            <field name="caissecash_partner_contract" filename="caissecash_partner_contract_name"/>
+                            <field name="caissecash_partner_contract_name" invisible="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Ce qu'ils proposent" name="offer">
+                            <field name="caissecash_partner_offer"
+                                   placeholder="Services, marques, gammes de prix, délais d'intervention…"/>
+                        </page>
+                        <page string="Conditions convenues" name="conditions">
+                            <field name="caissecash_partner_conditions"
+                                   placeholder="Ce qu'on fait ensemble : clients recommandés, remises, commissions, délais…"/>
+                        </page>
+                        <page string="Contacts" name="contacts">
+                            <field name="child_ids" context="{'default_parent_id': id, 'default_type': 'contact', 'default_is_company': False, 'default_caissecash_is_partner': False, 'default_caissecash_partner_state': False}">
+                                <list editable="bottom">
+                                    <field name="name" string="Nom"/>
+                                    <field name="function" string="Fonction"/>
+                                    <field name="phone" widget="phone" string="Téléphone"/>
+                                    <field name="email" widget="email"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Infos légales" name="legal">
+                            <group>
+                                <group>
+                                    <field name="ice"/>
+                                    <field name="identifiant_fiscal"/>
+                                </group>
+                                <group>
+                                    <field name="rc"/>
+                                    <field name="taxe_professionnelle"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Notes" name="notes">
+                            <field name="comment" placeholder="Impressions, points d'attention…"/>
+                        </page>
+                    </notebook>
+                    <div class="text-muted small">
+                        <i class="fa fa-info-circle me-1" title="Astuce"/>
+                        L'historique est en bas : notez vos échanges, planifiez un appel ou un rendez-vous
+                        (Activités) et joignez catalogues et tarifs (trombone).
+                    </div>
+                    <div class="text-end">
+                        <button name="action_caissecash_full_form" type="object" icon="fa-sliders" class="btn btn-link"
+                                string="Fiche complète" invisible="not id"/>
+                    </div>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_caissecash_partner_search" model="ir.ui.view">
+        <field name="name">caissecash.partner.search</field>
+        <field name="model">res.partner</field>
+        <field name="priority">100</field>
+        <field name="arch" type="xml">
+            <search string="Partenaires">
+                <field name="name" string="Partenaire"
+                       filter_domain="['|', '|', ('name', 'ilike', self), ('commercial_name', 'ilike', self), ('email', 'ilike', self)]"/>
+                <field name="caissecash_partner_category_ids"/>
+                <field name="city" string="Ville"/>
+                <field name="caissecash_partner_zone"/>
+                <field name="phone" string="Téléphone"/>
+                <field name="user_id" string="Suivi par"/>
+                <filter name="my" string="Mes partenaires" domain="[('user_id', '=', uid)]"/>
+                <separator/>
+                <filter name="actifs" string="Partenaires actifs" domain="[('caissecash_partner_state', '=', 'actif')]"/>
+                <filter name="renewal" string="Contrat à renouveler (30 jours)"
+                        domain="[('caissecash_partner_state', '=', 'actif'), ('caissecash_partner_date_end', '!=', False), ('caissecash_partner_date_end', '&lt;=', (context_today() + relativedelta(days=30)).strftime('%Y-%m-%d'))]"/>
+                <separator/>
+                <filter name="archived" string="Archivés" domain="[('active', '=', False)]"/>
+                <group>
+                    <filter name="group_state" string="Statut" context="{'group_by': 'caissecash_partner_state'}"/>
+                    <filter name="group_city" string="Ville" context="{'group_by': 'city'}"/>
+                    <filter name="group_user" string="Suivi par" context="{'group_by': 'user_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_caissecash_partners" model="ir.actions.act_window">
+        <field name="name">Partenaires</field>
+        <field name="res_model">res.partner</field>
+        <field name="path">partenaires</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="domain">[('caissecash_is_partner', '=', True)]</field>
+        <field name="context">{'default_caissecash_is_partner': True, 'default_is_company': True, 'default_caissecash_partner_state': 'a_contacter', 'default_user_id': uid}</field>
+        <field name="search_view_id" ref="view_caissecash_partner_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Ajoutez votre premier partenaire</p>
+            <p>Les sociétés d'aménagement et de matériel de cuisine qui travaillent pour les mêmes restaurants que nous :
+               leur fiche, leur statut, leur contrat et tout l'historique des échanges.</p>
+        </field>
+    </record>
+    <record id="action_caissecash_partners_kanban" model="ir.actions.act_window.view">
+        <field name="sequence">1</field>
+        <field name="view_mode">kanban</field>
+        <field name="view_id" ref="view_caissecash_partner_kanban"/>
+        <field name="act_window_id" ref="action_caissecash_partners"/>
+    </record>
+    <record id="action_caissecash_partners_list" model="ir.actions.act_window.view">
+        <field name="sequence">2</field>
+        <field name="view_mode">list</field>
+        <field name="view_id" ref="view_caissecash_partner_list"/>
+        <field name="act_window_id" ref="action_caissecash_partners"/>
+    </record>
+    <record id="action_caissecash_partners_form" model="ir.actions.act_window.view">
+        <field name="sequence">3</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_caissecash_partner_form"/>
+        <field name="act_window_id" ref="action_caissecash_partners"/>
+    </record>
+
+    <!-- « Créer > Partenaire » depuis Mon espace -->
+    <record id="action_caissecash_partner_new" model="ir.actions.act_window">
+        <field name="name">Nouveau partenaire</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_caissecash_partner_form"/>
+        <field name="target">current</field>
+        <field name="context">{'default_caissecash_is_partner': True, 'default_is_company': True, 'default_caissecash_partner_state': 'a_contacter', 'default_user_id': uid}</field>
+    </record>
+
+    <menuitem id="menu_caissecash_partner" name="Partenaires" parent="crm.crm_menu_root"
+              action="action_caissecash_partners" sequence="4"
+              groups="caissecash_erp.group_commercial"/>
+    <menuitem id="menu_caissecash_partner_category" name="Activités des partenaires" parent="crm.crm_menu_config"
+              action="action_caissecash_partner_category" sequence="60"
+              groups="caissecash_erp.group_commercial"/>
+
+</odoo>

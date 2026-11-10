@@ -1,6 +1,6 @@
 {
     "name": "CaisseCash ERP — Mon espace",
-    "version": "19.0.1.2.0",
+    "version": "19.0.1.4.0",
     "category": "Productivity",
     "summary": "Page d'accueil « Mon espace », pointage en un clic, animations et classement de l'équipe",
     "description": """
