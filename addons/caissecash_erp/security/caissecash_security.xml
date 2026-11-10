@@ -139,6 +139,24 @@
             <field name="groups" eval="[(4, ref('group_technicien')), (4, ref('group_stagiaire'))]"/>
         </record>
 
+        <!-- La direction hérite du rôle technicien (et donc de ses règles) : sans
+             ces règles, la direction et l'administrateur ne voyaient que les
+             installations et tickets SAV qui leur étaient assignés. Les règles
+             d'un même utilisateur s'additionnent : celles-ci rendent tout visible. -->
+        <record id="rule_installation_direction" model="ir.rule">
+            <field name="name">Installation : la direction voit toutes les interventions</field>
+            <field name="model_id" ref="model_caissecash_installation"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('group_direction'))]"/>
+        </record>
+
+        <record id="rule_sav_ticket_direction" model="ir.rule">
+            <field name="name">Ticket SAV : la direction voit tous les tickets</field>
+            <field name="model_id" ref="model_caissecash_sav_ticket"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('group_direction'))]"/>
+        </record>
+
         <!-- Objectifs : chacun voit et met à jour les siens, la finance les consulte
              tous, la direction les gère tous (les règles d'un même utilisateur
              s'additionnent : la direction, qui hérite des autres rôles, voit tout). -->

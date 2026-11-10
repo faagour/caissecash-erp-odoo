@@ -1,6 +1,6 @@
 {
     "name": "CaisseCash ERP",
-    "version": "19.0.2.3.0",
+    "version": "19.0.2.3.1",
     "category": "Services/Field Service",
     "summary": "ERP interne CaisseCash : associés, achats, dépenses, établissements, installations, garanties, SAV, abonnements, objectifs",
     "description": """
